@@ -570,7 +570,7 @@ function App() {
           <div className="loader-bar" role="progressbar" aria-valuenow={loadProgress} aria-valuemin="0" aria-valuemax="100">
             <div className="loader-fill" style={{ width: `${loadProgress}%` }} />
           </div>
-          <p className="loader-text">Loading Preetham Infra Experience…</p>
+          <p className="loader-text">Loading Preetham Infra Experience… {loadProgress}%</p>
         </div>
       </div>
 
@@ -623,7 +623,7 @@ function App() {
            ══════════════════════════════════════════════════════════════ */}
         {activePage === 'home' && (
           <div className="page-view home-page-view">
-            <h1 className="sr-only">Preetham Infra — Constructions & Luxury Architecture</h1>
+            <h1 className="sr-only">Preetham Infra — Constructions & Luxury Construction</h1>
 
             {/* SCENE 01: GROUND UP */}
             <SceneCanvas
@@ -1306,7 +1306,7 @@ function App() {
             <div className="footer-col">
               <Logo onClick={() => navigateTo('home')} />
               <p style={{ marginTop: '12px' }}>
-                Leading turnkey construction, infrastructure development, and bespoke interior architecture across South India. Construction excellence since 2019.
+                Leading turnkey construction, infrastructure development, and bespoke interior architecture across South India. Constructions since 2019.
               </p>
               <div style={{ marginTop: '16px', fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6' }}>
                 <strong>Registered Office:</strong><br />
