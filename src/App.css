@@ -59,7 +59,7 @@ section[id] {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: var(--primary);
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 .loader-hidden {
@@ -72,37 +72,26 @@ section[id] {
   flex-direction: column;
   align-items: center;
 }
-.loader .brand-logo-img {
-  filter: none;
-  mix-blend-mode: normal;
-}
-.loader .brand-name {
-  color: #000000;
-}
-.loader .brand-sub {
-  color: rgba(0, 0, 0, 0.7);
-}
 .loader-bar {
   width: 280px;
   height: 3px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 3px;
   margin-top: 32px;
   overflow: hidden;
 }
 .loader-fill {
   height: 100%;
-  background: #000000;
+  background: var(--accent);
   border-radius: 3px;
   transition: width 0.25s ease-out;
 }
 .loader-text {
   font-size: 10px;
-  color: #444444;
+  color: var(--text-light);
   margin-top: 18px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  font-weight: 600;
 }
 
 /* ══════════════════════════════
@@ -114,23 +103,22 @@ section[id] {
   left: 0;
   width: 100%;
   z-index: 100;
-  background: #000000;
+  background: rgba(10, 22, 40, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
   transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
 }
 .navbar.scrolled {
-  background: #000000;
-  border-bottom-color: rgba(255, 255, 255, 0.25);
+  background: rgba(10, 22, 40, 0.95);
+  border-bottom-color: rgba(201, 169, 110, 0.4);
 }
 .mobile-nav-cta {
   display: none;
 }
 @supports not (backdrop-filter: blur(1px)) {
-  .navbar,
   .navbar.scrolled {
-    background: #000000;
+    background: rgba(10, 22, 40, 0.95);
   }
   .modal-backdrop {
     background: rgba(0, 0, 0, 0.85);
