@@ -570,7 +570,7 @@ function App() {
           <div className="loader-bar" role="progressbar" aria-valuenow={loadProgress} aria-valuemin="0" aria-valuemax="100">
             <div className="loader-fill" style={{ width: `${loadProgress}%` }} />
           </div>
-          <p className="loader-text">Loading Preetham Infra Experience… {loadProgress}%</p>
+          <p className="loader-text">Loading Preetham Infra Experience…</p>
         </div>
       </div>
 
