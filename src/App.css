@@ -103,22 +103,23 @@ section[id] {
   left: 0;
   width: 100%;
   z-index: 100;
-  background: rgba(10, 22, 40, 0.85);
+  background: #000000;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
 }
 .navbar.scrolled {
-  background: rgba(10, 22, 40, 0.95);
-  border-bottom-color: rgba(201, 169, 110, 0.4);
+  background: #000000;
+  border-bottom-color: rgba(255, 255, 255, 0.25);
 }
 .mobile-nav-cta {
   display: none;
 }
 @supports not (backdrop-filter: blur(1px)) {
+  .navbar,
   .navbar.scrolled {
-    background: rgba(10, 22, 40, 0.95);
+    background: #000000;
   }
   .modal-backdrop {
     background: rgba(0, 0, 0, 0.85);
@@ -133,20 +134,20 @@ section[id] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: 90px;
 }
 
 /* ── BRAND LOGO STYLING ── */
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   text-decoration: none;
   user-select: none;
   cursor: pointer;
 }
 .brand-logo-img {
-  height: 44px;
+  height: 58px;
   width: auto;
   object-fit: contain;
   filter: invert(1) hue-rotate(180deg);
@@ -160,17 +161,17 @@ section[id] {
 }
 .brand-name {
   font-family: 'Outfit', sans-serif;
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 2px;
-  color: var(--accent);
+  color: #ffffff;
   text-transform: uppercase;
 }
 .brand-sub {
-  font-size: 8.5px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
 }
 .brand-logo:hover .brand-logo-img {
   transform: scale(1.06);
@@ -249,7 +250,7 @@ section[id] {
    ══════════════════════════════ */
 
 h2 em, h1 em {
-  color: var(--accent);
+  color: #ffffff;
   font-style: normal;
 }
 .eyebrow {
@@ -390,7 +391,7 @@ p {
   margin-bottom: 12px;
 }
 .scene-overlay h2 em {
-  color: var(--accent);
+  color: #ffffff;
   font-style: normal;
 }
 .scene-desc {
@@ -446,7 +447,7 @@ p {
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 2px;
-  color: var(--accent);
+  color: #ffffff;
   text-transform: uppercase;
 }
 .badge-counter {
@@ -1679,7 +1680,7 @@ p {
   margin-top: 12px;
 }
 .page-header-banner h1 em {
-  color: var(--accent);
+  color: #ffffff;
   font-style: normal;
 }
 .page-header-desc {
