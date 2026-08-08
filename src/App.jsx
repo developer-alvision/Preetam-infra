@@ -26,7 +26,7 @@ function Logo({ light = false, onClick }) {
       <img src={brandLogo} alt="Preetham Infra Logo" className="brand-logo-img" />
       <span className="brand-logo-text">
         <span className="brand-name">PREETHAM INFRA</span>
-        <span className="brand-sub">ENGINEERING EXCELLENCE</span>
+        <span className="brand-sub">CONSTRUCTIONS</span>
       </span>
     </div>
   )
@@ -623,7 +623,7 @@ function App() {
            ══════════════════════════════════════════════════════════════ */}
         {activePage === 'home' && (
           <div className="page-view home-page-view">
-            <h1 className="sr-only">Preetham Infra — Engineering Excellence & Luxury Construction</h1>
+            <h1 className="sr-only">Preetham Infra — Constructions & Luxury Architecture</h1>
 
             {/* SCENE 01: GROUND UP */}
             <SceneCanvas
@@ -1306,7 +1306,7 @@ function App() {
             <div className="footer-col">
               <Logo onClick={() => navigateTo('home')} />
               <p style={{ marginTop: '12px' }}>
-                Leading turnkey construction, infrastructure development, and bespoke interior architecture across South India. Engineering excellence since 2019.
+                Leading turnkey construction, infrastructure development, and bespoke interior architecture across South India. Construction excellence since 2019.
               </p>
               <div style={{ marginTop: '16px', fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6' }}>
                 <strong>Registered Office:</strong><br />
