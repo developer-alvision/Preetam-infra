@@ -4,19 +4,19 @@ import brandLogo from './assets/Logo/black yellow Logo.jpg'
 
 /* ───────── FRAME ASSET GLOBS ───────── */
 const scene1Frames = Object.entries(
-  import.meta.glob('./scene 1/*.{png,jpg,jpeg,webp}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Landing Page/Scene 1 Building Construction start to end/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
 ).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
 
 const hallFrames = Object.entries(
-  import.meta.glob('./Hall setup/*.{png,jpg,jpeg,webp}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Landing Page/Hall setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
 ).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
 
 const kitchenFrames = Object.entries(
-  import.meta.glob('./Kitchen setup frames/*.{png,jpg,jpeg,webp}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Landing Page/Kitchen setup frames/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
 ).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
 
 const bedroomFrames = Object.entries(
-  import.meta.glob('./Bedroom Setup/*.{png,jpg,jpeg,webp}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Landing Page/Bedroom Setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
 ).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
 
 /* ───────── LUXURY PREETHAM INFRA LOGO MARK ───────── */
@@ -34,11 +34,11 @@ function Logo({ light = false, onClick }) {
 
 /* ───────── REAL PROJECTS DATA ───────── */
 const houseProjectImages = Object.entries(
-  import.meta.glob('./house - recent work/*.{JPG,jpg,png,jpeg}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Projects/Revanya Residential Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
 ).map(([, u]) => u)
 
 const srinivasaLodgeImages = Object.entries(
-  import.meta.glob('./srinivasa lodge - recent project/*.{JPG,jpg,png,jpeg}', { eager: true, query: '?url', import: 'default' })
+  import.meta.glob('./Images/Projects/srinivasa lodge - Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
 ).map(([, u]) => u)
 
 const projectsData = [
@@ -97,9 +97,27 @@ function getCachedImage(src) {
   return img
 }
 
+/* ───────── MOBILE DETECTION ───────── */
+function isMobileView() {
+  return window.innerWidth <= 768
+}
+
 /* ───────── CANVAS DRAWING HELPER ───────── */
 function drawImageCover(ctx, img, width, height) {
-  if (!img || !img.complete || img.naturalWidth === 0) return
+  if (!width || !height) return
+  ctx.clearRect(0, 0, width, height)
+
+  if (!img || !img.complete || img.naturalWidth === 0) {
+    // Elegant fallback background while loading or if image is unrendered
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height)
+    bgGrad.addColorStop(0, '#060c18')
+    bgGrad.addColorStop(0.5, '#0e1a2e')
+    bgGrad.addColorStop(1, '#080e1a')
+    ctx.fillStyle = bgGrad
+    ctx.fillRect(0, 0, width, height)
+    return
+  }
+
   const imgRatio = img.naturalWidth / img.naturalHeight
   const canvasRatio = width / height
   let renderWidth, renderHeight, offsetX, offsetY
@@ -116,10 +134,9 @@ function drawImageCover(ctx, img, width, height) {
     offsetY = 0
   }
 
-  ctx.clearRect(0, 0, width, height)
   ctx.drawImage(img, offsetX, offsetY, renderWidth, renderHeight)
 
-  // Seamlessly mask Gemini sparkle watermark icon in lower-right corner
+  // Seamlessly mask watermark icon in lower-right corner
   const patchRadius = Math.max(width, height) * 0.28
   const patchGrad = ctx.createRadialGradient(width, height, 0, width, height, patchRadius)
   patchGrad.addColorStop(0, 'rgba(10, 22, 40, 0.98)')
@@ -141,8 +158,8 @@ function calcOverlayOpacity(progress, startPct, endPct) {
 /* ───────── GLOBAL SCENE LOCK — only one scene active at a time ───────── */
 const activeSceneLock = { current: null }
 
-/* ───────── HIGH PERFORMANCE SCENE CANVAS WITH SCROLL-LOCK ───────── */
-const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
+/* ───────── HIGH PERFORMANCE SCENE CANVAS WITH MOBILE-FRIENDLY SCROLL ───────── */
+const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transition }) {
   const containerRef = useRef(null)
   const canvasRef = useRef(null)
   const imagesRef = useRef([])
@@ -170,24 +187,23 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
       const ctx = canvas.getContext('2d', { alpha: false })
       const firstImg = loadedImages[0]
 
-      if (firstImg && firstImg.complete && firstImg.naturalWidth > 0) {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2)
-        const rect = canvas.getBoundingClientRect()
-        if (rect.width > 0 && rect.height > 0) {
-          canvas.width = rect.width * dpr
-          canvas.height = rect.height * dpr
-          drawImageCover(ctx, firstImg, canvas.width, canvas.height)
-        }
-      } else if (firstImg) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const rect = canvas.getBoundingClientRect()
+      if (rect.width > 0 && rect.height > 0) {
+        canvas.width = rect.width * dpr
+        canvas.height = rect.height * dpr
+        drawImageCover(ctx, firstImg, canvas.width, canvas.height)
+      }
+
+      if (firstImg && !firstImg.complete) {
         firstImg.onload = () => {
           if (!cancelled && canvasRef.current) {
             const currentCanvas = canvasRef.current
             const currentCtx = currentCanvas.getContext('2d', { alpha: false })
-            const dpr = Math.min(window.devicePixelRatio || 1, 2)
-            const rect = currentCanvas.getBoundingClientRect()
-            if (rect.width > 0 && rect.height > 0) {
-              currentCanvas.width = rect.width * dpr
-              currentCanvas.height = rect.height * dpr
+            const currentRect = currentCanvas.getBoundingClientRect()
+            if (currentRect.width > 0 && currentRect.height > 0) {
+              currentCanvas.width = currentRect.width * dpr
+              currentCanvas.height = currentRect.height * dpr
               drawImageCover(currentCtx, firstImg, currentCanvas.width, currentCanvas.height)
             }
           }
@@ -204,7 +220,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
     }
   }, [frameUrls])
 
-  // Canvas render & strict scroll lock binding
+  // Canvas render & scroll handler
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -213,7 +229,8 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
     const ctx = canvas.getContext('2d', { alpha: false })
     let animationFrameId = null
     let lastDrawnImg = null
-    const SCROLL_RANGE = 2000
+    const isMobile = isMobileView()
+    const SCROLL_RANGE = isMobile ? 1200 : 2000
 
     const handleResize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -227,6 +244,10 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
 
     const renderFrame = (idx) => {
       const totalFrames = frameUrls.length
+      if (totalFrames === 0) {
+        drawImageCover(ctx, null, canvas.width, canvas.height)
+        return
+      }
       const validIdx = Math.max(0, Math.min(totalFrames - 1, idx))
       frameIdxRef.current = validIdx
 
@@ -246,10 +267,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
           const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(frameUrls[validIdx + offset])
           if (nextImg && nextImg.complete && nextImg.naturalWidth > 0) { nearest = nextImg; break }
         }
-        if (nearest) {
-          lastDrawnImg = nearest
-          drawImageCover(ctx, nearest, canvas.width, canvas.height)
-        }
+        drawImageCover(ctx, nearest, canvas.width, canvas.height)
       }
 
       // Calculate progress percentage
@@ -278,10 +296,24 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
       const rect = container.getBoundingClientRect()
       const distFromTop = Math.abs(rect.top)
 
-      // If scene scrolled far away, reset unlock flags so it locks on re-entry
+      // On mobile, update frames based on viewport scroll ratio without preventing touch scroll
+      if (isMobile) {
+        const totalFrames = frameUrls.length
+        if (totalFrames <= 1) return
+        const sceneHeight = rect.height || window.innerHeight
+        const scrollRatio = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (sceneHeight + window.innerHeight * 0.5)))
+        const frameIdx = Math.floor(scrollRatio * (totalFrames - 1))
+        if (!animationFrameId) {
+          animationFrameId = requestAnimationFrame(() => {
+            renderFrame(frameIdx)
+            animationFrameId = null
+          })
+        }
+        return
+      }
+
+      // Desktop Virtual Scroll Locking
       if (distFromTop > window.innerHeight * 0.7) {
-        unlockedDownRef.current = false
-        unlockedUpRef.current = false
         if (activeSceneLock.current === container) {
           activeSceneLock.current = null
           isActiveRef.current = false
@@ -289,26 +321,26 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
         return
       }
 
-      // If another scene has active lock, ignore
       if (activeSceneLock.current && activeSceneLock.current !== container) return
-
       const isNearTop = distFromTop <= 150
 
-      // DOWNWARD SCROLLING (deltaY > 0)
       if (deltaY > 0) {
-        if (unlockedDownRef.current) return // Already finished going down
+        if (unlockedDownRef.current) return
+        if (virtualScrollRef.current >= SCROLL_RANGE) {
+          unlockedDownRef.current = true
+          renderFrame(frameUrls.length - 1)
+          return
+        }
 
         if (!isActiveRef.current && isNearTop) {
           isActiveRef.current = true
           activeSceneLock.current = container
-          virtualScrollRef.current = 0
+          if (virtualScrollRef.current <= 0) virtualScrollRef.current = 0
           unlockedUpRef.current = false
         }
 
         if (isActiveRef.current) {
-          // Enforce exact top alignment to fill screen perfectly
           window.scrollTo({ top: container.offsetTop, behavior: 'instant' })
-
           if (virtualScrollRef.current < SCROLL_RANGE) {
             preventDefault()
             virtualScrollRef.current = Math.min(SCROLL_RANGE, virtualScrollRef.current + Math.abs(deltaY))
@@ -321,28 +353,29 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
               })
             }
           } else {
-            // Reached 100%, unlock downward
+            renderFrame(frameUrls.length - 1)
             isActiveRef.current = false
             activeSceneLock.current = null
             unlockedDownRef.current = true
           }
         }
-      }
-      // UPWARD SCROLLING (deltaY < 0)
-      else if (deltaY < 0) {
-        if (unlockedUpRef.current) return // Already finished going up
+      } else if (deltaY < 0) {
+        if (unlockedUpRef.current) return
+        if (virtualScrollRef.current <= 0 && !isActiveRef.current) {
+          unlockedUpRef.current = true
+          renderFrame(0)
+          return
+        }
 
         if (!isActiveRef.current && isNearTop) {
           isActiveRef.current = true
           activeSceneLock.current = container
-          virtualScrollRef.current = SCROLL_RANGE
+          if (virtualScrollRef.current >= SCROLL_RANGE) virtualScrollRef.current = SCROLL_RANGE
           unlockedDownRef.current = false
         }
 
         if (isActiveRef.current) {
-          // Enforce exact top alignment to fill screen perfectly
           window.scrollTo({ top: container.offsetTop, behavior: 'instant' })
-
           if (virtualScrollRef.current > 0) {
             preventDefault()
             virtualScrollRef.current = Math.max(0, virtualScrollRef.current - Math.abs(deltaY))
@@ -355,7 +388,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
               })
             }
           } else {
-            // Reached 0%, unlock upward
+            renderFrame(0)
             isActiveRef.current = false
             activeSceneLock.current = null
             unlockedUpRef.current = true
@@ -372,7 +405,13 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
       const touchY = e.touches[0].clientY
       const deltaY = (touchStartY - touchY) * 2.5
       touchStartY = touchY
-      handleWheelOrTouch(deltaY, () => e.preventDefault())
+      handleWheelOrTouch(deltaY, () => {})
+    }
+
+    const onWindowScroll = () => {
+      if (isMobileView()) {
+        handleWheelOrTouch(0, () => {})
+      }
     }
 
     handleResize()
@@ -383,8 +422,9 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('scroll', onWindowScroll, { passive: true })
     container.addEventListener('touchstart', onTouchStart, { passive: true })
-    container.addEventListener('touchmove', onTouchMove, { passive: false })
+    container.addEventListener('touchmove', onTouchMove, { passive: true })
 
     return () => {
       clearTimeout(renderInitTimer)
@@ -393,6 +433,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
       }
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('scroll', onWindowScroll)
       container.removeEventListener('touchstart', onTouchStart)
       container.removeEventListener('touchmove', onTouchMove)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
@@ -400,7 +441,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
   }, [frameUrls, overlays])
 
   return (
-    <section className="scene-section" id={id} ref={containerRef}>
+    <section className="scene-section" id={id} ref={containerRef} data-transition={transition}>
       <div className="scene-sticky">
         <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
 
@@ -416,15 +457,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays }) {
             <p className="scene-desc">{ov.desc}</p>
           </div>
         ))}
-
-        {/* Official Preetham Infra Badge & Progress Counter positioned directly over Gemini Watermark */}
-        <div className="canvas-watermark-logo-badge">
-          <img src={brandLogo} alt="Preetham Infra Logo" />
-          <div className="badge-info">
-            <span className="badge-brand">PREETHAM INFRA</span>
-            <span ref={counterRef} className="badge-counter">0%</span>
-          </div>
-        </div>
 
         <div className="scene-progress-track">
           <div ref={progressFillRef} className="scene-progress-fill" style={{ width: '0%' }} />
@@ -449,8 +481,54 @@ function App() {
   const [subscribed, setSubscribed] = useState(false)
   const [enquirySent, setEnquirySent] = useState(false)
 
+  // Direct Contact Page Form State
+  const [pageContactForm, setPageContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    projectType: 'Turnkey Residential Villa',
+    location: '',
+    area: '',
+    message: ''
+  })
+  const [pageContactSent, setPageContactSent] = useState(false)
+
+  const handlePageContactSubmit = (e) => {
+    e.preventDefault()
+    setPageContactSent(true)
+  }
+
   // Active gallery index state for real project showcase cards
   const [activeGalleryIdx, setActiveGalleryIdx] = useState({ 'srinivasa-lodge': 0, 'luxury-residential-villa': 0 })
+
+  // Turnkey Construction Cost Estimator Calculator State
+  const [calcArea, setCalcArea] = useState(1800)
+  const [calcGrade, setCalcGrade] = useState('luxury')
+  const [calcFloors, setCalcFloors] = useState(2)
+  const [calcIncludeInteriors, setCalcIncludeInteriors] = useState(true)
+
+  const getGradeRate = (grade) => {
+    switch (grade) {
+      case 'premium': return 1850
+      case 'luxury': return 2350
+      case 'royal': return 3100
+      default: return 2350
+    }
+  }
+
+  const baseRate = getGradeRate(calcGrade) + (calcIncludeInteriors ? 350 : 0)
+  const totalBuiltUpArea = calcArea * calcFloors
+  const estimatedTotalCost = totalBuiltUpArea * baseRate
+
+  const applyEstimateToInquiry = () => {
+    const text = `Estimated Construction Budget: ₹${(estimatedTotalCost / 100000).toFixed(2)} Lakhs for ${totalBuiltUpArea.toLocaleString()} sq.ft built-up area (${calcFloors} floors, ${calcGrade.toUpperCase()} grade).`
+    setPageContactForm(prev => ({
+      ...prev,
+      area: `${totalBuiltUpArea} sq ft (${calcFloors} floors)`,
+      message: text
+    }))
+    setModalOpen(true)
+  }
 
   /* Sync active page with window.location.hash */
   useEffect(() => {
@@ -533,6 +611,7 @@ function App() {
   useEffect(() => {
     if (loading) return
     let obs = null
+    let sceneObs = null
     const timer = setTimeout(() => {
       obs = new IntersectionObserver(
         (entries) => {
@@ -549,13 +628,44 @@ function App() {
         }
         obs.observe(el)
       })
+
+      // Scene-specific transition observer
+      sceneObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add('scene-visible')
+          })
+        },
+        { threshold: 0.15 }
+      )
+      document.querySelectorAll('.scene-section').forEach((el) => {
+        const rect = el.getBoundingClientRect()
+        if (rect.top < window.innerHeight * 1.2) {
+          el.classList.add('scene-visible')
+        }
+        sceneObs.observe(el)
+      })
+
+      // Divider transition observer
+      const dividerObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add('divider-visible')
+          })
+        },
+        { threshold: 0.3 }
+      )
+      document.querySelectorAll('.scene-divider').forEach((el) => {
+        dividerObs.observe(el)
+      })
     }, 50)
 
     return () => {
       clearTimeout(timer)
       if (obs) obs.disconnect()
+      if (sceneObs) sceneObs.disconnect()
     }
-  }, [loading, activePage])
+  }, [loading, activePage, serviceCategoryFilter])
 
   const visibleProjects = projectFilter === 'All' 
     ? projectsData 
@@ -625,156 +735,293 @@ function App() {
           <div className="page-view home-page-view">
             <h1 className="sr-only">Preetham Infra — Constructions & Luxury Construction</h1>
 
-            {/* SCENE 01: GROUND UP */}
+            {/* SCENE 01: BUILDING CONSTRUCTION */}
             <SceneCanvas
               id="home-scene"
               frameUrls={scene1Frames}
-              overlays={[
-                {
-                  position: 'left',
-                  start: 0.02,
-                  end: 0.35,
-                  label: 'PREETHAM INFRA / SCENE 01',
-                  title: <>From the<br /><em>Ground Up</em></>,
-                  desc: 'Experience luxury construction as structural foundations evolve into a finished architectural landmark.',
-                },
-                {
-                  position: 'right',
-                  start: 0.45,
-                  end: 0.82,
-                  label: 'PRECISION ENGINEERING',
-                  title: <>Every Detail<br /><em>Perfected</em></>,
-                  desc: 'Rigorous engineering standards ensuring structural integrity built to withstand generations.',
-                },
-              ]}
+              transition="fade-scale"
+              overlays={[]}
             />
 
-            {/* CONTENT CARD 01 */}
-            <section className="scene-content-card section-wrap reveal">
-              <div className="content-card-inner">
-                <div className="content-card-header">
-                  <span className="card-badge">01 / STRUCTURAL EXCELLENCE</span>
-                  <h2>Engineering Landmarks That <em>Endure</em></h2>
-                  <p>
-                    From heavy-duty foundation excavation to precision RCC frame casting, Preetham Infra combines advanced structural engineering with certified materials to build spaces that stand for generations.
-                  </p>
-                </div>
-                <div className="content-card-grid">
-                  <div className="content-card-item">
-                    <span className="card-item-num">01</span>
-                    <h3>Deep Pile Foundations</h3>
-                    <p>Advanced soil testing, deep pile foundation techniques, and high-tensile steel reinforcement.</p>
-                  </div>
-                  <div className="content-card-item">
-                    <span className="card-item-num">02</span>
-                    <h3>Turnkey Execution</h3>
-                    <p>Complete project management from architectural 3D CAD designs to certified structural audits.</p>
-                  </div>
-                  <div className="content-card-item">
-                    <span className="card-item-num">03</span>
-                    <h3>Uncompromising Safety</h3>
-                    <p>IS-code compliant seismic design and multi-tier quality control checkpoints on every site.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SCENE INTRO 02 */}
-            <section className="scene-intro-card section-wrap reveal">
-              <div className="intro-card-inner">
-                <span className="card-badge">SCENE 02 / LIVING SPACES</span>
-                <h2>The Grand <em>Hall Design</em></h2>
+            {/* SUMMARY: BUILDING CONSTRUCTION */}
+            <div className="scene-summary reveal">
+              <div className="scene-summary-inner">
+                <span className="scene-summary-badge">SCENE 01 / BUILDING CONSTRUCTION</span>
+                <h3>Building Construction <em>From Start to End</em></h3>
                 <p>
-                  Experience the step-by-step transformation of raw space into a magnificent living hall — where expansive architectural layout meets curated luxury.
+                  Watch the complete journey of building construction — from deep pile foundation excavation and steel reinforcement, through precision RCC frame casting and brickwork, to the fully finished structural shell ready for interior fit-out.
                 </p>
+                <div className="scene-summary-highlights">
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Deep Pile Foundations</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />RCC Frame Casting</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Turnkey Execution</span>
+                </div>
               </div>
-            </section>
+            </div>
+
+            {/* DIVIDER: HALL */}
+            <div className="scene-divider">
+              <span className="scene-divider-label">SCENE 02 / LIVING SPACES</span>
+              <h2 className="scene-divider-title">The Grand <em>Hall Design</em></h2>
+            </div>
 
             {/* SCENE 02: HALL */}
             <SceneCanvas
               id="hall-scene"
               frameUrls={hallFrames}
-              overlays={[
-                {
-                  position: 'left',
-                  start: 0.02,
-                  end: 0.35,
-                  label: 'SCENE 02 / THE GRAND HALL',
-                  title: <>Grandeur<br /><em>Unveiled</em></>,
-                  desc: 'Step into a magnificent living space meticulously tailored for refined luxury and welcoming gatherings.',
-                },
-                {
-                  position: 'right',
-                  start: 0.48,
-                  end: 0.85,
-                  label: 'ARTISAN DETAILS',
-                  title: <>Where Style<br /><em>Meets Comfort</em></>,
-                  desc: 'Bespoke wall accents, designer lighting, and premium flooring harmoniously blended.',
-                },
-              ]}
+              transition="slide-left"
+              overlays={[]}
             />
 
-            {/* SCENE INTRO 03 */}
-            <section className="scene-intro-card section-wrap reveal">
-              <div className="intro-card-inner">
-                <span className="card-badge">SCENE 03 / CULINARY SPACES</span>
-                <h2>The Modern <em>Kitchen Sanctuary</em></h2>
+            {/* SUMMARY: HALL */}
+            <div className="scene-summary reveal">
+              <div className="scene-summary-inner">
+                <span className="scene-summary-badge">SCENE 02 / HALL DESIGN</span>
+                <h3>The Grand <em>Hall Experience</em></h3>
                 <p>
-                  Witness the creation of a culinary sanctuary designed with high-end ergonomics, Italian quartz stone surfaces, and seamless appliance integration.
+                  Step into a magnificent living hall meticulously crafted for refined luxury — featuring expansive spatial layout, bespoke wall accents, designer lighting fixtures, and premium flooring that blend elegance with comfort.
                 </p>
+                <div className="scene-summary-highlights">
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Bespoke Wall Accents</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Designer Lighting</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Premium Flooring</span>
+                </div>
               </div>
-            </section>
+            </div>
+
+            {/* DIVIDER: KITCHEN */}
+            <div className="scene-divider">
+              <span className="scene-divider-label">SCENE 03 / CULINARY SPACES</span>
+              <h2 className="scene-divider-title">The Modern <em>Kitchen Sanctuary</em></h2>
+            </div>
 
             {/* SCENE 03: KITCHEN */}
             <SceneCanvas
               id="kitchen-scene"
               frameUrls={kitchenFrames}
-              overlays={[
-                {
-                  position: 'left',
-                  start: 0.02,
-                  end: 0.35,
-                  label: 'SCENE 03 / MODERN KITCHEN',
-                  title: <>Culinary<br /><em>Excellence</em></>,
-                  desc: 'Witness the creation of a culinary sanctuary designed with high-end ergonomics and Italian stone surfaces.',
-                },
-                {
-                  position: 'right',
-                  start: 0.48,
-                  end: 0.85,
-                  label: 'LUXURY FINISHES',
-                  title: <>Crafted for<br /><em>Perfection</em></>,
-                  desc: 'Custom cabinetry, premium stone countertops, and intelligent storage solutions.',
-                },
-              ]}
+              transition="zoom-blur"
+              overlays={[]}
             />
 
-            {/* SCENE INTRO 04 */}
-            <section className="scene-intro-card section-wrap reveal">
-              <div className="intro-card-inner">
-                <span className="card-badge">SCENE 04 / PRIVATE RETREATS</span>
-                <h2>The Luxury <em>Bedroom Suite</em></h2>
+            {/* SUMMARY: KITCHEN */}
+            <div className="scene-summary reveal">
+              <div className="scene-summary-inner">
+                <span className="scene-summary-badge">SCENE 03 / KITCHEN DESIGN</span>
+                <h3>The Modern <em>Kitchen Sanctuary</em></h3>
                 <p>
-                  Explore how we craft tranquil private suites that pair ambient mood lighting with serene acoustic textures to offer ultimate rest and sanctuary.
+                  Witness the creation of a culinary sanctuary designed with high-end ergonomics, Italian quartz stone surfaces, German soft-close modular cabinetry, and seamless appliance integration for everyday luxury cooking.
                 </p>
+                <div className="scene-summary-highlights">
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Italian Stone Counters</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Modular Cabinetry</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Smart Storage</span>
+                </div>
               </div>
-            </section>
+            </div>
+
+            {/* DIVIDER: BEDROOM */}
+            <div className="scene-divider">
+              <span className="scene-divider-label">SCENE 04 / PRIVATE RETREATS</span>
+              <h2 className="scene-divider-title">The Luxury <em>Bedroom Suite</em></h2>
+            </div>
 
             {/* SCENE 04: BEDROOM */}
             <SceneCanvas
               id="bedroom-scene"
               frameUrls={bedroomFrames}
-              overlays={[
-                {
-                  position: 'left',
-                  start: 0.05,
-                  end: 0.5,
-                  label: 'SCENE 04 / PRIVATE RETREAT',
-                  title: <>Your Luxury<br /><em>Bedroom Suite</em></>,
-                  desc: 'An intimate private suite designed to restore mind and body in pure comfort.',
-                },
-              ]}
+              transition="slide-up"
+              overlays={[]}
             />
+
+            {/* SUMMARY: BEDROOM */}
+            <div className="scene-summary reveal">
+              <div className="scene-summary-inner">
+                <span className="scene-summary-badge">SCENE 04 / BEDROOM DESIGN</span>
+                <h3>The Luxury <em>Bedroom Suite</em></h3>
+                <p>
+                  Explore how we craft tranquil private suites that pair ambient mood lighting with serene acoustic textures, premium fabric headboards, walk-in wardrobes, and climate-controlled comfort for ultimate rest and sanctuary.
+                </p>
+                <div className="scene-summary-highlights">
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Ambient Mood Lighting</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Walk-in Wardrobes</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Acoustic Comfort</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Turnkey Construction Cost Estimator Section */}
+            <section className="calculator-section section-wrap reveal">
+              <div className="calculator-card">
+                <div className="calculator-header">
+                  <div>
+                    <span className="card-badge gold-badge">INTERACTIVE BUDGET PLANNER</span>
+                    <h2>Turnkey Construction <em>Cost Estimator</em></h2>
+                    <p className="calculator-subtitle">
+                      Calculate instant estimated costs for civil structural construction, raw materials, and interior joinery across Madanapalle, Tirupathi, and Bangalore.
+                    </p>
+                  </div>
+                  <div className="calculator-badge-pill">
+                    <span className="live-dot">●</span> 2026 Material Price Index
+                  </div>
+                </div>
+
+                <div className="calculator-body-grid">
+                  {/* Controls Column */}
+                  <div className="calculator-controls">
+                    {/* Built up area slider */}
+                    <div className="calc-group">
+                      <div className="calc-label-row">
+                        <label htmlFor="area-range-home">Plot / Floor Area per Floor</label>
+                        <span className="calc-value-highlight">{calcArea.toLocaleString()} sq. ft.</span>
+                      </div>
+                      <input 
+                        id="area-range-home"
+                        type="range" 
+                        min="600" 
+                        max="6000" 
+                        step="100" 
+                        value={calcArea} 
+                        onChange={(e) => setCalcArea(Number(e.target.value))}
+                        className="calc-slider"
+                      />
+                      <div className="calc-range-marks">
+                        <span>600 sq ft</span>
+                        <span>2,500 sq ft</span>
+                        <span>6,000+ sq ft</span>
+                      </div>
+                    </div>
+
+                    {/* Quality Grade Cards */}
+                    <div className="calc-group">
+                      <label>Construction Specification Grade</label>
+                      <div className="calc-grade-grid">
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcGrade === 'premium' ? ' active' : ''}`}
+                          onClick={() => setCalcGrade('premium')}
+                        >
+                          <strong>Premium Grade</strong>
+                          <span>₹1,850 / sq ft</span>
+                          <small>Vizag TMT Steel, UltraTech Cement, Vitrified 4x2 Tiles</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcGrade === 'luxury' ? ' active' : ''}`}
+                          onClick={() => setCalcGrade('luxury')}
+                        >
+                          <strong>Luxury Grade ★</strong>
+                          <span>₹2,350 / sq ft</span>
+                          <small>Tata Tiscon TMT, Teakwood Doors, Kohler Fittings, POP Ceiling</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcGrade === 'royal' ? ' active' : ''}`}
+                          onClick={() => setCalcGrade('royal')}
+                        >
+                          <strong>Royal Bespoke</strong>
+                          <span>₹3,100 / sq ft</span>
+                          <small>Italian Marble, Glass Facade, Smart Lighting, VRF AC Ducting</small>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Floors & Addons */}
+                    <div className="calc-row-2col">
+                      <div className="calc-group">
+                        <label htmlFor="floors-select-home">Number of Floors</label>
+                        <select 
+                          id="floors-select-home"
+                          value={calcFloors} 
+                          onChange={(e) => setCalcFloors(Number(e.target.value))}
+                          className="calc-select"
+                        >
+                          <option value={1}>Ground Floor Only (G)</option>
+                          <option value={2}>Ground + 1 Floor (G+1)</option>
+                          <option value={3}>Ground + 2 Floors (G+2)</option>
+                          <option value={4}>Ground + 3 Floors (G+3)</option>
+                        </select>
+                      </div>
+
+                      <div className="calc-group">
+                        <label htmlFor="interiors-toggle-home">Modular Interiors Addon</label>
+                        <button 
+                          id="interiors-toggle-home"
+                          type="button" 
+                          className={`calc-toggle-btn${calcIncludeInteriors ? ' active' : ''}`}
+                          onClick={() => setCalcIncludeInteriors(!calcIncludeInteriors)}
+                        >
+                          {calcIncludeInteriors ? '✓ Factory Kitchen & Wardrobes Included (+₹350/sq ft)' : '+ Add Modular Kitchen & Wardrobe Joinery'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Output Summary Column */}
+                  <div className="calculator-result-card">
+                    <span className="result-eyebrow">ESTIMATED INVESTMENT</span>
+                    <div className="total-price-display">
+                      <span className="currency-symbol">₹</span>
+                      <span className="price-lakhs">{(estimatedTotalCost / 100000).toFixed(2)}</span>
+                      <span className="price-unit">Lakhs*</span>
+                    </div>
+                    <p className="total-area-subtitle">Total Built-Up Area: <strong>{totalBuiltUpArea.toLocaleString()} sq. ft.</strong> @ ₹{baseRate}/sq.ft</p>
+
+                    {/* Itemized Progress Bars */}
+                    <div className="breakdown-list">
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>RCC Structural Frame & Steel (30%)</span>
+                          <strong>₹{(estimatedTotalCost * 0.30 / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: '30%' }}></div></div>
+                      </div>
+
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>Brickwork, Plastering & Masonry (25%)</span>
+                          <strong>₹{(estimatedTotalCost * 0.25 / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: '25%' }}></div></div>
+                      </div>
+
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>Flooring, Tiling & Sanitaryware (15%)</span>
+                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
+                      </div>
+
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>Electrical, Lighting & Plumbing (15%)</span>
+                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
+                      </div>
+
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>Joinery, Paint & Finishing (15%)</span>
+                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
+                      </div>
+                    </div>
+
+                    <button className="btn-primary btn-gold-calc" onClick={applyEstimateToInquiry}>
+                      Request Engineering Quotation For This Estimate ↗
+                    </button>
+
+                    <span className="calc-disclaimer">
+                      *Estimates based on standard market rates in AP & KA. Final quote provided after site soil test & architectural elevation review.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         )}
 
@@ -808,72 +1055,162 @@ function App() {
             <main className="services-content-wrap">
               {/* 01. PLANNING & TURNKEY */}
               {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Planning') && (
-                <section className="service-section-block section-wrap reveal">
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
                     <span className="card-badge">DIVISION 01</span>
                     <h2>Architectural Planning & Turnkey Projects</h2>
-                    <p className="section-header-desc">Comprehensive pre-construction design, structural engineering, digital markings, and end-to-end turnkey delivery.</p>
+                    <p className="section-header-desc">Comprehensive pre-construction design, structural engineering, digital laser markings, and end-to-end turnkey delivery.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Concept Discussion</h3>
-                      <p>In floor planning, "concept" refers to the big-picture idea driving how spaces are organized, connected, and experienced before detailed working drawings.</p>
-                      <ul className="service-bullet-list">
-                        <li>Zoning & spatial flow optimization</li>
-                        <li>Client lifestyle & functional alignment</li>
-                        <li>Initial 3D conceptual massing</li>
-                      </ul>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">CAD / BIM PLANNING</span>
+                        <img 
+                          src={houseProjectImages[0] || srinivasaLodgeImages[0]} 
+                          alt="3D CAD Blueprint & Architectural Plan" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Concept Discussion & 3D CAD</h3>
+                        <p>Zoning, structural orientation, and spatial flow optimization converted into working 3D CAD floor plans prior to execution.</p>
+                        <ul className="service-bullet-list">
+                          <li>Spatial flow & lifestyle alignment</li>
+                          <li>Sunlight & ventilation analysis</li>
+                          <li>Initial 3D conceptual massing</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Plan Consultation <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Structural Plan</h3>
-                      <p>A set of engineering drawings showing how a building will stand up: positions and sizes of columns, beams, slabs, foundations, and load-bearing steel reinforcement.</p>
-                      <ul className="service-bullet-list">
-                        <li>IS-code compliant seismic design</li>
-                        <li>High-tensile steel & RCC specifications</li>
-                        <li>Certified structural safety audits</li>
-                      </ul>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">IS-CODE COMPLIANT</span>
+                        <img 
+                          src={scene1Frames[12] || houseProjectImages[1]} 
+                          alt="RCC Structural Steel Rebar Plan" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Structural Engineering Plan</h3>
+                        <p>Certified engineering drawings specifying column positioning, foundation depth, beam sizing, and high-tensile RCC rebar framing.</p>
+                        <ul className="service-bullet-list">
+                          <li>IS-code compliant seismic design</li>
+                          <li>Heavy structural RCC load audits</li>
+                          <li>Deep pile foundation design</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Structural Audits <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Electrical Planning</h3>
-                      <p>Designing the complete electrical system—loads, circuits, wiring routes, protection, and device locations—using floor and structural plans as a base.</p>
-                      <ul className="service-bullet-list">
-                        <li>Concealed conduit ducting layouts</li>
-                        <li>Smart automation & switchboard placement</li>
-                        <li>Surge protection & load balancing</li>
-                      </ul>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">SMART AUTOMATION</span>
+                        <img 
+                          src={houseProjectImages[1] || srinivasaLodgeImages[5]} 
+                          alt="Concealed Electrical Conduit Wiring" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Electrical & Conduit Planning</h3>
+                        <p>Designing electrical loads, circuit balancing, heavy appliance lines, smart automation hubs, and fire-retardant concealed conduits.</p>
+                        <ul className="service-bullet-list">
+                          <li>Concealed FRLS wire ducting</li>
+                          <li>Phase load balancing & earthing</li>
+                          <li>Automation & modular switch placement</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Get Electrical Specs <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Plumbing Plan</h3>
-                      <p>Technical drawing set showing water supply and drainage systems: pipe routes, sizes, slopes, valves, fixtures, and main line connections.</p>
-                      <ul className="service-bullet-list">
-                        <li>Dual-plumbing cold & hot water lines</li>
-                        <li>Sloped gravity drainage & traps</li>
-                        <li>High-pressure pump integration</li>
-                      </ul>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">DUAL-PLUMBING</span>
+                        <img 
+                          src={srinivasaLodgeImages[5] || houseProjectImages[2]} 
+                          alt="Plumbing & Drainage Pipes" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Plumbing & Drainage Engineering</h3>
+                        <p>Technical drawing sets for pressure-tested water supply lines, dual-drainage gravity traps, and central water heating integration.</p>
+                        <ul className="service-bullet-list">
+                          <li>Noise-insulated gravity drain pipes</li>
+                          <li>Solar & pressure-pump loops</li>
+                          <li>CPVC / UPVC certified pipe runs</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Plumbing Specs <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Digital Markings</h3>
-                      <p>Transferring CAD/BIM drawings onto site as precise physical marks for columns, walls, MEP points, and finishes using digital laser layout tools instead of manual tape strings.</p>
-                      <ul className="service-bullet-list">
-                        <li>Zero-margin error laser alignment</li>
-                        <li>Exact column & wall axis transfer</li>
-                        <li>MEP penetration point marking</li>
-                      </ul>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">LASER ACCURACY</span>
+                        <img 
+                          src={scene1Frames[5] || houseProjectImages[3]} 
+                          alt="Laser Optical Surveying Instrument" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Digital Laser Site Marking</h3>
+                        <p>Direct CAD grid transfer onto the physical construction site using digital optical lasers for zero-margin column and wall placement.</p>
+                        <ul className="service-bullet-list">
+                          <li>Sub-millimeter axis alignment</li>
+                          <li>Column grid transfer on site</li>
+                          <li>MEP penetration point marking</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Book Site Layout Audit <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="service-detail-card highlight-card">
-                      <h3>Turnkey Projects</h3>
-                      <p>A single contractor handling everything from architectural design, approvals, construction, interiors, services, to final handover so clients simply “turn the key”.</p>
-                      <ul className="service-bullet-list">
-                        <li>Single point of accountability</li>
-                        <li>Protected from cost inflation</li>
-                        <li>Fixed timeline guarantee</li>
-                      </ul>
+                    <div className="service-detail-card">
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">ALL-INCLUSIVE</span>
+                        <img 
+                          src={srinivasaLodgeImages[0] || houseProjectImages[0]} 
+                          alt="Turnkey Villa & Commercial Delivery" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Turnkey Villa & Commercial Delivery</h3>
+                        <p>Single-contract execution covering excavation, RCC shell, interiors, plumbing, electrical, and legal approvals to key handover.</p>
+                        <ul className="service-bullet-list">
+                          <li>Protected from material price inflation</li>
+                          <li>Single-point project manager</li>
+                          <li>Strict timeline & milestone delivery</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Start Turnkey Quote <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -881,27 +1218,87 @@ function App() {
 
               {/* 02. INTERIOR DESIGN */}
               {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Interior Design') && (
-                <section className="service-section-block section-wrap reveal">
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
                     <span className="card-badge">DIVISION 02</span>
                     <h2>Bespoke Interior Architecture</h2>
-                    <p className="section-header-desc">Planning internal spaces for optimal ergonomics, luxury material selection, and complete fit-out coordination.</p>
+                    <p className="section-header-desc">Planning internal spaces for optimal ergonomics, luxury material selection, lighting layers, and complete fit-out coordination.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Space Planning & Ergonomics</h3>
-                      <p>Deciding room functions, circulation paths, and furniture layouts for efficient, comfortable, and intuitive daily spatial flow.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">SPATIAL FLOW</span>
+                        <img 
+                          src={hallFrames[hallFrames.length - 1] || houseProjectImages[3]} 
+                          alt="Space Planning Ergonomics" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Space Planning & Ergonomics</h3>
+                        <p>Intelligent layout structuring for living rooms, master suites, and commercial foyers for comfortable circulation and maximum utility.</p>
+                        <ul className="service-bullet-list">
+                          <li>Intuitive room zoning</li>
+                          <li>Custom furniture placement</li>
+                          <li>Acoustic & privacy separation</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Interior Layout <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Material, Color & Finish Selection</h3>
-                      <p>Curating flooring, wall textures, ceilings, lighting fixtures, hardware, and soft furnishings that match durability needs and luxury styling.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">PALETTE CURATION</span>
+                        <img 
+                          src={houseProjectImages[4] || srinivasaLodgeImages[10]} 
+                          alt="Material & Texture Palette Curation" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Material, Color & Finish Selection</h3>
+                        <p>Handpicked palettes of Italian marble, textured veneer, fluted wooden panels, brushed brass hardware, and premium wall finishes.</p>
+                        <ul className="service-bullet-list">
+                          <li>Custom moodboards & physical swatches</li>
+                          <li>Stain-resistant luxury surfaces</li>
+                          <li>Harmonious color temperature matching</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Schedule Material Session <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Interior Fit-Out Coordination</h3>
-                      <p>Overseeing partitions, false ceilings, custom cabinetry, loose furniture, and décor to ensure timely, flawless site installation.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">FIT-OUT MANAGEMENT</span>
+                        <img 
+                          src={bedroomFrames[bedroomFrames.length - 1] || houseProjectImages[5]} 
+                          alt="Interior Fit-Out Execution" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Interior Fit-Out Execution</h3>
+                        <p>On-site supervision of carpenters, gypsum contractors, polishers, and lighting technicians for seamless design implementation.</p>
+                        <ul className="service-bullet-list">
+                          <li>Strict tolerance alignment audits</li>
+                          <li>Quality control on site joinery</li>
+                          <li>Dust-free final site deep cleaning</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Consult Interior Team <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -909,37 +1306,112 @@ function App() {
 
               {/* 03. FLOORING SYSTEMS */}
               {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Flooring') && (
-                <section className="service-section-block section-wrap reveal">
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
                     <span className="card-badge">DIVISION 03</span>
                     <h2>High-End Flooring Systems</h2>
-                    <p className="section-header-desc">Finished floor surfaces installed over structural slabs to create durable, level, and stunning walking surfaces.</p>
+                    <p className="section-header-desc">Precision-installed floor surfaces over structural slabs to create durable, level, and stunning visual walking surfaces.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Vitrified & Ceramic Tiles</h3>
-                      <p>Ceramic, porcelain, and vitrified tiles dominating kitchens, bathrooms, and living areas with low water absorption, stain resistance, and diverse textures.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">VITRIFIED TILES</span>
+                        <img 
+                          src={srinivasaLodgeImages[8] || houseProjectImages[6]} 
+                          alt="Vitrified Tile Installation" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Vitrified & Porcelain Tile Systems</h3>
+                        <p>Large-format vitrified slabs (800x1600mm+) laid with high-polymer adhesive for zero-joint seamless indoor and outdoor floors.</p>
+                        <ul className="service-bullet-list">
+                          <li>High abrasion & scratch resistance</li>
+                          <li>Epoxy tile grouting for water resistance</li>
+                          <li>Anti-skid matte finishes for wet areas</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Tile Solutions <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Natural Marble & Granite Stone</h3>
-                      <p>Italian marble and premium granite providing hard-wearing, elegant surfaces for luxury residential villas and commercial grand halls.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">ITALIAN MARBLE</span>
+                        <img 
+                          src={houseProjectImages[7] || srinivasaLodgeImages[12]} 
+                          alt="Italian Marble Floor Slab" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Italian Marble & Granite Stone</h3>
+                        <p>Book-matched Italian Bottochino, Statuario marble, and flamed granite installed with diamond mirror polishing.</p>
+                        <ul className="service-bullet-list">
+                          <li>Seamless book-match vein alignment</li>
+                          <li>Hydrophobic sealant stone protection</li>
+                          <li>Heavy-duty granite for entry steps</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Marble Estimate <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Hardwood & Engineered Wood</h3>
-                      <p>Solid hardwood, engineered wood, laminate, and bamboo delivering warm, comfortable acoustic interiors for bedrooms and private suites.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">ACOUSTIC HARDWOOD</span>
+                        <img 
+                          src={houseProjectImages[8] || srinivasaLodgeImages[14]} 
+                          alt="Hardwood Wooden Flooring" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Engineered Hardwood & Wooden Planks</h3>
+                        <p>Natural oak, teak, and engineered acoustic wooden flooring ideal for master bedroom suites, home theaters, and private lounges.</p>
+                        <ul className="service-bullet-list">
+                          <li>Acoustic underlayment sound dampening</li>
+                          <li>UV-cured scratch proof topcoat</li>
+                          <li>Termite-treated backing layer</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Explore Wooden Specs <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Polished Concrete & Epoxy</h3>
-                      <p>Polished or stamped concrete offering an industrial modern aesthetic—economical, ultra-durable for open-plan lounges and basements.</p>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <h3>Vinyl, LVT & Linoleum</h3>
-                      <p>Waterproof, resilient alternatives mimicking natural wood or stone, ideal for moisture-prone or high-traffic utility zones.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">INDUSTRIAL EPOXY</span>
+                        <img 
+                          src={srinivasaLodgeImages[15] || houseProjectImages[9]} 
+                          alt="Polished Concrete Epoxy Floor" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Polished Concrete & Epoxy Coatings</h3>
+                        <p>Dense lithium-silicate polished concrete and seamless self-leveling epoxy for high-impact commercial basements and modern lofts.</p>
+                        <ul className="service-bullet-list">
+                          <li>Chemical & oil stain resistant</li>
+                          <li>Ultra-durable high-load capacity</li>
+                          <li>Custom color pigment infusion</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Epoxy Specs <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -947,98 +1419,376 @@ function App() {
 
               {/* 04. FALSE CEILINGS & LIGHTING */}
               {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Ceilings & Lighting') && (
-                <section className="service-section-block section-wrap reveal">
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
                     <span className="card-badge">DIVISION 04 & 05</span>
                     <h2>False Ceilings & Architectural Lighting</h2>
-                    <p className="section-header-desc">Secondary suspended ceilings to conceal services, manage acoustics, and layer functional ambient lighting.</p>
+                    <p className="section-header-desc">Suspended ceiling architectures that hide service conduits, manage acoustics, and layer functional ambient and accent lighting.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Gypsum & POP Ceilings</h3>
-                      <p>Lightweight, easily shaped boards perfect for residential ceilings with seamless cove lighting and concealed AC ducting.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">GYPSUM & POP</span>
+                        <img 
+                          src={hallFrames[15] || houseProjectImages[10]} 
+                          alt="POP Gypsum False Ceiling" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Gypsum & POP Suspended Ceilings</h3>
+                        <p>Saint-Gobain gypsum boards framed with galvanized GI channels for smooth, crack-resistant ceiling planes and concealed light coves.</p>
+                        <ul className="service-bullet-list">
+                          <li>Fire-retardant & moisture-resistant boards</li>
+                          <li>Seamless joint compound taping</li>
+                          <li>Integrated AC linear slot diffusers</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Ceiling Quote <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Metal & Wooden Grid Panels</h3>
-                      <p>Durable aluminum grid panels for offices, or premium solid wood louvers for luxury residential statement ceilings.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">SOLID WOOD LOUVERS</span>
+                        <img 
+                          src={houseProjectImages[11] || srinivasaLodgeImages[18]} 
+                          alt="Wooden Louvered Baffle Ceiling" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Metallic Grid & Wooden Louvered Panels</h3>
+                        <p>Architectural aluminum open-cell ceiling grids and custom wooden baffle louvers for high-end acoustic lobbies and dining halls.</p>
+                        <ul className="service-bullet-list">
+                          <li>Acoustic NRC-rated backing fleece</li>
+                          <li>Quick plenum access for maintenance</li>
+                          <li>Rich natural wood veneer finishes</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Baffle Ceilings <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Ambient Lighting</h3>
-                      <p>Overall even illumination for general visibility via glare-free recessed cans, flush ceiling mounts, and chandeliers.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">LAYERED LIGHTING</span>
+                        <img 
+                          src={bedroomFrames[15] || houseProjectImages[12]} 
+                          alt="Ambient Cove Ceiling Lighting" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Ambient & Architectural Cove Lighting</h3>
+                        <p>Warm 3000K-4000K indirect LED cove illumination paired with high CRI (90+) glare-free COB recessed downlights.</p>
+                        <ul className="service-bullet-list">
+                          <li>Dimmable smart DALI / Zigbee drivers</li>
+                          <li>Diffused shadow-free light channels</li>
+                          <li>Energy-efficient 120 lm/W LED strips</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Get Lighting Scheme <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Task Lighting</h3>
-                      <p>Focused light beams for reading or cooking using counter pendants, under-cabinet LED strips, and adjustable track spotlights.</p>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <h3>Accent & Cove Lighting</h3>
-                      <p>Highlighting artwork, wall panel textures, and architectural niches with concealed cove LEDs, wall washers, and floor spots.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">ACCENT SPOTLIGHTS</span>
+                        <img 
+                          src={srinivasaLodgeImages[20] || houseProjectImages[13]} 
+                          alt="Accent Track Spotlights" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Accent Spotlights & Magnetic Track Lights</h3>
+                        <p>Adjustable narrow-beam spotlights to highlight wall art, stone cladding textures, and dining counter islands.</p>
+                        <ul className="service-bullet-list">
+                          <li>Low-voltage 24V magnetic track system</li>
+                          <li>Focusable 15°-36° beam optics</li>
+                          <li>Concealed wall washers</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Track Systems <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
               )}
 
-              {/* 05. PAINTING & FURNITURE */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Painting' || serviceCategoryFilter === 'Furniture & Kitchens') && (
-                <section className="service-section-block section-wrap reveal">
+              {/* 05. PAINTING */}
+              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Painting') && (
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
-                    <span className="card-badge">DIVISION 06, 07 & 08</span>
-                    <h2>Protective Painting, Carpentry & Modular Systems</h2>
-                    <p className="section-header-desc">High-performance surface coatings, custom workshop furniture, modular kitchens, and walk-in wardrobes.</p>
+                    <span className="card-badge">DIVISION 06</span>
+                    <h2>Protective & Decorative Painting</h2>
+                    <p className="section-header-desc">Multi-coat high-durability surface paints, anti-fungal exterior shields, and luxury interior micro-cement finishes.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Protective & Decorative Painting</h3>
-                      <p>Applying oil-based, acrylic emulsion, and weather-proof cement coatings to protect walls against moisture, UV rays, and environmental wear.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">WEATHER-SHIELD</span>
+                        <img 
+                          src={srinivasaLodgeImages[2] || scene1Frames[20]} 
+                          alt="Exterior Wall Painting" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Weather-Shield Exterior Protective Paints</h3>
+                        <p>Elastomeric 100% acrylic exterior paints with crack-bridging technology to withstand extreme South Indian monsoons and UV degradation.</p>
+                        <ul className="service-bullet-list">
+                          <li>Anti-algae & anti-fungal protection</li>
+                          <li>10-year weather warranty options</li>
+                          <li>Heat-reflective cool-roof & wall coats</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Paint Audit <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Carpentry & Custom Furniture Making</h3>
-                      <p>Crafting fixed site joinery (doors, windows, partitions) and custom workshop furniture (tables, beds, sofas) balancing ergonomics and style.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">SILK WASHABLE</span>
+                        <img 
+                          src={houseProjectImages[14] || hallFrames[10]} 
+                          alt="Interior Emulsion Paint Roller" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Luxury Silk Washable Interior Emulsions</h3>
+                        <p>Ultra-smooth Teflon-protected interior wall emulsions that resist everyday household stains and can be wiped clean with damp cloth.</p>
+                        <ul className="service-bullet-list">
+                          <li>Zero-VOC eco-friendly low odor formula</li>
+                          <li>Rich sheen & velvet matte choices</li>
+                          <li>3-coat acrylic putty base sanding</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Get Interior Palette <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Modular Kitchen Design & Making</h3>
-                      <p>Planned in zones—cooking, washing, storage—with moisture-resistant plywood/MDF carcasses, acrylic shutters, and Blum/Hettich soft-close hardware.</p>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <h3>Modular Wardrobes & Lofts</h3>
-                      <p>Custom wardrobe systems with hanging bays, integrated LED valet rods, glass shutters, and biometric drawers tailored for master suites.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">TEXTURED FINISH</span>
+                        <img 
+                          src={houseProjectImages[15] || bedroomFrames[10]} 
+                          alt="Textured Micro Cement Plaster Wall" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Textured Micro-Cement & Accent Walls</h3>
+                        <p>Hand-troweled Italian stuccos, micro-cement, metallic rust, and concrete texture finishes for statement living room feature walls.</p>
+                        <ul className="service-bullet-list">
+                          <li>Seamless 2mm stone-like texture layer</li>
+                          <li>Waterproof sealant topcoat</li>
+                          <li>Bespoke custom color washes</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Explore Texture Options <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
               )}
 
-              {/* 06. FABRICATION & SHUTTERING */}
+              {/* 06. FURNITURE & KITCHENS */}
+              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Furniture & Kitchens') && (
+                <section className="service-section-block section-wrap reveal visible">
+                  <div className="service-block-header">
+                    <span className="card-badge">DIVISION 07 & 08</span>
+                    <h2>Modular Kitchens & Bespoke Carpentry</h2>
+                    <p className="section-header-desc">Custom factory-milled modular kitchens, soft-close hardware, master wardrobes, and fixed architectural joinery.</p>
+                  </div>
+
+                  <div className="service-detail-grid">
+                    <div className="service-detail-card">
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">GERMAN HARDWARE</span>
+                        <img 
+                          src={kitchenFrames[kitchenFrames.length - 1] || houseProjectImages[2]} 
+                          alt="Modular Kitchen Setup" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Modular Kitchen Design & Production</h3>
+                        <p>Ergonomic island & L-shape kitchens built with boiling-water-proof (BWP) HDMR plywood, quartz countertops, and Blum/Hettich soft-close tandem drawers.</p>
+                        <ul className="service-bullet-list">
+                          <li>Acrylic & PU lacquer shutter finishes</li>
+                          <li>Concealed corner carousels & pantry tall units</li>
+                          <li>Built-in chimney & hob cutout integration</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Kitchen Design <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="service-detail-card">
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">WALK-IN WARDROBES</span>
+                        <img 
+                          src={bedroomFrames[bedroomFrames.length - 1] || houseProjectImages[5]} 
+                          alt="Glass Modular Wardrobe" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Modular Wardrobes & Storage Lofts</h3>
+                        <p>Floor-to-ceiling sliding & floor hinged wardrobes featuring glass doors, integrated LED valet rods, lockable jewelry drawers, and loft storage.</p>
+                        <ul className="service-bullet-list">
+                          <li>Tinted aluminum glass shutters</li>
+                          <li>Biometric lockable drawer inserts</li>
+                          <li>Integrated automatic door-open LEDs</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Get Wardrobe Estimate <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="service-detail-card">
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">CUSTOM JOINERY</span>
+                        <img 
+                          src={houseProjectImages[3] || srinivasaLodgeImages[25]} 
+                          alt="Custom Joinery Carpentry" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Bespoke Workshop Carpentry & Joinery</h3>
+                        <p>Teakwood door frames, decorative main doors, TV unit media consoles, wall paneling, and custom loose furniture crafted by senior master carpenters.</p>
+                        <ul className="service-bullet-list">
+                          <li>Solid teakwood main entrance doors</li>
+                          <li>Veneered media consoles & bar counters</li>
+                          <li>Precision edge-banding & PU polish</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Custom Joinery <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* 07. FABRICATION & SHUTTERING */}
               {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Fabrication & Shuttering') && (
-                <section className="service-section-block section-wrap reveal">
+                <section className="service-section-block section-wrap reveal visible">
                   <div className="service-block-header">
                     <span className="card-badge">DIVISION 09 & 10</span>
                     <h2>Shuttering Formwork & Metal Fabrication</h2>
-                    <p className="section-header-desc">Temporary structural moulds for fluid concrete casting and light/heavy structural metal fabrication.</p>
+                    <p className="section-header-desc">Heavy structural steel formwork for concrete casting alongside stainless steel balustrades and industrial structural steelwork.</p>
                   </div>
 
                   <div className="service-detail-grid">
                     <div className="service-detail-card">
-                      <h3>Shuttering & Formwork</h3>
-                      <p>Temporary precision moulds holding fresh concrete in place until it hardens to full structural load-bearing capacity for slabs, beams, columns, and foundations.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">CONCRETE FORMWORK</span>
+                        <img 
+                          src={scene1Frames[12] || srinivasaLodgeImages[3]} 
+                          alt="Concrete Shuttering Formwork" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Structural Shuttering & Formwork</h3>
+                        <p>Waterproof film-faced plywood and steel plate shuttering systems to cast dense, smooth concrete columns, retaining walls, and slabs.</p>
+                        <ul className="service-bullet-list">
+                          <li>Heavy-duty cuplock staging props</li>
+                          <li>Smooth honeycomb-free concrete finish</li>
+                          <li>Zero-deflection slab formwork</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire Shuttering Rates <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Light Metal Fabrication</h3>
-                      <p>Workshop and site fabrication of residential gates, window grills, staircase handrails, SS balustrades, and structural frames.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">STAINLESS & MILD STEEL</span>
+                        <img 
+                          src={srinivasaLodgeImages[28] || houseProjectImages[1]} 
+                          alt="Architectural Metal Fabrication" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Architectural Gates & Balustrade Fabrication</h3>
+                        <p>Laser-cut MS compound gates, toughened glass SS 304 staircase railings, window safety grills, and outdoor pergola steel frameworks.</p>
+                        <ul className="service-bullet-list">
+                          <li>SS 304 grade corrosion proof railings</li>
+                          <li>CNC laser-cut geometric gate patterns</li>
+                          <li>Toughened glass balustrade clamps</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Request Fabrication Quote <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="service-detail-card">
-                      <h3>Heavy Structural Steel Fabrication</h3>
-                      <p>CNC cutting, bending, and heavy welding of structural steel columns, industrial roof sheds, platforms, and commercial frameworks.</p>
+                      <div className="service-card-img-wrap">
+                        <span className="service-card-tag">STRUCTURAL STEEL</span>
+                        <img 
+                          src={scene1Frames[18] || srinivasaLodgeImages[30]} 
+                          alt="Heavy Structural Steel I Beam" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                        />
+                      </div>
+                      <div className="service-card-body">
+                        <h3>Heavy Structural Steel I-Beam Frameworks</h3>
+                        <p>Engineering industrial sheds, PEB structural steel columns, mezzanine floors, and roof trusses engineered for large clear-span commercial spaces.</p>
+                        <ul className="service-bullet-list">
+                          <li>ISMB / ISMC certified steel sections</li>
+                          <li>Precision MIG / Arc structural welding</li>
+                          <li>Red-oxide anti-rust primer coating</li>
+                        </ul>
+                        <div className="service-card-action">
+                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                            Inquire PEB Steel Sheds <span className="cta-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -1252,23 +2002,211 @@ function App() {
             </header>
 
             <main className="contact-content-wrap section-wrap reveal" style={{ padding: '60px 0' }}>
-              <div className="contact-band" style={{ borderRadius: 'var(--radius-xl)' }}>
-                <div className="contact-inner">
-                  <div>
-                    <span className="card-badge">REGISTERED OFFICE</span>
-                    <h2 style={{ fontSize: '32px', color: '#fff', marginTop: '12px' }}>Preetham Infra Projects Private Limited</h2>
-                    <p style={{ marginTop: '16px', lineHeight: '1.8', color: 'rgba(255,255,255,0.85)' }}>
-                      Ground Floor, 2/253-D4, Colony Ring Road,<br />
-                      Revenue Ward - 2, Madanapalle,<br />
-                      Andhra Pradesh - 517325<br />
-                      <strong>Phone:</strong> +91 7070 7979 30<br />
-                      <strong>GST:</strong> 37EGRPD5909N1ZN
-                    </p>
+              {/* Turnkey Contact Hub Grid */}
+              <div className="contact-main-grid">
+                {/* Left Side: Registered Office Details & Map */}
+                <div className="contact-office-card">
+                  <div className="contact-card-header">
+                    <span className="card-badge gold-badge">HEAD OFFICE & REGISTERED LOCATION</span>
+                    <h2>Preetham Infra Projects Private Limited</h2>
+                    <p className="company-sub-tag">Registered Corporate Office & Consultation Studio</p>
                   </div>
 
-                  <button className="btn-primary btn-dark" onClick={() => setModalOpen(true)}>
-                    Start Proposal Inquiry <span className="btn-arrow" aria-hidden="true">↗</span>
-                  </button>
+                  <div className="contact-details-list">
+                    <div className="contact-detail-item">
+                      <div className="contact-icon-box">📍</div>
+                      <div>
+                        <strong>Registered Office Address</strong>
+                        <p>Ground Floor, 2/253-D4, Colony Ring Road,<br />Revenue Ward - 2, Madanapalle, Andhra Pradesh - 517325</p>
+                      </div>
+                    </div>
+
+                    <div className="contact-detail-item">
+                      <div className="contact-icon-box">📞</div>
+                      <div>
+                        <strong>Direct Contact & Helpline</strong>
+                        <p><a href="tel:+917070797930" className="phone-link">+91 7070 7979 30</a></p>
+                        <span className="detail-sub">Mon - Sat: 9:00 AM – 7:30 PM (IST)</span>
+                      </div>
+                    </div>
+
+                    <div className="contact-detail-item">
+                      <div className="contact-icon-box">📜</div>
+                      <div>
+                        <strong>GSTIN Registration</strong>
+                        <p><code className="gst-code">37EGRPD5909N1ZN</code></p>
+                        <span className="detail-sub">Officially Registered Private Limited Company</span>
+                      </div>
+                    </div>
+
+                    <div className="contact-detail-item">
+                      <div className="contact-icon-box">🌐</div>
+                      <div>
+                        <strong>Service Reach</strong>
+                        <p>Madanapalle • Tirupathi • Bangalore • Chittoor • Punganur</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Direct Action Buttons */}
+                  <div className="contact-actions-row">
+                    <a href="tel:+917070797930" className="btn-action btn-call">
+                      <span>📞 Call Engineering (+91 7070 7979 30)</span>
+                    </a>
+                    <a 
+                      href="https://wa.me/917070797930?text=Hello%20Preetham%20Infra,%20I'd%20like%20to%20discuss%20a%20construction%20project." 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn-action btn-whatsapp"
+                    >
+                      <span>💬 Chat on WhatsApp</span>
+                    </a>
+                  </div>
+
+                  {/* Embedded Google Map Preview */}
+                  <div className="contact-map-wrapper">
+                    <iframe
+                      title="Preetham Infra Office Location"
+                      src="https://maps.google.com/maps?q=Colony%20Ring%20Road,%20Madanapalle,%20Andhra%20Pradesh%20517325&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      width="100%"
+                      height="210"
+                      style={{ border: 0, borderRadius: 'var(--radius)' }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                    <div className="map-caption">
+                      <span>📍 Colony Ring Road, Revenue Ward - 2, Madanapalle</span>
+                      <a 
+                        href="https://maps.google.com/?q=Colony+Ring+Road+Madanapalle+Andhra+Pradesh+517325" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="map-direct-link"
+                      >
+                        Open in Google Maps ↗
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Direct Proposal Inquiry Form */}
+                <div className="contact-form-card">
+                  <span className="card-badge">PROPOSAL INQUIRY</span>
+                  <h2>Start Your Project <em>Inquiry</em></h2>
+                  <p className="form-card-desc">
+                    Send your project details, site specifications, or schedule a free engineering consultation with director K. Preetham Raju.
+                  </p>
+
+                  {pageContactSent ? (
+                    <div className="form-success-box">
+                      <div className="success-icon">✓</div>
+                      <h3>Proposal Request Received!</h3>
+                      <p>Thank you <strong>{pageContactForm.name || 'Valued Client'}</strong>. Our chief structural planning engineer will review your site requirements and contact you within 24 hours.</p>
+                      <button 
+                        className="btn-primary" 
+                        style={{ marginTop: '20px' }}
+                        onClick={() => {
+                          setPageContactSent(false)
+                          setPageContactForm({ name: '', phone: '', email: '', projectType: 'Turnkey Residential Villa', location: '', area: '', message: '' })
+                        }}
+                      >
+                        Submit Another Inquiry ↺
+                      </button>
+                    </div>
+                  ) : (
+                    <form className="contact-inquiry-form" onSubmit={handlePageContactSubmit}>
+                      <div className="form-row-2col">
+                        <div className="form-field">
+                          <label htmlFor="inquiry-name">Full Name *</label>
+                          <input 
+                            id="inquiry-name"
+                            type="text" 
+                            placeholder="e.g. Ramesh Kumar" 
+                            required 
+                            value={pageContactForm.name}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, name: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="inquiry-phone">Phone Number *</label>
+                          <input 
+                            id="inquiry-phone"
+                            type="tel" 
+                            placeholder="+91 98765 43210" 
+                            required 
+                            value={pageContactForm.phone}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, phone: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-row-2col">
+                        <div className="form-field">
+                          <label htmlFor="inquiry-email">Email Address</label>
+                          <input 
+                            id="inquiry-email"
+                            type="email" 
+                            placeholder="name@company.com" 
+                            value={pageContactForm.email}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, email: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="inquiry-type">Project Scope *</label>
+                          <select 
+                            id="inquiry-type"
+                            value={pageContactForm.projectType}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, projectType: e.target.value })}
+                          >
+                            <option value="Turnkey Residential Villa">Turnkey Residential Villa Construction</option>
+                            <option value="Commercial Complex & Hub">Commercial Complex & Hospital Infrastructure</option>
+                            <option value="Modular Kitchens & Interiors">Modular Kitchen & Interior Architecture</option>
+                            <option value="Structural Steel & PEB">Structural Steel Sheds & PEB Fabrication</option>
+                            <option value="Formwork & Concrete Shuttering">Shuttering Formwork & Foundation Casting</option>
+                            <option value="Protective Painting & Stucco">Exterior Weather-Shield & Micro-cement Painting</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-row-2col">
+                        <div className="form-field">
+                          <label htmlFor="inquiry-location">Site Location</label>
+                          <input 
+                            id="inquiry-location"
+                            type="text" 
+                            placeholder="e.g. Madanapalle / Tirupati / Bangalore" 
+                            value={pageContactForm.location}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, location: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="inquiry-area">Approx. Built-Up Area (sq. ft.)</label>
+                          <input 
+                            id="inquiry-area"
+                            type="text" 
+                            placeholder="e.g. 2,400 sq ft (G+2)" 
+                            value={pageContactForm.area}
+                            onChange={(e) => setPageContactForm({ ...pageContactForm, area: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-field">
+                        <label htmlFor="inquiry-msg">Project Description & Specifications</label>
+                        <textarea 
+                          id="inquiry-msg"
+                          rows="4" 
+                          placeholder="Tell us about your plot size, floors planned, timeline, or special requirements (e.g. Vastu planning, Italian marble, PEB height)..."
+                          value={pageContactForm.message}
+                          onChange={(e) => setPageContactForm({ ...pageContactForm, message: e.target.value })}
+                        ></textarea>
+                      </div>
+
+                      <button type="submit" className="btn-primary btn-submit-inquiry">
+                        Submit Proposal Inquiry <span className="btn-arrow" aria-hidden="true">↗</span>
+                      </button>
+                    </form>
+                  )}
                 </div>
               </div>
 
@@ -1350,6 +2288,18 @@ function App() {
             <span>Ground Floor, 2/253-D4, Colony Ring Road, Madanapalle, AP - 517325</span>
           </div>
         </footer>
+
+        {/* ── Sticky Back to Top Button ── */}
+        <div className="floating-speed-dial">
+          <button 
+            className="speed-dial-btn top-dial" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            aria-label="Scroll to top"
+            title="Scroll to top"
+          >
+            ↑
+          </button>
+        </div>
       </main>
 
       {/* ── ENQUIRY MODAL ── */}
