@@ -3046,3 +3046,23 @@ p {
   font-size: 16px;
   font-weight: 700;
 }
+
+/* ── RESPONSIVE CONTACT MAIN GRID ── */
+@media (max-width: 992px) {
+  .contact-main-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+@media (max-width: 768px) {
+  .contact-office-card {
+    padding: 24px;
+    gap: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .contact-office-card {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+}
