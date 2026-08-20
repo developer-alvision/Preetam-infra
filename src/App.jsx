@@ -85,6 +85,37 @@ const faqs = [
   { q: 'Do you provide interior design services?', a: 'Absolutely. Our in-house design team handles everything from conceptualization to execution — including halls, kitchens, bedrooms, and custom furniture solutions.' },
 ]
 
+/* ───────── SERVICES DATA (MANUAL ENTRY) ───────── */
+// Define your custom services in this array. They will automatically render on the Services Hub page.
+// Available categories: 'Planning', 'Interior Design', 'Flooring', 'Ceilings & Lighting', 'Painting', 'Furniture & Kitchens', 'Fabrication & Shuttering'
+//
+// Example format of a service section:
+/*
+const SERVICES_DATA = [
+  {
+    division: 'DIVISION 01',
+    category: 'Planning',
+    title: 'Architectural Planning & Turnkey Projects',
+    description: 'Comprehensive pre-construction design, structural engineering, digital laser markings, and end-to-end turnkey delivery.',
+    cards: [
+      {
+        tag: 'CAD / BIM PLANNING',
+        title: 'Concept Discussion & 3D CAD',
+        desc: 'Zoning, structural orientation, and spatial flow optimization converted into working 3D CAD floor plans prior to execution.',
+        bullets: [
+          'Spatial flow & lifestyle alignment',
+          'Sunlight & ventilation analysis',
+          'Initial 3D conceptual massing'
+        ],
+        btnText: 'Request Plan Consultation',
+        image: 'https://images.unsplash.com/photo-1503387762-592dedb802d7?w=600'
+      }
+    ]
+  }
+]
+*/
+const SERVICES_DATA = [];
+
 
 /* ───────── GLOBAL IMAGE ASSET CACHE ───────── */
 const globalFrameCache = {}
@@ -1053,747 +1084,56 @@ function App() {
             </header>
 
             <main className="services-content-wrap">
-              {/* 01. PLANNING & TURNKEY */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Planning') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 01</span>
-                    <h2>Architectural Planning & Turnkey Projects</h2>
-                    <p className="section-header-desc">Comprehensive pre-construction design, structural engineering, digital laser markings, and end-to-end turnkey delivery.</p>
-                  </div>
+              {SERVICES_DATA.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>
+                  No services added yet. You can add them manually to the <code>SERVICES_DATA</code> array in <code>src/App.jsx</code>.
+                </div>
+              ) : (
+                SERVICES_DATA
+                  .filter(sec => serviceCategoryFilter === 'All' || sec.category === serviceCategoryFilter)
+                  .map((sec, secIdx) => (
+                    <section className="service-section-block section-wrap reveal visible" key={secIdx}>
+                      <div className="service-block-header">
+                        {sec.division && <span className="card-badge">{sec.division}</span>}
+                        <h2>{sec.title}</h2>
+                        {sec.description && <p className="section-header-desc">{sec.description}</p>}
+                      </div>
 
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CAD / BIM PLANNING</span>
-                        <img 
-                          src={houseProjectImages[0] || srinivasaLodgeImages[0]} 
-                          alt="3D CAD Blueprint & Architectural Plan" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
+                      <div className="service-detail-grid">
+                        {sec.cards && sec.cards.map((card, cardIdx) => (
+                          <div className="service-detail-card" key={cardIdx}>
+                            {card.image && (
+                              <div className="service-card-img-wrap">
+                                {card.tag && <span className="service-card-tag">{card.tag}</span>}
+                                <img 
+                                  src={card.image} 
+                                  alt={card.title} 
+                                  onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
+                                />
+                              </div>
+                            )}
+                            <div className="service-card-body">
+                              <h3>{card.title}</h3>
+                              {card.desc && <p>{card.desc}</p>}
+                              {card.bullets && card.bullets.length > 0 && (
+                                <ul className="service-bullet-list">
+                                  {card.bullets.map((bullet, bIdx) => (
+                                    <li key={bIdx}>{bullet}</li>
+                                  ))}
+                                </ul>
+                              )}
+                              <div className="service-card-action">
+                                <button className="service-card-btn" onClick={() => setModalOpen(true)}>
+                                  {card.btnText || 'Inquire Now'} <span className="cta-arrow">↗</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="service-card-body">
-                        <h3>Concept Discussion & 3D CAD</h3>
-                        <p>Zoning, structural orientation, and spatial flow optimization converted into working 3D CAD floor plans prior to execution.</p>
-                        <ul className="service-bullet-list">
-                          <li>Spatial flow & lifestyle alignment</li>
-                          <li>Sunlight & ventilation analysis</li>
-                          <li>Initial 3D conceptual massing</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Plan Consultation <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">IS-CODE COMPLIANT</span>
-                        <img 
-                          src={scene1Frames[12] || houseProjectImages[1]} 
-                          alt="RCC Structural Steel Rebar Plan" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Structural Engineering Plan</h3>
-                        <p>Certified engineering drawings specifying column positioning, foundation depth, beam sizing, and high-tensile RCC rebar framing.</p>
-                        <ul className="service-bullet-list">
-                          <li>IS-code compliant seismic design</li>
-                          <li>Heavy structural RCC load audits</li>
-                          <li>Deep pile foundation design</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Structural Audits <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SMART AUTOMATION</span>
-                        <img 
-                          src={houseProjectImages[1] || srinivasaLodgeImages[5]} 
-                          alt="Concealed Electrical Conduit Wiring" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Electrical & Conduit Planning</h3>
-                        <p>Designing electrical loads, circuit balancing, heavy appliance lines, smart automation hubs, and fire-retardant concealed conduits.</p>
-                        <ul className="service-bullet-list">
-                          <li>Concealed FRLS wire ducting</li>
-                          <li>Phase load balancing & earthing</li>
-                          <li>Automation & modular switch placement</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Electrical Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">DUAL-PLUMBING</span>
-                        <img 
-                          src={srinivasaLodgeImages[5] || houseProjectImages[2]} 
-                          alt="Plumbing & Drainage Pipes" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Plumbing & Drainage Engineering</h3>
-                        <p>Technical drawing sets for pressure-tested water supply lines, dual-drainage gravity traps, and central water heating integration.</p>
-                        <ul className="service-bullet-list">
-                          <li>Noise-insulated gravity drain pipes</li>
-                          <li>Solar & pressure-pump loops</li>
-                          <li>CPVC / UPVC certified pipe runs</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Plumbing Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">LASER ACCURACY</span>
-                        <img 
-                          src={scene1Frames[5] || houseProjectImages[3]} 
-                          alt="Laser Optical Surveying Instrument" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Digital Laser Site Marking</h3>
-                        <p>Direct CAD grid transfer onto the physical construction site using digital optical lasers for zero-margin column and wall placement.</p>
-                        <ul className="service-bullet-list">
-                          <li>Sub-millimeter axis alignment</li>
-                          <li>Column grid transfer on site</li>
-                          <li>MEP penetration point marking</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Book Site Layout Audit <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ALL-INCLUSIVE</span>
-                        <img 
-                          src={srinivasaLodgeImages[0] || houseProjectImages[0]} 
-                          alt="Turnkey Villa & Commercial Delivery" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Turnkey Villa & Commercial Delivery</h3>
-                        <p>Single-contract execution covering excavation, RCC shell, interiors, plumbing, electrical, and legal approvals to key handover.</p>
-                        <ul className="service-bullet-list">
-                          <li>Protected from material price inflation</li>
-                          <li>Single-point project manager</li>
-                          <li>Strict timeline & milestone delivery</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Start Turnkey Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 02. INTERIOR DESIGN */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Interior Design') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 02</span>
-                    <h2>Bespoke Interior Architecture</h2>
-                    <p className="section-header-desc">Planning internal spaces for optimal ergonomics, luxury material selection, lighting layers, and complete fit-out coordination.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SPATIAL FLOW</span>
-                        <img 
-                          src={hallFrames[hallFrames.length - 1] || houseProjectImages[3]} 
-                          alt="Space Planning Ergonomics" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Space Planning & Ergonomics</h3>
-                        <p>Intelligent layout structuring for living rooms, master suites, and commercial foyers for comfortable circulation and maximum utility.</p>
-                        <ul className="service-bullet-list">
-                          <li>Intuitive room zoning</li>
-                          <li>Custom furniture placement</li>
-                          <li>Acoustic & privacy separation</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Interior Layout <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">PALETTE CURATION</span>
-                        <img 
-                          src={houseProjectImages[4] || srinivasaLodgeImages[10]} 
-                          alt="Material & Texture Palette Curation" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Material, Color & Finish Selection</h3>
-                        <p>Handpicked palettes of Italian marble, textured veneer, fluted wooden panels, brushed brass hardware, and premium wall finishes.</p>
-                        <ul className="service-bullet-list">
-                          <li>Custom moodboards & physical swatches</li>
-                          <li>Stain-resistant luxury surfaces</li>
-                          <li>Harmonious color temperature matching</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Schedule Material Session <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">FIT-OUT MANAGEMENT</span>
-                        <img 
-                          src={bedroomFrames[bedroomFrames.length - 1] || houseProjectImages[5]} 
-                          alt="Interior Fit-Out Execution" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Interior Fit-Out Execution</h3>
-                        <p>On-site supervision of carpenters, gypsum contractors, polishers, and lighting technicians for seamless design implementation.</p>
-                        <ul className="service-bullet-list">
-                          <li>Strict tolerance alignment audits</li>
-                          <li>Quality control on site joinery</li>
-                          <li>Dust-free final site deep cleaning</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Consult Interior Team <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 03. FLOORING SYSTEMS */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Flooring') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 03</span>
-                    <h2>High-End Flooring Systems</h2>
-                    <p className="section-header-desc">Precision-installed floor surfaces over structural slabs to create durable, level, and stunning visual walking surfaces.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">VITRIFIED TILES</span>
-                        <img 
-                          src={srinivasaLodgeImages[8] || houseProjectImages[6]} 
-                          alt="Vitrified Tile Installation" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Vitrified & Porcelain Tile Systems</h3>
-                        <p>Large-format vitrified slabs (800x1600mm+) laid with high-polymer adhesive for zero-joint seamless indoor and outdoor floors.</p>
-                        <ul className="service-bullet-list">
-                          <li>High abrasion & scratch resistance</li>
-                          <li>Epoxy tile grouting for water resistance</li>
-                          <li>Anti-skid matte finishes for wet areas</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Tile Solutions <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ITALIAN MARBLE</span>
-                        <img 
-                          src={houseProjectImages[7] || srinivasaLodgeImages[12]} 
-                          alt="Italian Marble Floor Slab" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Italian Marble & Granite Stone</h3>
-                        <p>Book-matched Italian Bottochino, Statuario marble, and flamed granite installed with diamond mirror polishing.</p>
-                        <ul className="service-bullet-list">
-                          <li>Seamless book-match vein alignment</li>
-                          <li>Hydrophobic sealant stone protection</li>
-                          <li>Heavy-duty granite for entry steps</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Marble Estimate <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ACOUSTIC HARDWOOD</span>
-                        <img 
-                          src={houseProjectImages[8] || srinivasaLodgeImages[14]} 
-                          alt="Hardwood Wooden Flooring" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Engineered Hardwood & Wooden Planks</h3>
-                        <p>Natural oak, teak, and engineered acoustic wooden flooring ideal for master bedroom suites, home theaters, and private lounges.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acoustic underlayment sound dampening</li>
-                          <li>UV-cured scratch proof topcoat</li>
-                          <li>Termite-treated backing layer</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Explore Wooden Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">INDUSTRIAL EPOXY</span>
-                        <img 
-                          src={srinivasaLodgeImages[15] || houseProjectImages[9]} 
-                          alt="Polished Concrete Epoxy Floor" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Polished Concrete & Epoxy Coatings</h3>
-                        <p>Dense lithium-silicate polished concrete and seamless self-leveling epoxy for high-impact commercial basements and modern lofts.</p>
-                        <ul className="service-bullet-list">
-                          <li>Chemical & oil stain resistant</li>
-                          <li>Ultra-durable high-load capacity</li>
-                          <li>Custom color pigment infusion</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Epoxy Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 04. FALSE CEILINGS & LIGHTING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Ceilings & Lighting') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 04 & 05</span>
-                    <h2>False Ceilings & Architectural Lighting</h2>
-                    <p className="section-header-desc">Suspended ceiling architectures that hide service conduits, manage acoustics, and layer functional ambient and accent lighting.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">GYPSUM & POP</span>
-                        <img 
-                          src={hallFrames[15] || houseProjectImages[10]} 
-                          alt="POP Gypsum False Ceiling" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Gypsum & POP Suspended Ceilings</h3>
-                        <p>Saint-Gobain gypsum boards framed with galvanized GI channels for smooth, crack-resistant ceiling planes and concealed light coves.</p>
-                        <ul className="service-bullet-list">
-                          <li>Fire-retardant & moisture-resistant boards</li>
-                          <li>Seamless joint compound taping</li>
-                          <li>Integrated AC linear slot diffusers</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Ceiling Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SOLID WOOD LOUVERS</span>
-                        <img 
-                          src={houseProjectImages[11] || srinivasaLodgeImages[18]} 
-                          alt="Wooden Louvered Baffle Ceiling" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Metallic Grid & Wooden Louvered Panels</h3>
-                        <p>Architectural aluminum open-cell ceiling grids and custom wooden baffle louvers for high-end acoustic lobbies and dining halls.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acoustic NRC-rated backing fleece</li>
-                          <li>Quick plenum access for maintenance</li>
-                          <li>Rich natural wood veneer finishes</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Baffle Ceilings <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">LAYERED LIGHTING</span>
-                        <img 
-                          src={bedroomFrames[15] || houseProjectImages[12]} 
-                          alt="Ambient Cove Ceiling Lighting" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Ambient & Architectural Cove Lighting</h3>
-                        <p>Warm 3000K-4000K indirect LED cove illumination paired with high CRI (90+) glare-free COB recessed downlights.</p>
-                        <ul className="service-bullet-list">
-                          <li>Dimmable smart DALI / Zigbee drivers</li>
-                          <li>Diffused shadow-free light channels</li>
-                          <li>Energy-efficient 120 lm/W LED strips</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Lighting Scheme <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ACCENT SPOTLIGHTS</span>
-                        <img 
-                          src={srinivasaLodgeImages[20] || houseProjectImages[13]} 
-                          alt="Accent Track Spotlights" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Accent Spotlights & Magnetic Track Lights</h3>
-                        <p>Adjustable narrow-beam spotlights to highlight wall art, stone cladding textures, and dining counter islands.</p>
-                        <ul className="service-bullet-list">
-                          <li>Low-voltage 24V magnetic track system</li>
-                          <li>Focusable 15°-36° beam optics</li>
-                          <li>Concealed wall washers</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Track Systems <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 05. PAINTING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Painting') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 06</span>
-                    <h2>Protective & Decorative Painting</h2>
-                    <p className="section-header-desc">Multi-coat high-durability surface paints, anti-fungal exterior shields, and luxury interior micro-cement finishes.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">WEATHER-SHIELD</span>
-                        <img 
-                          src={srinivasaLodgeImages[2] || scene1Frames[20]} 
-                          alt="Exterior Wall Painting" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Weather-Shield Exterior Protective Paints</h3>
-                        <p>Elastomeric 100% acrylic exterior paints with crack-bridging technology to withstand extreme South Indian monsoons and UV degradation.</p>
-                        <ul className="service-bullet-list">
-                          <li>Anti-algae & anti-fungal protection</li>
-                          <li>10-year weather warranty options</li>
-                          <li>Heat-reflective cool-roof & wall coats</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Paint Audit <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SILK WASHABLE</span>
-                        <img 
-                          src={houseProjectImages[14] || hallFrames[10]} 
-                          alt="Interior Emulsion Paint Roller" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Luxury Silk Washable Interior Emulsions</h3>
-                        <p>Ultra-smooth Teflon-protected interior wall emulsions that resist everyday household stains and can be wiped clean with damp cloth.</p>
-                        <ul className="service-bullet-list">
-                          <li>Zero-VOC eco-friendly low odor formula</li>
-                          <li>Rich sheen & velvet matte choices</li>
-                          <li>3-coat acrylic putty base sanding</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Interior Palette <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">TEXTURED FINISH</span>
-                        <img 
-                          src={houseProjectImages[15] || bedroomFrames[10]} 
-                          alt="Textured Micro Cement Plaster Wall" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Textured Micro-Cement & Accent Walls</h3>
-                        <p>Hand-troweled Italian stuccos, micro-cement, metallic rust, and concrete texture finishes for statement living room feature walls.</p>
-                        <ul className="service-bullet-list">
-                          <li>Seamless 2mm stone-like texture layer</li>
-                          <li>Waterproof sealant topcoat</li>
-                          <li>Bespoke custom color washes</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Explore Texture Options <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 06. FURNITURE & KITCHENS */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Furniture & Kitchens') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 07 & 08</span>
-                    <h2>Modular Kitchens & Bespoke Carpentry</h2>
-                    <p className="section-header-desc">Custom factory-milled modular kitchens, soft-close hardware, master wardrobes, and fixed architectural joinery.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">GERMAN HARDWARE</span>
-                        <img 
-                          src={kitchenFrames[kitchenFrames.length - 1] || houseProjectImages[2]} 
-                          alt="Modular Kitchen Setup" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Modular Kitchen Design & Production</h3>
-                        <p>Ergonomic island & L-shape kitchens built with boiling-water-proof (BWP) HDMR plywood, quartz countertops, and Blum/Hettich soft-close tandem drawers.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acrylic & PU lacquer shutter finishes</li>
-                          <li>Concealed corner carousels & pantry tall units</li>
-                          <li>Built-in chimney & hob cutout integration</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Kitchen Design <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">WALK-IN WARDROBES</span>
-                        <img 
-                          src={bedroomFrames[bedroomFrames.length - 1] || houseProjectImages[5]} 
-                          alt="Glass Modular Wardrobe" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Modular Wardrobes & Storage Lofts</h3>
-                        <p>Floor-to-ceiling sliding & floor hinged wardrobes featuring glass doors, integrated LED valet rods, lockable jewelry drawers, and loft storage.</p>
-                        <ul className="service-bullet-list">
-                          <li>Tinted aluminum glass shutters</li>
-                          <li>Biometric lockable drawer inserts</li>
-                          <li>Integrated automatic door-open LEDs</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Wardrobe Estimate <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CUSTOM JOINERY</span>
-                        <img 
-                          src={houseProjectImages[3] || srinivasaLodgeImages[25]} 
-                          alt="Custom Joinery Carpentry" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Bespoke Workshop Carpentry & Joinery</h3>
-                        <p>Teakwood door frames, decorative main doors, TV unit media consoles, wall paneling, and custom loose furniture crafted by senior master carpenters.</p>
-                        <ul className="service-bullet-list">
-                          <li>Solid teakwood main entrance doors</li>
-                          <li>Veneered media consoles & bar counters</li>
-                          <li>Precision edge-banding & PU polish</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Custom Joinery <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 07. FABRICATION & SHUTTERING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Fabrication & Shuttering') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 09 & 10</span>
-                    <h2>Shuttering Formwork & Metal Fabrication</h2>
-                    <p className="section-header-desc">Heavy structural steel formwork for concrete casting alongside stainless steel balustrades and industrial structural steelwork.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CONCRETE FORMWORK</span>
-                        <img 
-                          src={scene1Frames[12] || srinivasaLodgeImages[3]} 
-                          alt="Concrete Shuttering Formwork" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Structural Shuttering & Formwork</h3>
-                        <p>Waterproof film-faced plywood and steel plate shuttering systems to cast dense, smooth concrete columns, retaining walls, and slabs.</p>
-                        <ul className="service-bullet-list">
-                          <li>Heavy-duty cuplock staging props</li>
-                          <li>Smooth honeycomb-free concrete finish</li>
-                          <li>Zero-deflection slab formwork</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Shuttering Rates <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">STAINLESS & MILD STEEL</span>
-                        <img 
-                          src={srinivasaLodgeImages[28] || houseProjectImages[1]} 
-                          alt="Architectural Metal Fabrication" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Architectural Gates & Balustrade Fabrication</h3>
-                        <p>Laser-cut MS compound gates, toughened glass SS 304 staircase railings, window safety grills, and outdoor pergola steel frameworks.</p>
-                        <ul className="service-bullet-list">
-                          <li>SS 304 grade corrosion proof railings</li>
-                          <li>CNC laser-cut geometric gate patterns</li>
-                          <li>Toughened glass balustrade clamps</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Fabrication Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">STRUCTURAL STEEL</span>
-                        <img 
-                          src={scene1Frames[18] || srinivasaLodgeImages[30]} 
-                          alt="Heavy Structural Steel I Beam" 
-                          onError={(e) => { e.target.onerror = null; e.target.src = brandLogo }}
-                        />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Heavy Structural Steel I-Beam Frameworks</h3>
-                        <p>Engineering industrial sheds, PEB structural steel columns, mezzanine floors, and roof trusses engineered for large clear-span commercial spaces.</p>
-                        <ul className="service-bullet-list">
-                          <li>ISMB / ISMC certified steel sections</li>
-                          <li>Precision MIG / Arc structural welding</li>
-                          <li>Red-oxide anti-rust primer coating</li>
-                        </ul>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire PEB Steel Sheds <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-            </main>
+                    </section>
+                  ))
+              )}            </main>
           </div>
         )}
 
@@ -2283,9 +1623,10 @@ function App() {
               </form>
             </div>
           </div>
-          <div className="footer-bottom section-wrap">
+                    <div className="footer-bottom section-wrap">
             <span>&copy; {new Date().getFullYear()} Preetham Infra Projects Private Limited. All Rights Reserved.</span>
             <span>Ground Floor, 2/253-D4, Colony Ring Road, Madanapalle, AP - 517325</span>
+            <span>Powered by Alvision Media</span>
           </div>
         </footer>
 
