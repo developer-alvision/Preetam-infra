@@ -1069,12 +1069,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Concept Discussion & 3D CAD</h3>
-                        <p>Zoning, structural orientation, and spatial flow optimization converted into working 3D CAD floor plans prior to execution.</p>
-                        <ul className="service-bullet-list">
-                          <li>Spatial flow & lifestyle alignment</li>
-                          <li>Sunlight & ventilation analysis</li>
-                          <li>Initial 3D conceptual massing</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Plan Consultation <span className="cta-arrow">↗</span>
@@ -1090,12 +1084,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Structural Engineering Plan</h3>
-                        <p>Certified engineering drawings specifying column positioning, foundation depth, beam sizing, and high-tensile RCC rebar framing.</p>
-                        <ul className="service-bullet-list">
-                          <li>IS-code compliant seismic design</li>
-                          <li>Heavy structural RCC load audits</li>
-                          <li>Deep pile foundation design</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Structural Audits <span className="cta-arrow">↗</span>
@@ -1111,12 +1099,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Electrical & Conduit Planning</h3>
-                        <p>Designing electrical loads, circuit balancing, heavy appliance lines, smart automation hubs, and fire-retardant concealed conduits.</p>
-                        <ul className="service-bullet-list">
-                          <li>Concealed FRLS wire ducting</li>
-                          <li>Phase load balancing & earthing</li>
-                          <li>Automation & modular switch placement</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Get Electrical Specs <span className="cta-arrow">↗</span>
@@ -1132,12 +1114,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Plumbing & Drainage Engineering</h3>
-                        <p>Technical drawing sets for pressure-tested water supply lines, dual-drainage gravity traps, and central water heating integration.</p>
-                        <ul className="service-bullet-list">
-                          <li>Noise-insulated gravity drain pipes</li>
-                          <li>Solar & pressure-pump loops</li>
-                          <li>CPVC / UPVC certified pipe runs</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Plumbing Specs <span className="cta-arrow">↗</span>
@@ -1153,12 +1129,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Digital Laser Site Marking</h3>
-                        <p>Direct CAD grid transfer onto the physical construction site using digital optical lasers for zero-margin column and wall placement.</p>
-                        <ul className="service-bullet-list">
-                          <li>Sub-millimeter axis alignment</li>
-                          <li>Column grid transfer on site</li>
-                          <li>MEP penetration point marking</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Book Site Layout Audit <span className="cta-arrow">↗</span>
@@ -1174,12 +1144,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Turnkey Villa & Commercial Delivery</h3>
-                        <p>Single-contract execution covering excavation, RCC shell, interiors, plumbing, electrical, and legal approvals to key handover.</p>
-                        <ul className="service-bullet-list">
-                          <li>Protected from material price inflation</li>
-                          <li>Single-point project manager</li>
-                          <li>Strict timeline & milestone delivery</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Start Turnkey Quote <span className="cta-arrow">↗</span>
@@ -1208,12 +1172,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Space Planning & Ergonomics</h3>
-                        <p>Intelligent layout structuring for living rooms, master suites, and commercial foyers for comfortable circulation and maximum utility.</p>
-                        <ul className="service-bullet-list">
-                          <li>Intuitive room zoning</li>
-                          <li>Custom furniture placement</li>
-                          <li>Acoustic & privacy separation</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Interior Layout <span className="cta-arrow">↗</span>
@@ -1229,12 +1187,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Material, Color & Finish Selection</h3>
-                        <p>Handpicked palettes of Italian marble, textured veneer, fluted wooden panels, brushed brass hardware, and premium wall finishes.</p>
-                        <ul className="service-bullet-list">
-                          <li>Custom moodboards & physical swatches</li>
-                          <li>Stain-resistant luxury surfaces</li>
-                          <li>Harmonious color temperature matching</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Schedule Material Session <span className="cta-arrow">↗</span>
@@ -1250,12 +1202,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Interior Fit-Out Execution</h3>
-                        <p>On-site supervision of carpenters, gypsum contractors, polishers, and lighting technicians for seamless design implementation.</p>
-                        <ul className="service-bullet-list">
-                          <li>Strict tolerance alignment audits</li>
-                          <li>Quality control on site joinery</li>
-                          <li>Dust-free final site deep cleaning</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Consult Interior Team <span className="cta-arrow">↗</span>
@@ -1284,12 +1230,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Vitrified & Porcelain Tile Systems</h3>
-                        <p>Large-format vitrified slabs (800x1600mm+) laid with high-polymer adhesive for zero-joint seamless indoor and outdoor floors.</p>
-                        <ul className="service-bullet-list">
-                          <li>High abrasion & scratch resistance</li>
-                          <li>Epoxy tile grouting for water resistance</li>
-                          <li>Anti-skid matte finishes for wet areas</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Tile Solutions <span className="cta-arrow">↗</span>
@@ -1305,12 +1245,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Italian Marble & Granite Stone</h3>
-                        <p>Book-matched Italian Bottochino, Statuario marble, and flamed granite installed with diamond mirror polishing.</p>
-                        <ul className="service-bullet-list">
-                          <li>Seamless book-match vein alignment</li>
-                          <li>Hydrophobic sealant stone protection</li>
-                          <li>Heavy-duty granite for entry steps</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Marble Estimate <span className="cta-arrow">↗</span>
@@ -1326,12 +1260,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Engineered Hardwood & Wooden Planks</h3>
-                        <p>Natural oak, teak, and engineered acoustic wooden flooring ideal for master bedroom suites, home theaters, and private lounges.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acoustic underlayment sound dampening</li>
-                          <li>UV-cured scratch proof topcoat</li>
-                          <li>Termite-treated backing layer</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Explore Wooden Specs <span className="cta-arrow">↗</span>
@@ -1347,12 +1275,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Polished Concrete & Epoxy Coatings</h3>
-                        <p>Dense lithium-silicate polished concrete and seamless self-leveling epoxy for high-impact commercial basements and modern lofts.</p>
-                        <ul className="service-bullet-list">
-                          <li>Chemical & oil stain resistant</li>
-                          <li>Ultra-durable high-load capacity</li>
-                          <li>Custom color pigment infusion</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Epoxy Specs <span className="cta-arrow">↗</span>
@@ -1381,12 +1303,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Gypsum & POP Suspended Ceilings</h3>
-                        <p>Saint-Gobain gypsum boards framed with galvanized GI channels for smooth, crack-resistant ceiling planes and concealed light coves.</p>
-                        <ul className="service-bullet-list">
-                          <li>Fire-retardant & moisture-resistant boards</li>
-                          <li>Seamless joint compound taping</li>
-                          <li>Integrated AC linear slot diffusers</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Ceiling Quote <span className="cta-arrow">↗</span>
@@ -1402,12 +1318,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Metallic Grid & Wooden Louvered Panels</h3>
-                        <p>Architectural aluminum open-cell ceiling grids and custom wooden baffle louvers for high-end acoustic lobbies and dining halls.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acoustic NRC-rated backing fleece</li>
-                          <li>Quick plenum access for maintenance</li>
-                          <li>Rich natural wood veneer finishes</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Baffle Ceilings <span className="cta-arrow">↗</span>
@@ -1423,12 +1333,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Ambient & Architectural Cove Lighting</h3>
-                        <p>Warm 3000K-4000K indirect LED cove illumination paired with high CRI (90+) glare-free COB recessed downlights.</p>
-                        <ul className="service-bullet-list">
-                          <li>Dimmable smart DALI / Zigbee drivers</li>
-                          <li>Diffused shadow-free light channels</li>
-                          <li>Energy-efficient 120 lm/W LED strips</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Get Lighting Scheme <span className="cta-arrow">↗</span>
@@ -1444,12 +1348,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Accent Spotlights & Magnetic Track Lights</h3>
-                        <p>Adjustable narrow-beam spotlights to highlight wall art, stone cladding textures, and dining counter islands.</p>
-                        <ul className="service-bullet-list">
-                          <li>Low-voltage 24V magnetic track system</li>
-                          <li>Focusable 15°-36° beam optics</li>
-                          <li>Concealed wall washers</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Track Systems <span className="cta-arrow">↗</span>
@@ -1478,12 +1376,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Weather-Shield Exterior Protective Paints</h3>
-                        <p>Elastomeric 100% acrylic exterior paints with crack-bridging technology to withstand extreme South Indian monsoons and UV degradation.</p>
-                        <ul className="service-bullet-list">
-                          <li>Anti-algae & anti-fungal protection</li>
-                          <li>10-year weather warranty options</li>
-                          <li>Heat-reflective cool-roof & wall coats</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Paint Audit <span className="cta-arrow">↗</span>
@@ -1499,12 +1391,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Luxury Silk Washable Interior Emulsions</h3>
-                        <p>Ultra-smooth Teflon-protected interior wall emulsions that resist everyday household stains and can be wiped clean with damp cloth.</p>
-                        <ul className="service-bullet-list">
-                          <li>Zero-VOC eco-friendly low odor formula</li>
-                          <li>Rich sheen & velvet matte choices</li>
-                          <li>3-coat acrylic putty base sanding</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Get Interior Palette <span className="cta-arrow">↗</span>
@@ -1520,12 +1406,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Textured Micro-Cement & Accent Walls</h3>
-                        <p>Hand-troweled Italian stuccos, micro-cement, metallic rust, and concrete texture finishes for statement living room feature walls.</p>
-                        <ul className="service-bullet-list">
-                          <li>Seamless 2mm stone-like texture layer</li>
-                          <li>Waterproof sealant topcoat</li>
-                          <li>Bespoke custom color washes</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Explore Texture Options <span className="cta-arrow">↗</span>
@@ -1554,12 +1434,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Modular Kitchen Design & Production</h3>
-                        <p>Ergonomic island & L-shape kitchens built with boiling-water-proof (BWP) HDMR plywood, quartz countertops, and Blum/Hettich soft-close tandem drawers.</p>
-                        <ul className="service-bullet-list">
-                          <li>Acrylic & PU lacquer shutter finishes</li>
-                          <li>Concealed corner carousels & pantry tall units</li>
-                          <li>Built-in chimney & hob cutout integration</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Kitchen Design <span className="cta-arrow">↗</span>
@@ -1575,12 +1449,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Modular Wardrobes & Storage Lofts</h3>
-                        <p>Floor-to-ceiling sliding & floor hinged wardrobes featuring glass doors, integrated LED valet rods, lockable jewelry drawers, and loft storage.</p>
-                        <ul className="service-bullet-list">
-                          <li>Tinted aluminum glass shutters</li>
-                          <li>Biometric lockable drawer inserts</li>
-                          <li>Integrated automatic door-open LEDs</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Get Wardrobe Estimate <span className="cta-arrow">↗</span>
@@ -1596,12 +1464,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Bespoke Workshop Carpentry & Joinery</h3>
-                        <p>Teakwood door frames, decorative main doors, TV unit media consoles, wall paneling, and custom loose furniture crafted by senior master carpenters.</p>
-                        <ul className="service-bullet-list">
-                          <li>Solid teakwood main entrance doors</li>
-                          <li>Veneered media consoles & bar counters</li>
-                          <li>Precision edge-banding & PU polish</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Custom Joinery <span className="cta-arrow">↗</span>
@@ -1630,12 +1492,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Structural Shuttering & Formwork</h3>
-                        <p>Waterproof film-faced plywood and steel plate shuttering systems to cast dense, smooth concrete columns, retaining walls, and slabs.</p>
-                        <ul className="service-bullet-list">
-                          <li>Heavy-duty cuplock staging props</li>
-                          <li>Smooth honeycomb-free concrete finish</li>
-                          <li>Zero-deflection slab formwork</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire Shuttering Rates <span className="cta-arrow">↗</span>
@@ -1651,12 +1507,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Architectural Gates & Balustrade Fabrication</h3>
-                        <p>Laser-cut MS compound gates, toughened glass SS 304 staircase railings, window safety grills, and outdoor pergola steel frameworks.</p>
-                        <ul className="service-bullet-list">
-                          <li>SS 304 grade corrosion proof railings</li>
-                          <li>CNC laser-cut geometric gate patterns</li>
-                          <li>Toughened glass balustrade clamps</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Request Fabrication Quote <span className="cta-arrow">↗</span>
@@ -1672,12 +1522,6 @@ function App() {
                       </div>
                       <div className="service-card-body">
                         <h3>Heavy Structural Steel I-Beam Frameworks</h3>
-                        <p>Engineering industrial sheds, PEB structural steel columns, mezzanine floors, and roof trusses engineered for large clear-span commercial spaces.</p>
-                        <ul className="service-bullet-list">
-                          <li>ISMB / ISMC certified steel sections</li>
-                          <li>Precision MIG / Arc structural welding</li>
-                          <li>Red-oxide anti-rust primer coating</li>
-                        </ul>
                         <div className="service-card-action">
                           <button className="service-card-btn" onClick={() => setModalOpen(true)}>
                             Inquire PEB Steel Sheds <span className="cta-arrow">↗</span>
