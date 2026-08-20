@@ -1179,13 +1179,13 @@ p {
 }
 
 .btn-call {
-  background: var(--accent, #cbb26b);
-  color: #0b1320;
+  background: #1b64da;
+  color: #ffffff;
 }
 .btn-call:hover {
-  background: #d8c17c;
+  background: #1550b0;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(203, 178, 107, 0.3);
+  box-shadow: 0 6px 20px rgba(27, 100, 218, 0.3);
 }
 
 .btn-whatsapp {
