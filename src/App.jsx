@@ -1871,7 +1871,7 @@ function App() {
                           <input 
                             id="inquiry-name"
                             type="text" 
-                            placeholder="e.g. Ramesh Kumar" 
+                            placeholder="Enter your full name" 
                             required 
                             value={pageContactForm.name}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, name: e.target.value })}
@@ -1882,7 +1882,7 @@ function App() {
                           <input 
                             id="inquiry-phone"
                             type="tel" 
-                            placeholder="+91 98765 43210" 
+                            placeholder="Enter your phone number" 
                             required 
                             value={pageContactForm.phone}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, phone: e.target.value })}
@@ -1896,7 +1896,7 @@ function App() {
                           <input 
                             id="inquiry-email"
                             type="email" 
-                            placeholder="name@company.com" 
+                            placeholder="Enter your email address" 
                             value={pageContactForm.email}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, email: e.target.value })}
                           />
@@ -1924,7 +1924,7 @@ function App() {
                           <input 
                             id="inquiry-location"
                             type="text" 
-                            placeholder="e.g. Madanapalle / Tirupati / Bangalore" 
+                            placeholder="Enter site location" 
                             value={pageContactForm.location}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, location: e.target.value })}
                           />
@@ -1934,7 +1934,7 @@ function App() {
                           <input 
                             id="inquiry-area"
                             type="text" 
-                            placeholder="e.g. 2,400 sq ft (G+2)" 
+                            placeholder="Enter approximate area (sq. ft.)" 
                             value={pageContactForm.area}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, area: e.target.value })}
                           />
@@ -1946,7 +1946,7 @@ function App() {
                         <textarea 
                           id="inquiry-msg"
                           rows="4" 
-                          placeholder="Tell us about your plot size, floors planned, timeline, or special requirements (e.g. Vastu planning, Italian marble, PEB height)..."
+                          placeholder="Describe your project size, floors, timeline, or special requirements..."
                           value={pageContactForm.message}
                           onChange={(e) => setPageContactForm({ ...pageContactForm, message: e.target.value })}
                         ></textarea>
