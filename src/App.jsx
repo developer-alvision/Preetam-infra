@@ -26,7 +26,6 @@ function Logo({ light = false, onClick }) {
       <img src={brandLogo} alt="Preetham Infra Logo" className="brand-logo-img" />
       <span className="brand-logo-text">
         <span className="brand-name">PREETHAM INFRA</span>
-        <span className="brand-sub">CONSTRUCTIONS</span>
       </span>
     </div>
   )
@@ -1625,8 +1624,8 @@ function App() {
           </div>
                     <div className="footer-bottom section-wrap">
             <span>&copy; {new Date().getFullYear()} Preetham Infra Projects Private Limited. All Rights Reserved.</span>
-            <span>Ground Floor, 2/253-D4, Colony Ring Road, Madanapalle, AP - 517325</span>
             <span>Powered by Alvision Media</span>
+            <span>Ground Floor, 2/253-D4, Colony Ring Road, Madanapalle, AP - 517325</span>
           </div>
         </footer>
 
