@@ -1279,23 +1279,24 @@ p {
 .form-field select,
 .form-field textarea {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--line, #cbd5e1);
-  border-radius: var(--radius, 10px);
-  font-size: 13px;
-  color: #0f172a;
-  background: #f8fafc;
+  padding: 14px 16px;
+  border: 1px solid rgba(10, 22, 40, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0a1628;
+  background: #ffffff;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.02);
 }
 
 .form-field input:focus,
 .form-field select:focus,
 .form-field textarea:focus {
-  background: #fff;
-  border-color: var(--accent, #cbb26b);
-  box-shadow: 0 0 0 3px rgba(203, 178, 107, 0.2);
+  background: #ffffff;
+  border-color: var(--accent, #c9a96e);
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.02), 0 0 0 4px rgba(201, 169, 110, 0.18);
 }
 
 .btn-submit-inquiry {
@@ -1463,18 +1464,21 @@ p {
 .modal input,
 .modal textarea {
   width: 100%;
-  border: 1px solid var(--line);
-  padding: 14px;
-  margin: 6px 0;
-  border-radius: var(--radius);
-  font-size: 13px;
+  border: 1px solid rgba(10, 22, 40, 0.1);
+  padding: 14px 16px;
+  margin: 8px 0 16px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0a1628;
   outline: none;
-  background: #fff;
-  transition: border-color 0.3s ease;
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.02);
 }
 .modal input:focus,
 .modal textarea:focus {
-  border-color: var(--accent);
+  border-color: var(--accent, #c9a96e);
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.02), 0 0 0 4px rgba(201, 169, 110, 0.18);
 }
 .modal textarea {
   resize: vertical;
