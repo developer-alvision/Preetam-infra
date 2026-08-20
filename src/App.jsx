@@ -1871,7 +1871,6 @@ function App() {
                           <input 
                             id="inquiry-name"
                             type="text" 
-                            placeholder="Enter your full name" 
                             required 
                             value={pageContactForm.name}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, name: e.target.value })}
@@ -1882,7 +1881,6 @@ function App() {
                           <input 
                             id="inquiry-phone"
                             type="tel" 
-                            placeholder="Enter your phone number" 
                             required 
                             value={pageContactForm.phone}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, phone: e.target.value })}
@@ -1896,7 +1894,6 @@ function App() {
                           <input 
                             id="inquiry-email"
                             type="email" 
-                            placeholder="Enter your email address" 
                             value={pageContactForm.email}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, email: e.target.value })}
                           />
@@ -1924,7 +1921,6 @@ function App() {
                           <input 
                             id="inquiry-location"
                             type="text" 
-                            placeholder="Enter site location" 
                             value={pageContactForm.location}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, location: e.target.value })}
                           />
@@ -1934,7 +1930,6 @@ function App() {
                           <input 
                             id="inquiry-area"
                             type="text" 
-                            placeholder="Enter approximate area (sq. ft.)" 
                             value={pageContactForm.area}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, area: e.target.value })}
                           />
@@ -1946,7 +1941,6 @@ function App() {
                         <textarea 
                           id="inquiry-msg"
                           rows="4" 
-                          placeholder="Describe your project size, floors, timeline, or special requirements..."
                           value={pageContactForm.message}
                           onChange={(e) => setPageContactForm({ ...pageContactForm, message: e.target.value })}
                         ></textarea>
@@ -2022,7 +2016,6 @@ function App() {
               <form onSubmit={(e) => { e.preventDefault(); if (email) setSubscribed(true) }}>
                 <input
                   type="email"
-                  placeholder="Enter workspace email..."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -2074,16 +2067,16 @@ function App() {
                 <p>Tell us about your upcoming project and our engineering experts will tailor a solution for you.</p>
                 <form onSubmit={(e) => { e.preventDefault(); setEnquirySent(true) }}>
                   <label htmlFor="name-input" className="sr-only">Your Name</label>
-                  <input id="name-input" placeholder="Your Full Name" required />
+                  <input id="name-input" required />
 
                   <label htmlFor="email-input" className="sr-only">Email Address</label>
-                  <input id="email-input" type="email" placeholder="Email Address" required />
+                  <input id="email-input" type="email" required />
 
                   <label htmlFor="phone-input" className="sr-only">Phone Number</label>
-                  <input id="phone-input" type="tel" placeholder="Phone Number" />
+                  <input id="phone-input" type="tel" />
 
                   <label htmlFor="desc-input" className="sr-only">Project Details</label>
-                  <textarea id="desc-input" placeholder="Describe your dream project..." rows={4} required />
+                  <textarea id="desc-input" rows={4} required />
 
                   <button className="btn-primary" type="submit">
                     Send Request <span className="btn-arrow" aria-hidden="true">↗</span>
