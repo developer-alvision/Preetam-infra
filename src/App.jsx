@@ -2,6 +2,27 @@ import { useEffect, useState, useRef, memo } from 'react'
 import './App.css'
 import brandLogo from './assets/Logo/black yellow Logo.jpg'
 
+// Service media imports
+import cadVid from './Images/PI SERVICES PICS/3d cad.mp4'
+import structuralPlanVid from './Images/PI SERVICES PICS/structural engineering plan.mp4'
+import electricalConduitImg from './Images/PI SERVICES PICS/electrical and conduit.jpeg'
+import spacePlanningVid from './Images/PI SERVICES PICS/3eacfa291d66f01034aae9f15ffb8efe_720w.mp4'
+import vitrifiedTilesVid from './Images/PI SERVICES PICS/f7ce9bed01c3d6571e7e65f504b3171c.mp4'
+import italianMarbleVid from './Images/PI SERVICES PICS/italian marble.mp4'
+import woodenPlanksVid from './Images/PI SERVICES PICS/wooden planks.mp4'
+import epoxyVid from './Images/PI SERVICES PICS/epoxy.mp4'
+import popCeilingImg from './Images/PI SERVICES PICS/pop ceiling.jpeg'
+import ambientCoveImg from './Images/PI SERVICES PICS/ambient cove lighting.jpeg'
+import trackLightsImg from './Images/PI SERVICES PICS/track lights.jpeg'
+import weatherShieldImg from './Images/PI SERVICES PICS/painting.jpeg'
+import interiorEmulsionImg from './Images/PI SERVICES PICS/interior emulsion.jpeg'
+import texturedCementImg from './Images/PI SERVICES PICS/textured cement.jpeg'
+import modularKitchenImg from './Images/PI SERVICES PICS/modular kitchen.jpeg'
+import wardrobeImg from './Images/PI SERVICES PICS/wardrobe.jpeg'
+import workshopCarpentryImg from './Images/PI SERVICES PICS/workshop carpentary.jpeg'
+import shutteringWorkImg from './Images/PI SERVICES PICS/Shuttering Work.jpeg'
+import architecturalGateImg from './Images/PI SERVICES PICS/architectural gate.jpeg'
+
 /* ───────── FRAME ASSET GLOBS ───────── */
 const scene1Frames = Object.entries(
   import.meta.glob('./Images/Landing Page/Scene 1 Building Construction start to end/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
@@ -34,11 +55,15 @@ function Logo({ light = false, onClick }) {
 /* ───────── REAL PROJECTS DATA ───────── */
 const houseProjectImages = Object.entries(
   import.meta.glob('./Images/Projects/Revanya Residential Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
-).map(([, u]) => u)
+)
+  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+  .map(([, u]) => u)
 
 const srinivasaLodgeImages = Object.entries(
   import.meta.glob('./Images/Projects/srinivasa lodge - Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
-).map(([, u]) => u)
+)
+  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+  .map(([, u]) => u)
 
 const projectsData = [
   {
@@ -492,38 +517,84 @@ function App() {
   })
   const [pageContactSent, setPageContactSent] = useState(false)
 
+  const sendToWhatsApp = (clientName, details) => {
+    const cleanName = clientName ? clientName.trim() : 'Client'
+    const msg = `Hi Preetham infra This is ${cleanName} and their form filling details: ${details}`
+    const url = `https://wa.me/917070797930?text=${encodeURIComponent(msg)}`
+    window.open(url, '_blank')
+  }
+
   const handlePageContactSubmit = (e) => {
     e.preventDefault()
     setPageContactSent(true)
+    const details = `Phone: ${pageContactForm.phone}, Email: ${pageContactForm.email || 'N/A'}, Scope: ${pageContactForm.projectType}, Location: ${pageContactForm.location || 'N/A'}, Area: ${pageContactForm.area || 'N/A'}, Message: ${pageContactForm.message || 'N/A'}`
+    sendToWhatsApp(pageContactForm.name, details)
   }
 
   // Active gallery index state for real project showcase cards
   const [activeGalleryIdx, setActiveGalleryIdx] = useState({ 'srinivasa-lodge': 0, 'luxury-residential-villa': 0 })
 
-  // Turnkey Construction Cost Estimator Calculator State
+  // 1. Turnkey Construction Cost Estimator Calculator State
   const [calcArea, setCalcArea] = useState(1800)
   const [calcGrade, setCalcGrade] = useState('luxury')
   const [calcFloors, setCalcFloors] = useState(2)
-  const [calcIncludeInteriors, setCalcIncludeInteriors] = useState(true)
 
   const getGradeRate = (grade) => {
     switch (grade) {
-      case 'premium': return 1850
-      case 'luxury': return 2350
-      case 'royal': return 3100
-      default: return 2350
+      case 'premium': return 2600
+      case 'luxury': return 2950
+      case 'royal': return 3500
+      default: return 2950
     }
   }
 
-  const baseRate = getGradeRate(calcGrade) + (calcIncludeInteriors ? 350 : 0)
+  const constructionRate = getGradeRate(calcGrade)
   const totalBuiltUpArea = calcArea * calcFloors
-  const estimatedTotalCost = totalBuiltUpArea * baseRate
+  const estimatedConstructionCost = totalBuiltUpArea * constructionRate
 
-  const applyEstimateToInquiry = () => {
-    const text = `Estimated Construction Budget: ₹${(estimatedTotalCost / 100000).toFixed(2)} Lakhs for ${totalBuiltUpArea.toLocaleString()} sq.ft built-up area (${calcFloors} floors, ${calcGrade.toUpperCase()} grade).`
+  const applyConstructionEstimateToInquiry = () => {
+    const text = `Estimated Construction Budget: ₹${(estimatedConstructionCost / 100000).toFixed(2)} Lakhs for ${totalBuiltUpArea.toLocaleString()} sq.ft built-up area (${calcFloors} floors, ${calcGrade.toUpperCase()} grade @ ₹${constructionRate}/sq.ft).`
     setPageContactForm(prev => ({
       ...prev,
       area: `${totalBuiltUpArea} sq ft (${calcFloors} floors)`,
+      message: text
+    }))
+    setModalOpen(true)
+  }
+
+  // 2. Interiors & Wood Work Cost Estimator State
+  const [calcInteriorArea, setCalcInteriorArea] = useState(1500)
+  const [calcWoodWorkGrade, setCalcWoodWorkGrade] = useState('mid')
+  const [calcFalseCeilingGrade, setCalcFalseCeilingGrade] = useState('basic')
+
+  const getWoodWorkRate = (grade) => {
+    switch (grade) {
+      case 'basic': return 1250
+      case 'mid': return 1600
+      case 'premium': return 2400
+      default: return 1600
+    }
+  }
+
+  const getFalseCeilingRate = (grade) => {
+    switch (grade) {
+      case 'basic': return 85
+      case 'mid': return 140
+      case 'premium': return 180
+      default: return 85
+    }
+  }
+
+  const woodWorkRate = getWoodWorkRate(calcWoodWorkGrade)
+  const falseCeilingRate = getFalseCeilingRate(calcFalseCeilingGrade)
+  const interiorTotalRatePerSqFt = woodWorkRate + falseCeilingRate
+  const estimatedInteriorCost = calcInteriorArea * interiorTotalRatePerSqFt
+
+  const applyInteriorEstimateToInquiry = () => {
+    const text = `Estimated Interior & Wood Work Budget: ₹${(estimatedInteriorCost / 100000).toFixed(2)} Lakhs for ${calcInteriorArea.toLocaleString()} sq.ft carpet area (Wood Work: ${calcWoodWorkGrade.toUpperCase()} @ ₹${woodWorkRate}/sq.ft, False Ceiling: ${calcFalseCeilingGrade.toUpperCase()} @ ₹${falseCeilingRate}/sq.ft).`
+    setPageContactForm(prev => ({
+      ...prev,
+      area: `${calcInteriorArea} sq ft (Interiors)`,
       message: text
     }))
     setModalOpen(true)
@@ -848,19 +919,20 @@ function App() {
               </div>
             </div>
 
-            {/* Turnkey Construction Cost Estimator Section */}
+            {/* Interactive Cost Estimator Section: 2 Separate Cards */}
             <section className="calculator-section section-wrap reveal">
-              <div className="calculator-card">
+              {/* CARD 1: Turnkey Construction Cost Estimator Card */}
+              <div className="calculator-card" style={{ marginBottom: '48px' }}>
                 <div className="calculator-header">
                   <div>
-                    <span className="card-badge gold-badge">INTERACTIVE BUDGET PLANNER</span>
+                    <span className="card-badge gold-badge">CIVIL & STRUCTURAL ESTIMATOR</span>
                     <h2>Turnkey Construction <em>Cost Estimator</em></h2>
                     <p className="calculator-subtitle">
-                      Calculate instant estimated costs for civil structural construction, raw materials, and interior joinery across Madanapalle, Tirupathi, and Bangalore.
+                      Calculate instant estimated costs for civil structural construction, foundation work, and structural materials across Madanapalle, Tirupathi, and Bangalore.
                     </p>
                   </div>
                   <div className="calculator-badge-pill">
-                    <span className="live-dot">●</span> 2026 Material Price Index
+                    <span className="live-dot">●</span> 2026 Civil Rate Index
                   </div>
                 </div>
 
@@ -900,7 +972,7 @@ function App() {
                           onClick={() => setCalcGrade('premium')}
                         >
                           <strong>Premium Grade</strong>
-                          <span>₹1,850 / sq ft</span>
+                          <span>₹2,600 / sq ft</span>
                           <small>Vizag TMT Steel, UltraTech Cement, Vitrified 4x2 Tiles</small>
                         </button>
 
@@ -910,8 +982,8 @@ function App() {
                           onClick={() => setCalcGrade('luxury')}
                         >
                           <strong>Luxury Grade ★</strong>
-                          <span>₹2,350 / sq ft</span>
-                          <small>Tata Tiscon TMT, Teakwood Doors, Kohler Fittings, POP Ceiling</small>
+                          <span>₹2,950 / sq ft</span>
+                          <small>Tata Tiscon TMT, Teakwood Doors, Kohler Fittings</small>
                         </button>
 
                         <button 
@@ -920,59 +992,45 @@ function App() {
                           onClick={() => setCalcGrade('royal')}
                         >
                           <strong>Royal Bespoke</strong>
-                          <span>₹3,100 / sq ft</span>
-                          <small>Italian Marble, Glass Facade, Smart Lighting, VRF AC Ducting</small>
+                          <span>₹3,500 / sq ft</span>
+                          <small>Italian Marble, Glass Facade, VRF AC Ducting</small>
                         </button>
                       </div>
                     </div>
 
-                    {/* Floors & Addons */}
-                    <div className="calc-row-2col">
-                      <div className="calc-group">
-                        <label htmlFor="floors-select-home">Number of Floors</label>
-                        <select 
-                          id="floors-select-home"
-                          value={calcFloors} 
-                          onChange={(e) => setCalcFloors(Number(e.target.value))}
-                          className="calc-select"
-                        >
-                          <option value={1}>Ground Floor Only (G)</option>
-                          <option value={2}>Ground + 1 Floor (G+1)</option>
-                          <option value={3}>Ground + 2 Floors (G+2)</option>
-                          <option value={4}>Ground + 3 Floors (G+3)</option>
-                        </select>
-                      </div>
-
-                      <div className="calc-group">
-                        <label htmlFor="interiors-toggle-home">Modular Interiors Addon</label>
-                        <button 
-                          id="interiors-toggle-home"
-                          type="button" 
-                          className={`calc-toggle-btn${calcIncludeInteriors ? ' active' : ''}`}
-                          onClick={() => setCalcIncludeInteriors(!calcIncludeInteriors)}
-                        >
-                          {calcIncludeInteriors ? '✓ Factory Kitchen & Wardrobes Included (+₹350/sq ft)' : '+ Add Modular Kitchen & Wardrobe Joinery'}
-                        </button>
-                      </div>
+                    {/* Floors */}
+                    <div className="calc-group">
+                      <label htmlFor="floors-select-home">Number of Floors</label>
+                      <select 
+                        id="floors-select-home"
+                        value={calcFloors} 
+                        onChange={(e) => setCalcFloors(Number(e.target.value))}
+                        className="calc-select"
+                      >
+                        <option value={1}>Ground Floor Only (G)</option>
+                        <option value={2}>Ground + 1 Floor (G+1)</option>
+                        <option value={3}>Ground + 2 Floors (G+2)</option>
+                        <option value={4}>Ground + 3 Floors (G+3)</option>
+                      </select>
                     </div>
                   </div>
 
                   {/* Output Summary Column */}
                   <div className="calculator-result-card">
-                    <span className="result-eyebrow">ESTIMATED INVESTMENT</span>
+                    <span className="result-eyebrow">ESTIMATED CONSTRUCTION INVESTMENT</span>
                     <div className="total-price-display">
                       <span className="currency-symbol">₹</span>
-                      <span className="price-lakhs">{(estimatedTotalCost / 100000).toFixed(2)}</span>
+                      <span className="price-lakhs">{(estimatedConstructionCost / 100000).toFixed(2)}</span>
                       <span className="price-unit">Lakhs*</span>
                     </div>
-                    <p className="total-area-subtitle">Total Built-Up Area: <strong>{totalBuiltUpArea.toLocaleString()} sq. ft.</strong> @ ₹{baseRate}/sq.ft</p>
+                    <p className="total-area-subtitle">Total Built-Up Area: <strong>{totalBuiltUpArea.toLocaleString()} sq. ft.</strong> @ ₹{constructionRate}/sq.ft</p>
 
                     {/* Itemized Progress Bars */}
                     <div className="breakdown-list">
                       <div className="breakdown-item">
                         <div className="breakdown-label">
                           <span>RCC Structural Frame & Steel (30%)</span>
-                          <strong>₹{(estimatedTotalCost * 0.30 / 100000).toFixed(2)} L</strong>
+                          <strong>₹{(estimatedConstructionCost * 0.30 / 100000).toFixed(2)} L</strong>
                         </div>
                         <div className="breakdown-bar"><div className="bar-fill" style={{ width: '30%' }}></div></div>
                       </div>
@@ -980,7 +1038,7 @@ function App() {
                       <div className="breakdown-item">
                         <div className="breakdown-label">
                           <span>Brickwork, Plastering & Masonry (25%)</span>
-                          <strong>₹{(estimatedTotalCost * 0.25 / 100000).toFixed(2)} L</strong>
+                          <strong>₹{(estimatedConstructionCost * 0.25 / 100000).toFixed(2)} L</strong>
                         </div>
                         <div className="breakdown-bar"><div className="bar-fill" style={{ width: '25%' }}></div></div>
                       </div>
@@ -988,34 +1046,188 @@ function App() {
                       <div className="breakdown-item">
                         <div className="breakdown-label">
                           <span>Flooring, Tiling & Sanitaryware (15%)</span>
-                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                          <strong>₹{(estimatedConstructionCost * 0.15 / 100000).toFixed(2)} L</strong>
                         </div>
                         <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
                       </div>
 
                       <div className="breakdown-item">
                         <div className="breakdown-label">
-                          <span>Electrical, Lighting & Plumbing (15%)</span>
-                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                          <span>Electrical & Plumbing Infrastructure (15%)</span>
+                          <strong>₹{(estimatedConstructionCost * 0.15 / 100000).toFixed(2)} L</strong>
                         </div>
                         <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
                       </div>
 
                       <div className="breakdown-item">
                         <div className="breakdown-label">
-                          <span>Joinery, Paint & Finishing (15%)</span>
-                          <strong>₹{(estimatedTotalCost * 0.15 / 100000).toFixed(2)} L</strong>
+                          <span>Doors, Windows & Outer Paint (15%)</span>
+                          <strong>₹{(estimatedConstructionCost * 0.15 / 100000).toFixed(2)} L</strong>
                         </div>
                         <div className="breakdown-bar"><div className="bar-fill" style={{ width: '15%' }}></div></div>
                       </div>
                     </div>
 
-                    <button className="btn-primary btn-gold-calc" onClick={applyEstimateToInquiry}>
-                      Request Engineering Quotation For This Estimate ↗
+                    <button className="btn-primary btn-gold-calc" onClick={applyConstructionEstimateToInquiry}>
+                      Request Construction Quotation ↗
                     </button>
 
                     <span className="calc-disclaimer">
                       *Estimates based on standard market rates in AP & KA. Final quote provided after site soil test & architectural elevation review.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 2: Interiors & Wood Work Cost Estimator Card */}
+              <div className="calculator-card">
+                <div className="calculator-header">
+                  <div>
+                    <span className="card-badge gold-badge">BESPOKE INTERIOR ESTIMATOR</span>
+                    <h2>Interiors & Wood Work <em>Cost Estimator</em></h2>
+                    <p className="calculator-subtitle">
+                      Calculate instant estimated costs for factory modular kitchens, master wardrobes, false ceiling design, and custom architectural woodwork.
+                    </p>
+                  </div>
+                  <div className="calculator-badge-pill">
+                    <span className="live-dot">●</span> 2026 Interior Rate Index
+                  </div>
+                </div>
+
+                <div className="calculator-body-grid">
+                  {/* Controls Column */}
+                  <div className="calculator-controls">
+                    {/* Interior Carpet Area slider */}
+                    <div className="calc-group">
+                      <div className="calc-label-row">
+                        <label htmlFor="interior-area-range">Interior Carpet Area</label>
+                        <span className="calc-value-highlight">{calcInteriorArea.toLocaleString()} sq. ft.</span>
+                      </div>
+                      <input 
+                        id="interior-area-range"
+                        type="range" 
+                        min="300" 
+                        max="5000" 
+                        step="50" 
+                        value={calcInteriorArea} 
+                        onChange={(e) => setCalcInteriorArea(Number(e.target.value))}
+                        className="calc-slider"
+                      />
+                      <div className="calc-range-marks">
+                        <span>300 sq ft</span>
+                        <span>2,000 sq ft</span>
+                        <span>5,000+ sq ft</span>
+                      </div>
+                    </div>
+
+                    {/* Wood Work Grade Selection */}
+                    <div className="calc-group">
+                      <label>Wood Work Specification Tier</label>
+                      <div className="calc-grade-grid">
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcWoodWorkGrade === 'basic' ? ' active' : ''}`}
+                          onClick={() => setCalcWoodWorkGrade('basic')}
+                        >
+                          <strong>Basic Grade</strong>
+                          <span>₹1,250 / sq ft</span>
+                          <small>Commercial Plywood, Laminate Finish, Standard Hardware</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcWoodWorkGrade === 'mid' ? ' active' : ''}`}
+                          onClick={() => setCalcWoodWorkGrade('mid')}
+                        >
+                          <strong>Mid Grade ★</strong>
+                          <span>₹1,600 / sq ft</span>
+                          <small>BWP Marine Ply, Acrylic / PU Finish, Soft-Close Fittings</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcWoodWorkGrade === 'premium' ? ' active' : ''}`}
+                          onClick={() => setCalcWoodWorkGrade('premium')}
+                        >
+                          <strong>Premium Grade</strong>
+                          <span>₹2,400 / sq ft</span>
+                          <small>Teak Veneer, Blum German Hardware, Sensor Lighting</small>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* False Ceiling Grade Selection */}
+                    <div className="calc-group">
+                      <label>False Ceiling Specification Tier</label>
+                      <div className="calc-grade-grid">
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcFalseCeilingGrade === 'basic' ? ' active' : ''}`}
+                          onClick={() => setCalcFalseCeilingGrade('basic')}
+                        >
+                          <strong>Basic Grade</strong>
+                          <span>₹85 / sq ft</span>
+                          <small>Gypsum Board, Perimeter Cove Channel</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcFalseCeilingGrade === 'mid' ? ' active' : ''}`}
+                          onClick={() => setCalcFalseCeilingGrade('mid')}
+                        >
+                          <strong>Mid Grade ★</strong>
+                          <span>₹140 / sq ft</span>
+                          <small>Saint-Gobain Gypsum, POP Mouldings, Dual LED Coves</small>
+                        </button>
+
+                        <button 
+                          type="button"
+                          className={`grade-select-btn${calcFalseCeilingGrade === 'premium' ? ' active' : ''}`}
+                          onClick={() => setCalcFalseCeilingGrade('premium')}
+                        >
+                          <strong>Premium Grade</strong>
+                          <span>₹180 / sq ft</span>
+                          <small>Wooden Louvers, Baffle Grid & Magnetic Track Lights</small>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Output Summary Column */}
+                  <div className="calculator-result-card">
+                    <span className="result-eyebrow">ESTIMATED INTERIOR INVESTMENT</span>
+                    <div className="total-price-display">
+                      <span className="currency-symbol">₹</span>
+                      <span className="price-lakhs">{(estimatedInteriorCost / 100000).toFixed(2)}</span>
+                      <span className="price-unit">Lakhs*</span>
+                    </div>
+                    <p className="total-area-subtitle">Carpet Area: <strong>{calcInteriorArea.toLocaleString()} sq. ft.</strong> @ ₹{interiorTotalRatePerSqFt}/sq.ft total</p>
+
+                    {/* Itemized Progress Bars */}
+                    <div className="breakdown-list">
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>Wood Work & Cabinetry (₹{woodWorkRate}/sq.ft)</span>
+                          <strong>₹{((calcInteriorArea * woodWorkRate) / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: `${Math.round((woodWorkRate / interiorTotalRatePerSqFt) * 100)}%` }}></div></div>
+                      </div>
+
+                      <div className="breakdown-item">
+                        <div className="breakdown-label">
+                          <span>False Ceiling & Coves (₹{falseCeilingRate}/sq.ft)</span>
+                          <strong>₹{((calcInteriorArea * falseCeilingRate) / 100000).toFixed(2)} L</strong>
+                        </div>
+                        <div className="breakdown-bar"><div className="bar-fill" style={{ width: `${Math.round((falseCeilingRate / interiorTotalRatePerSqFt) * 100)}%` }}></div></div>
+                      </div>
+                    </div>
+
+                    <button className="btn-primary btn-gold-calc" onClick={applyInteriorEstimateToInquiry}>
+                      Request Interior Quotation ↗
+                    </button>
+
+                    <span className="calc-disclaimer">
+                      *Estimates based on standard interior rates in AP & KA. Final quote provided after 3D CAD visualization & material selection.
                     </span>
                   </div>
                 </div>
@@ -1037,35 +1249,17 @@ function App() {
                   From big-picture CAD floor planning to structural execution, false ceilings, bespoke carpentry, modular kitchens, and structural steel fabrication.
                 </p>
 
-                <div className="services-nav-tabs">
-                  {['All', 'Planning', 'Interior Design', 'Flooring', 'Ceilings & Lighting', 'Painting', 'Furniture & Kitchens', 'Fabrication & Shuttering'].map((cat) => (
-                    <button
-                      key={cat}
-                      className={`service-tab-btn${serviceCategoryFilter === cat ? ' active' : ''}`}
-                      onClick={() => setServiceCategoryFilter(cat)}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
               </div>
             </header>
 
             <main className="services-content-wrap">
-              {/* 01. PLANNING & TURNKEY */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Planning') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 01</span>
-                    <h2>Architectural Planning & Turnkey Projects</h2>
-                    <p className="section-header-desc">Comprehensive pre-construction design, structural engineering, digital laser markings, and end-to-end turnkey delivery.</p>
-                  </div>
+              <section className="service-section-block section-wrap reveal visible">
+                <div className="service-detail-grid">
 
-                  <div className="service-detail-grid">
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">CAD / BIM PLANNING</span>
-                        
+                        <video src={cadVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Concept Discussion & 3D CAD</h3>
@@ -1080,7 +1274,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">IS-CODE COMPLIANT</span>
-                        
+                        <video src={structuralPlanVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Structural Engineering Plan</h3>
@@ -1095,7 +1289,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">SMART AUTOMATION</span>
-                        
+                        <img src={electricalConduitImg} alt="Electrical & Conduit Planning" />
                       </div>
                       <div className="service-card-body">
                         <h3>Electrical & Conduit Planning</h3>
@@ -1109,66 +1303,8 @@ function App() {
 
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
-                        <span className="service-card-tag">DUAL-PLUMBING</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Plumbing & Drainage Engineering</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Plumbing Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">LASER ACCURACY</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Digital Laser Site Marking</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Book Site Layout Audit <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ALL-INCLUSIVE</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Turnkey Villa & Commercial Delivery</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Start Turnkey Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 02. INTERIOR DESIGN */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Interior Design') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 02</span>
-                    <h2>Bespoke Interior Architecture</h2>
-                    <p className="section-header-desc">Planning internal spaces for optimal ergonomics, luxury material selection, lighting layers, and complete fit-out coordination.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
                         <span className="service-card-tag">SPATIAL FLOW</span>
-                        
+                        <video src={spacePlanningVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Space Planning & Ergonomics</h3>
@@ -1182,51 +1318,8 @@ function App() {
 
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
-                        <span className="service-card-tag">PALETTE CURATION</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Material, Color & Finish Selection</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Schedule Material Session <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">FIT-OUT MANAGEMENT</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Interior Fit-Out Execution</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Consult Interior Team <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-
-              {/* 03. FLOORING SYSTEMS */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Flooring') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 03</span>
-                    <h2>High-End Flooring Systems</h2>
-                    <p className="section-header-desc">Precision-installed floor surfaces over structural slabs to create durable, level, and stunning visual walking surfaces.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
                         <span className="service-card-tag">VITRIFIED TILES</span>
-                        
+                        <video src={vitrifiedTilesVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Vitrified & Porcelain Tile Systems</h3>
@@ -1241,7 +1334,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">ITALIAN MARBLE</span>
-                        
+                        <video src={italianMarbleVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Italian Marble & Granite Stone</h3>
@@ -1256,7 +1349,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">ACOUSTIC HARDWOOD</span>
-                        
+                        <video src={woodenPlanksVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Engineered Hardwood & Wooden Planks</h3>
@@ -1271,7 +1364,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">INDUSTRIAL EPOXY</span>
-                        
+                        <video src={epoxyVid} loop muted autoPlay playsInline />
                       </div>
                       <div className="service-card-body">
                         <h3>Polished Concrete & Epoxy Coatings</h3>
@@ -1282,24 +1375,11 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              )}
 
-              {/* 04. FALSE CEILINGS & LIGHTING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Ceilings & Lighting') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 04 & 05</span>
-                    <h2>False Ceilings & Architectural Lighting</h2>
-                    <p className="section-header-desc">Suspended ceiling architectures that hide service conduits, manage acoustics, and layer functional ambient and accent lighting.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">GYPSUM & POP</span>
-                        
+                        <img src={popCeilingImg} alt="Gypsum & POP Suspended Ceilings" />
                       </div>
                       <div className="service-card-body">
                         <h3>Gypsum & POP Suspended Ceilings</h3>
@@ -1313,23 +1393,8 @@ function App() {
 
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SOLID WOOD LOUVERS</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Metallic Grid & Wooden Louvered Panels</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Baffle Ceilings <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
                         <span className="service-card-tag">LAYERED LIGHTING</span>
-                        
+                        <img src={ambientCoveImg} alt="Ambient & Architectural Cove Lighting" />
                       </div>
                       <div className="service-card-body">
                         <h3>Ambient & Architectural Cove Lighting</h3>
@@ -1344,7 +1409,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">ACCENT SPOTLIGHTS</span>
-                        
+                        <img src={trackLightsImg} alt="Accent Spotlights & Magnetic Track Lights" />
                       </div>
                       <div className="service-card-body">
                         <h3>Accent Spotlights & Magnetic Track Lights</h3>
@@ -1355,24 +1420,11 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              )}
 
-              {/* 05. PAINTING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Painting') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 06</span>
-                    <h2>Protective & Decorative Painting</h2>
-                    <p className="section-header-desc">Multi-coat high-durability surface paints, anti-fungal exterior shields, and luxury interior micro-cement finishes.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">WEATHER-SHIELD</span>
-                        
+                        <img src={weatherShieldImg} alt="Weather-Shield Exterior Protective Paints" />
                       </div>
                       <div className="service-card-body">
                         <h3>Weather-Shield Exterior Protective Paints</h3>
@@ -1387,7 +1439,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">SILK WASHABLE</span>
-                        
+                        <img src={interiorEmulsionImg} alt="Luxury Silk Washable Interior Emulsions" />
                       </div>
                       <div className="service-card-body">
                         <h3>Luxury Silk Washable Interior Emulsions</h3>
@@ -1402,7 +1454,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">TEXTURED FINISH</span>
-                        
+                        <img src={texturedCementImg} alt="Textured Micro-Cement & Accent Walls" />
                       </div>
                       <div className="service-card-body">
                         <h3>Textured Micro-Cement & Accent Walls</h3>
@@ -1413,24 +1465,11 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              )}
 
-              {/* 06. FURNITURE & KITCHENS */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Furniture & Kitchens') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 07 & 08</span>
-                    <h2>Modular Kitchens & Bespoke Carpentry</h2>
-                    <p className="section-header-desc">Custom factory-milled modular kitchens, soft-close hardware, master wardrobes, and fixed architectural joinery.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">GERMAN HARDWARE</span>
-                        
+                        <img src={modularKitchenImg} alt="Modular Kitchen Design & Production" />
                       </div>
                       <div className="service-card-body">
                         <h3>Modular Kitchen Design & Production</h3>
@@ -1445,7 +1484,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">WALK-IN WARDROBES</span>
-                        
+                        <img src={wardrobeImg} alt="Modular Wardrobes & Storage Lofts" />
                       </div>
                       <div className="service-card-body">
                         <h3>Modular Wardrobes & Storage Lofts</h3>
@@ -1460,7 +1499,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">CUSTOM JOINERY</span>
-                        
+                        <img src={workshopCarpentryImg} alt="Bespoke Workshop Carpentry & Joinery" />
                       </div>
                       <div className="service-card-body">
                         <h3>Bespoke Workshop Carpentry & Joinery</h3>
@@ -1471,24 +1510,11 @@ function App() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              )}
 
-              {/* 07. FABRICATION & SHUTTERING */}
-              {(serviceCategoryFilter === 'All' || serviceCategoryFilter === 'Fabrication & Shuttering') && (
-                <section className="service-section-block section-wrap reveal visible">
-                  <div className="service-block-header">
-                    <span className="card-badge">DIVISION 09 & 10</span>
-                    <h2>Shuttering Formwork & Metal Fabrication</h2>
-                    <p className="section-header-desc">Heavy structural steel formwork for concrete casting alongside stainless steel balustrades and industrial structural steelwork.</p>
-                  </div>
-
-                  <div className="service-detail-grid">
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">CONCRETE FORMWORK</span>
-                        
+                        <img src={shutteringWorkImg} alt="Structural Shuttering & Formwork" />
                       </div>
                       <div className="service-card-body">
                         <h3>Structural Shuttering & Formwork</h3>
@@ -1503,7 +1529,7 @@ function App() {
                     <div className="service-detail-card">
                       <div className="service-card-img-wrap">
                         <span className="service-card-tag">STAINLESS & MILD STEEL</span>
-                        
+                        <img src={architecturalGateImg} alt="Architectural Gates & Balustrade Fabrication" />
                       </div>
                       <div className="service-card-body">
                         <h3>Architectural Gates & Balustrade Fabrication</h3>
@@ -1515,23 +1541,8 @@ function App() {
                       </div>
                     </div>
 
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">STRUCTURAL STEEL</span>
-                        
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Heavy Structural Steel I-Beam Frameworks</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire PEB Steel Sheds <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
+                </div>
+              </section>
             </main>
           </div>
         )}
@@ -1571,16 +1582,51 @@ function App() {
                     <article className="project-featured-card" key={proj.id}>
                       {/* Photo Gallery Side */}
                       <div className="project-gallery-side">
-                        <img
-                          src={proj.images[currentPhotoIdx] || proj.images[0]}
-                          alt={proj.title}
-                          className="project-main-photo"
-                        />
+                        <div className="project-photo-wrapper">
+                          <img
+                            src={proj.images[currentPhotoIdx] || proj.images[0]}
+                            alt={proj.title}
+                            className="project-main-photo"
+                          />
 
-                        {/* Thumbnail Row */}
+                          {/* Photo Counter Badge */}
+                          <span className="photo-counter-badge">
+                            {currentPhotoIdx + 1} / {proj.images.length} Photos
+                          </span>
+
+                          {/* Next / Prev Gallery Navigation Buttons */}
+                          {proj.images.length > 1 && (
+                            <>
+                              <button
+                                type="button"
+                                className="gallery-nav-btn prev-btn"
+                                onClick={() => setActiveGalleryIdx((prev) => ({
+                                  ...prev,
+                                  [proj.id]: (currentPhotoIdx - 1 + proj.images.length) % proj.images.length
+                                }))}
+                                aria-label="Previous Photo"
+                              >
+                                ‹
+                              </button>
+                              <button
+                                type="button"
+                                className="gallery-nav-btn next-btn"
+                                onClick={() => setActiveGalleryIdx((prev) => ({
+                                  ...prev,
+                                  [proj.id]: (currentPhotoIdx + 1) % proj.images.length
+                                }))}
+                                aria-label="Next Photo"
+                              >
+                                ›
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Scrollable Thumbnail Bar for All Project Photos */}
                         {proj.images.length > 1 && (
                           <div className="project-thumbnails-row">
-                            {proj.images.slice(0, 7).map((imgUrl, i) => (
+                            {proj.images.map((imgUrl, i) => (
                               <img
                                 key={i}
                                 src={imgUrl}
