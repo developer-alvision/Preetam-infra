@@ -2098,34 +2098,87 @@ function App() {
           <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={() => { setModalOpen(false); setEnquirySent(false) }} aria-label="Close modal">&times;</button>
             {enquirySent ? (
-              <>
-                <p className="eyebrow">THANK YOU</p>
+              <div className="modal-thankyou">
+                <span className="card-badge gold-badge">REQUEST RECEIVED</span>
                 <h2 id="modal-title">We&rsquo;ll Be In <em>Touch</em></h2>
-                <p>Your request has been received. Our senior project team will respond within 24 hours.</p>
+                <p>Your request details have been forwarded directly to our engineering team and sent via WhatsApp. We will contact you within 24 hours.</p>
                 <button className="btn-primary" onClick={() => { setModalOpen(false); setEnquirySent(false) }}>
                   Done
                 </button>
-              </>
+              </div>
             ) : (
               <>
-                <p className="eyebrow">CONSULTATION</p>
+                <span className="card-badge gold-badge">EXECUTIVE CONSULTATION</span>
                 <h2 id="modal-title">Let&rsquo;s Build Something <em>Remarkable</em></h2>
-                <p>Tell us about your upcoming project and our engineering experts will tailor a solution for you.</p>
-                <form onSubmit={(e) => { e.preventDefault(); setEnquirySent(true) }}>
-                  <label htmlFor="name-input" className="sr-only">Your Name</label>
-                  <input id="name-input" required />
+                <p className="modal-desc">Tell us about your upcoming project and our engineering experts will tailor a turnkey solution for you.</p>
 
-                  <label htmlFor="email-input" className="sr-only">Email Address</label>
-                  <input id="email-input" type="email" required />
+                {/* Auto-Loaded Estimate Alert Banner if applicable */}
+                {pageContactForm.message && pageContactForm.message.includes('Estimated') && (
+                  <div className="auto-estimate-banner">
+                    <span className="banner-icon">⚡</span>
+                    <div>
+                      <strong>Auto-Loaded Estimate Summary:</strong>
+                      <p>{pageContactForm.message}</p>
+                    </div>
+                  </div>
+                )}
 
-                  <label htmlFor="phone-input" className="sr-only">Phone Number</label>
-                  <input id="phone-input" type="tel" />
+                <form className="modal-form" onSubmit={(e) => {
+                  e.preventDefault();
+                  setEnquirySent(true);
+                  const form = e.target;
+                  const name = form.elements['name-input']?.value || pageContactForm.name || 'Client';
+                  const email = form.elements['email-input']?.value || pageContactForm.email || 'N/A';
+                  const phone = form.elements['phone-input']?.value || pageContactForm.phone || 'N/A';
+                  const desc = form.elements['desc-input']?.value || pageContactForm.message || 'N/A';
+                  sendToWhatsApp(name, `Phone: ${phone}, Email: ${email}, Request: ${desc}`);
+                }}>
+                  <div className="modal-field">
+                    <label htmlFor="name-input">Full Name *</label>
+                    <input 
+                      id="name-input" 
+                      required 
+                      placeholder="e.g. Preetham Reddy"
+                      defaultValue={pageContactForm.name} 
+                    />
+                  </div>
 
-                  <label htmlFor="desc-input" className="sr-only">Project Details</label>
-                  <textarea id="desc-input" rows={4} required />
+                  <div className="modal-field-row">
+                    <div className="modal-field">
+                      <label htmlFor="phone-input">Phone / WhatsApp Number *</label>
+                      <input 
+                        id="phone-input" 
+                        type="tel" 
+                        required 
+                        placeholder="e.g. +91 98765 43210"
+                        defaultValue={pageContactForm.phone} 
+                      />
+                    </div>
 
-                  <button className="btn-primary" type="submit">
-                    Send Request <span className="btn-arrow" aria-hidden="true">↗</span>
+                    <div className="modal-field">
+                      <label htmlFor="email-input">Email Address</label>
+                      <input 
+                        id="email-input" 
+                        type="email" 
+                        placeholder="e.g. preetham@example.com"
+                        defaultValue={pageContactForm.email} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="modal-field">
+                    <label htmlFor="desc-input">Project Details & Requirements *</label>
+                    <textarea 
+                      id="desc-input" 
+                      rows={3} 
+                      required 
+                      placeholder="Describe your plot location, built-up area, interior preferences, or structural requirements..."
+                      defaultValue={pageContactForm.message} 
+                    />
+                  </div>
+
+                  <button className="btn-primary btn-modal-submit" type="submit">
+                    Send Request via WhatsApp ↗
                   </button>
                 </form>
               </>
