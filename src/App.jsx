@@ -52,16 +52,14 @@ function Logo({ light = false, onClick }) {
   )
 }
 
-/* ───────── DYNAMIC REAL PROJECTS DATA (ALL 8 PROJECTS) ───────── */
+/* ───────── DYNAMIC REAL PROJECTS DATA (ONLY SHOWING PROJECTS WITH IMAGES) ───────── */
 const allProjectImageGlob = import.meta.glob('./Images/Projects/**/*.*', { eager: true, query: '?url', import: 'default' })
 
-const getProjectImages = (folderKeyword, fallbackImages = []) => {
-  const matched = Object.entries(allProjectImageGlob)
+const getProjectImages = (folderKeyword) => {
+  return Object.entries(allProjectImageGlob)
     .filter(([path]) => path.toLowerCase().includes(folderKeyword.toLowerCase()))
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
     .map(([, url]) => (typeof url === 'string' ? url : url?.default || String(url)))
-
-  return matched.length > 0 ? matched : fallbackImages
 }
 
 const revanyaImages = (() => {
@@ -83,14 +81,15 @@ const srinivasaImages = (() => {
   }
   return imgs
 })()
-const dominosImages = getProjectImages('Dominos', revanyaImages.slice(0, 4))
-const naraKiranImages = getProjectImages('Nara Kiran', revanyaImages.slice(2, 6))
-const chandrasekharImages = getProjectImages('Chandrasekhar', srinivasaImages.slice(0, 4))
-const mathewImages = getProjectImages('Mathew', revanyaImages.slice(4, 8))
-const sanitoriumImages = getProjectImages('Sanitorium', revanyaImages.slice(6, 10))
-const bangaruImages = getProjectImages('Bangaru', srinivasaImages.slice(2, 6))
 
-const projectsData = [
+const dominosImages = getProjectImages('Dominos')
+const naraKiranImages = getProjectImages('Nara Kiran')
+const chandrasekharImages = getProjectImages('Chandrasekhar')
+const mathewImages = getProjectImages('Mathew')
+const sanitoriumImages = getProjectImages('Sanitorium')
+const bangaruImages = getProjectImages('Bangaru')
+
+const allProjectsRaw = [
   {
     id: 'revanya-residential-building',
     title: 'Revanya Luxury Residential Villa',
@@ -228,6 +227,9 @@ const projectsData = [
     ],
   },
 ]
+
+// Exclude any project without images
+const projectsData = allProjectsRaw.filter((p) => p.images && p.images.length > 0)
 
 /* ───────── SERVICES HUB DATA (19 DIVISIONS) ───────── */
 const allServicesData = [
