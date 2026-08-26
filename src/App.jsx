@@ -64,8 +64,25 @@ const getProjectImages = (folderKeyword, fallbackImages = []) => {
   return matched.length > 0 ? matched : fallbackImages
 }
 
-const revanyaImages = getProjectImages('Revanya')
-const srinivasaImages = getProjectImages('Srinivasa')
+const revanyaImages = (() => {
+  const imgs = getProjectImages('Revanya')
+  const frontIdx = imgs.findIndex(url => url.toLowerCase().includes('full building outside') || url.toLowerCase().includes('front face'))
+  if (frontIdx > 0) {
+    const frontImg = imgs.splice(frontIdx, 1)[0]
+    imgs.unshift(frontImg)
+  }
+  return imgs
+})()
+
+const srinivasaImages = (() => {
+  const imgs = getProjectImages('Srinivasa')
+  const receptionIdx = imgs.findIndex(url => url.toLowerCase().includes('reception'))
+  if (receptionIdx > 0) {
+    const receptionImg = imgs.splice(receptionIdx, 1)[0]
+    imgs.unshift(receptionImg)
+  }
+  return imgs
+})()
 const dominosImages = getProjectImages('Dominos', revanyaImages.slice(0, 4))
 const naraKiranImages = getProjectImages('Nara Kiran', revanyaImages.slice(2, 6))
 const chandrasekharImages = getProjectImages('Chandrasekhar', srinivasaImages.slice(0, 4))
