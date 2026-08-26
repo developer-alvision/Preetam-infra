@@ -64,10 +64,10 @@ const getProjectImages = (folderKeyword) => {
 
 const revanyaImages = (() => {
   const imgs = getProjectImages('Revanya')
-  const frontIdx = imgs.findIndex(url => String(url).toLowerCase().includes('full building outside') || String(url).toLowerCase().includes('front face'))
-  if (frontIdx > 0) {
-    const frontImg = imgs.splice(frontIdx, 1)[0]
-    imgs.unshift(frontImg)
+  const outsideIdx = imgs.findIndex(url => String(url).toLowerCase().includes('revanya full building outside') || String(url).toLowerCase().includes('full building outside'))
+  if (outsideIdx >= 0) {
+    const outsideImg = imgs.splice(outsideIdx, 1)[0]
+    imgs.unshift(outsideImg)
   }
   return imgs
 })()
