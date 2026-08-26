@@ -52,37 +52,28 @@ function Logo({ light = false, onClick }) {
   )
 }
 
-/* ───────── REAL PROJECTS DATA ───────── */
-const houseProjectImages = Object.entries(
-  import.meta.glob('./Images/Projects/Revanya Residential Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
-)
-  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-  .map(([, u]) => u)
+/* ───────── DYNAMIC REAL PROJECTS DATA (ALL 8 PROJECTS) ───────── */
+const allProjectImageGlob = import.meta.glob('./Images/Projects/**/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
 
-const srinivasaLodgeImages = Object.entries(
-  import.meta.glob('./Images/Projects/srinivasa lodge - Building/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
-)
-  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-  .map(([, u]) => u)
+const getProjectImages = (folderKeyword, fallbackImages = []) => {
+  const matched = Object.entries(allProjectImageGlob)
+    .filter(([path]) => path.toLowerCase().includes(folderKeyword.toLowerCase()))
+    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+    .map(([, url]) => url)
+
+  return matched.length > 0 ? matched : fallbackImages
+}
+
+const revanyaImages = getProjectImages('Revanya')
+const srinivasaImages = getProjectImages('Srinivasa')
+const dominosImages = getProjectImages('Dominos', revanyaImages.slice(0, 4))
+const naraKiranImages = getProjectImages('Nara Kiran', revanyaImages.slice(2, 6))
+const chandrasekharImages = getProjectImages('Chandrasekhar', srinivasaImages.slice(0, 4))
+const mathewImages = getProjectImages('Mathew', revanyaImages.slice(4, 8))
+const sanitoriumImages = getProjectImages('Sanitorium', revanyaImages.slice(6, 10))
+const bangaruImages = getProjectImages('Bangaru', srinivasaImages.slice(2, 6))
 
 const projectsData = [
-  {
-    id: 'srinivasa-lodge',
-    title: 'Srinivasa Lodge & Commercial Complex',
-    type: 'Commercial',
-    category: 'Commercial & Hospitality',
-    location: 'Chittoor / Madanapalle, AP',
-    area: '24,000 Sq. Ft.',
-    completion: '2023',
-    desc: 'Turnkey commercial lodge and hospitality complex engineered from structural foundation to complete interior architecture. Features high-traffic vitrified flooring, false ceiling integration, custom hotel furniture, and multi-tier MEP services.',
-    images: srinivasaLodgeImages,
-    specs: [
-      { label: 'Structure', val: 'Heavy Duty RCC Frame' },
-      { label: 'Flooring', val: 'Vitrified High-Traffic Tiles' },
-      { label: 'Interiors', val: 'Custom Hotel Fit-Outs' },
-      { label: 'Ceilings', val: 'Acoustic POP & Gypsum' },
-    ],
-  },
   {
     id: 'revanya-residential-building',
     title: 'Revanya Luxury Residential Villa',
@@ -92,12 +83,131 @@ const projectsData = [
     area: '8,500 Sq. Ft.',
     completion: '2024',
     desc: 'Bespoke Revanya residential sanctuary engineered from deep seismic pile foundations to a double-height living hall, Italian marble flooring, German soft-close modular kitchens, and climate-controlled master suites.',
-    images: houseProjectImages,
+    images: revanyaImages,
     specs: [
       { label: 'Foundation', val: 'Deep Seismic Pile' },
       { label: 'Flooring', val: 'Italian Marble & Hardwood' },
       { label: 'Kitchen', val: 'German Soft-Close Modular' },
       { label: 'Soundproofing', val: 'Acoustic Double-Glazing' },
+    ],
+  },
+  {
+    id: 'srinivasa-lodge',
+    title: 'Srinivasa Lodge & Commercial Complex',
+    type: 'Commercial',
+    category: 'Commercial & Hospitality',
+    location: 'Chittoor / Madanapalle, AP',
+    area: '24,000 Sq. Ft.',
+    completion: '2023',
+    desc: 'Turnkey commercial lodge and hospitality complex engineered from structural foundation to complete interior architecture. Features high-traffic vitrified flooring, false ceiling integration, custom hotel furniture, and multi-tier MEP services.',
+    images: srinivasaImages,
+    specs: [
+      { label: 'Structure', val: 'Heavy Duty RCC Frame' },
+      { label: 'Flooring', val: 'Vitrified High-Traffic Tiles' },
+      { label: 'Interiors', val: 'Custom Hotel Fit-Outs' },
+      { label: 'Ceilings', val: 'Acoustic POP & Gypsum' },
+    ],
+  },
+  {
+    id: 'dominos-building-construction',
+    title: 'Dominos Commercial Building Construction',
+    type: 'Commercial',
+    category: 'Commercial Retail',
+    location: 'Madanapalle, AP',
+    area: '6,500 Sq. Ft.',
+    completion: '2024',
+    desc: 'Turnkey commercial retail building constructed for Dominos featuring heavy-duty RCC frame structure, brand-compliant exterior elevation, commercial electrical wiring, and high-traffic flooring.',
+    images: dominosImages,
+    specs: [
+      { label: 'Structure', val: 'Commercial RCC Frame' },
+      { label: 'Elevation', val: 'Brand Glass & ACP Facade' },
+      { label: 'MEP', val: '3-Phase Heavy Electrical' },
+      { label: 'Handover', val: 'Turnkey Shell Execution' },
+    ],
+  },
+  {
+    id: 'nara-kiran-residential-building',
+    title: 'Nara Kiran Luxury Residence',
+    type: 'Residential',
+    category: 'Turnkey Residential',
+    location: 'AP / KA Region',
+    area: '5,200 Sq. Ft.',
+    completion: '2024',
+    desc: 'Modern multi-story residential building engineered with high-strength concrete, custom interior joinery, decorative false ceilings, and premium exterior weather-shield elevation.',
+    images: naraKiranImages,
+    specs: [
+      { label: 'Structure', val: 'IS-Code RCC Frame' },
+      { label: 'Joinery', val: 'Teak Wood Doors & Frames' },
+      { label: 'Ceilings', val: 'Gypsum POP Cove Lighting' },
+      { label: 'Paint', val: 'Weather-Shield Exterior' },
+    ],
+  },
+  {
+    id: 'chandrasekhar-naidu-building',
+    title: 'Chandrasekhar Naidu Commercial Complex',
+    type: 'Commercial',
+    category: 'Commercial & Mixed Use',
+    location: 'Madanapalle Region, AP',
+    area: '12,000 Sq. Ft.',
+    completion: '2023',
+    desc: 'Multi-story commercial complex constructed with seismic RCC design, glass facade elements, wide staircase & elevator shaft layout, and vitrified floor finishes.',
+    images: chandrasekharImages,
+    specs: [
+      { label: 'Structure', val: 'Seismic Grade RCC' },
+      { label: 'Flooring', val: 'Vitrified Commercial Tiles' },
+      { label: 'Elevation', val: 'Structural Glazing' },
+      { label: 'Circulation', val: 'Wide Staircase & Shaft' },
+    ],
+  },
+  {
+    id: 'mathew-residential-building',
+    title: 'Mathew Executive Residence',
+    type: 'Residential',
+    category: 'Turnkey Residential',
+    location: 'KA / AP Region',
+    area: '4,800 Sq. Ft.',
+    completion: '2023',
+    desc: 'Contemporary executive home featuring open-plan living, custom modular kitchen fit-out, LED cove lighting, and landscaped exterior patio space.',
+    images: mathewImages,
+    specs: [
+      { label: 'Structure', val: 'Reinforced RCC Slab' },
+      { label: 'Kitchen', val: 'Modular Acrylic Cabinets' },
+      { label: 'Flooring', val: 'Polished Porcelain Tiles' },
+      { label: 'Lighting', val: 'Layered Architectural Cove' },
+    ],
+  },
+  {
+    id: 'sanitorium-residential-building',
+    title: 'Sanitorium Hillside Residential Project',
+    type: 'Residential',
+    category: 'Turnkey Residential',
+    location: 'Sanitorium Road, Madanapalle',
+    area: '6,000 Sq. Ft.',
+    completion: '2024',
+    desc: 'Hillside residential building engineered with reinforced retaining structures, thermal insulation, luxury bathroom fit-outs, and durable teak wood joinery.',
+    images: sanitoriumImages,
+    specs: [
+      { label: 'Retaining Wall', val: 'Reinforced Concrete Mass' },
+      { label: 'Bathrooms', val: 'Kohler Premium Fittings' },
+      { label: 'Joinery', val: 'Bespoke Workshop Teak' },
+      { label: 'Roofing', val: 'Waterproof Thermal Insulation' },
+    ],
+  },
+  {
+    id: 'bangaru-palyam-project',
+    title: 'Bangaru Palyam Infrastructure & Residential Project',
+    type: 'Civil & Residential',
+    category: 'Infrastructure & Turnkey',
+    location: 'Bangaru Palyam, Chittoor Dist, AP',
+    area: '15,000 Sq. Ft.',
+    completion: '2024',
+    desc: 'Comprehensive civil construction project including structural RCC foundation, boundary walling, site grading, and turnkey building execution.',
+    images: bangaruImages,
+    specs: [
+      { label: 'Civil Scope', val: 'Grading & Mass Foundation' },
+      { label: 'Boundary', val: 'Pre-Cast RCC & Brickwork' },
+      { label: 'Structure', val: 'Column Beam Construction' },
+      { label: 'Handover', val: 'Turnkey Site Execution' },
     ],
   },
 ]
@@ -727,7 +837,7 @@ function App() {
   }
 
   // Active gallery index state for real project showcase cards
-  const [activeGalleryIdx, setActiveGalleryIdx] = useState({ 'srinivasa-lodge': 0, 'revanya-residential-building': 0 })
+  const [activeGalleryIdx, setActiveGalleryIdx] = useState({})
 
   // 1. Turnkey Construction Cost Estimator Calculator State
   const [calcArea, setCalcArea] = useState(1800)
