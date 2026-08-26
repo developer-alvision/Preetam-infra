@@ -84,14 +84,14 @@ const projectsData = [
     ],
   },
   {
-    id: 'luxury-residential-villa',
-    title: 'Preetham Luxury Residential Villa',
+    id: 'revanya-residential-building',
+    title: 'Revanya Luxury Residential Villa',
     type: 'Residential',
     category: 'Turnkey Luxury Villa',
     location: 'Bangalore / Madanapalle Region',
     area: '8,500 Sq. Ft.',
     completion: '2024',
-    desc: 'High-end bespoke residential sanctuary built with deep pile foundations, double-height living hall, Italian marble flooring, German soft-close modular kitchens, and climate-controlled master suites.',
+    desc: 'Bespoke Revanya residential sanctuary engineered from deep seismic pile foundations to a double-height living hall, Italian marble flooring, German soft-close modular kitchens, and climate-controlled master suites.',
     images: houseProjectImages,
     specs: [
       { label: 'Foundation', val: 'Deep Seismic Pile' },
@@ -727,7 +727,7 @@ function App() {
   }
 
   // Active gallery index state for real project showcase cards
-  const [activeGalleryIdx, setActiveGalleryIdx] = useState({ 'srinivasa-lodge': 0, 'luxury-residential-villa': 0 })
+  const [activeGalleryIdx, setActiveGalleryIdx] = useState({ 'srinivasa-lodge': 0, 'revanya-residential-building': 0 })
 
   // 1. Turnkey Construction Cost Estimator Calculator State
   const [calcArea, setCalcArea] = useState(1800)
