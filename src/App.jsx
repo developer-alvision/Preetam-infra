@@ -53,20 +53,20 @@ function Logo({ light = false, onClick }) {
 }
 
 /* ───────── DYNAMIC REAL PROJECTS DATA (ALL 8 PROJECTS) ───────── */
-const allProjectImageGlob = import.meta.glob('./Images/Projects/**/*.{JPG,jpg,png,jpeg,JPEG,webp,WEBP}', { eager: true, query: '?url', import: 'default' })
+const allProjectImageGlob = import.meta.glob('./Images/Projects/**/*.*', { eager: true, query: '?url', import: 'default' })
 
 const getProjectImages = (folderKeyword, fallbackImages = []) => {
   const matched = Object.entries(allProjectImageGlob)
     .filter(([path]) => path.toLowerCase().includes(folderKeyword.toLowerCase()))
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-    .map(([, url]) => url)
+    .map(([, url]) => (typeof url === 'string' ? url : url?.default || String(url)))
 
   return matched.length > 0 ? matched : fallbackImages
 }
 
 const revanyaImages = (() => {
   const imgs = getProjectImages('Revanya')
-  const frontIdx = imgs.findIndex(url => url.toLowerCase().includes('full building outside') || url.toLowerCase().includes('front face'))
+  const frontIdx = imgs.findIndex(url => String(url).toLowerCase().includes('full building outside') || String(url).toLowerCase().includes('front face'))
   if (frontIdx > 0) {
     const frontImg = imgs.splice(frontIdx, 1)[0]
     imgs.unshift(frontImg)
@@ -76,7 +76,7 @@ const revanyaImages = (() => {
 
 const srinivasaImages = (() => {
   const imgs = getProjectImages('Srinivasa')
-  const receptionIdx = imgs.findIndex(url => url.toLowerCase().includes('reception'))
+  const receptionIdx = imgs.findIndex(url => String(url).toLowerCase().includes('reception'))
   if (receptionIdx > 0) {
     const receptionImg = imgs.splice(receptionIdx, 1)[0]
     imgs.unshift(receptionImg)
