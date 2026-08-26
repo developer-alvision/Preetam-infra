@@ -102,6 +102,200 @@ const projectsData = [
   },
 ]
 
+/* ───────── SERVICES HUB DATA (19 DIVISIONS) ───────── */
+const allServicesData = [
+  {
+    id: 'cad-3d',
+    tag: 'CAD / BIM PLANNING',
+    category: 'Planning & Structural',
+    title: 'Concept Discussion & 3D CAD',
+    type: 'video',
+    src: cadVid,
+    highlights: ['3D Elevation Renderings', 'BIM Compliance', 'Architectural Blueprints'],
+    action: 'Request Plan Consultation'
+  },
+  {
+    id: 'structural-plan',
+    tag: 'IS-CODE COMPLIANT',
+    category: 'Planning & Structural',
+    title: 'Structural Engineering Plan',
+    type: 'video',
+    src: structuralPlanVid,
+    highlights: ['Seismic Soil Analysis', 'IS-456 Standard RCC', 'Column & Beam Design'],
+    action: 'Inquire Structural Audits'
+  },
+  {
+    id: 'electrical-conduit',
+    tag: 'SMART AUTOMATION',
+    category: 'Planning & Structural',
+    title: 'Electrical & Conduit Planning',
+    type: 'image',
+    src: electricalConduitImg,
+    highlights: ['Dual Conduit Circuiting', 'Smart Automation Ready', 'Earthing Shield'],
+    action: 'Get Electrical Specs'
+  },
+  {
+    id: 'space-planning',
+    tag: 'SPATIAL FLOW',
+    category: 'Interiors & Ergonomics',
+    title: 'Space Planning & Ergonomics',
+    type: 'video',
+    src: spacePlanningVid,
+    highlights: ['Optimal Ergonomic Flow', 'Vastu Layouts', 'Maximized Daylight & Air'],
+    action: 'Request Interior Layout'
+  },
+  {
+    id: 'vitrified-tiles',
+    tag: 'VITRIFIED TILES',
+    category: 'Flooring Systems',
+    title: 'Vitrified & Porcelain Tile Systems',
+    type: 'video',
+    src: vitrifiedTilesVid,
+    highlights: ['4x2 & 6x4 Slab Tiles', 'Zero-Grout Precision', 'High-Traffic Scratch Proof'],
+    action: 'Inquire Tile Solutions'
+  },
+  {
+    id: 'italian-marble',
+    tag: 'ITALIAN MARBLE',
+    category: 'Flooring Systems',
+    title: 'Italian Marble & Granite Stone',
+    type: 'video',
+    src: italianMarbleVid,
+    highlights: ['Imported Italian Slabs', 'Mirror Diamond Polish', 'Stain-Sealed Processing'],
+    action: 'Request Marble Estimate'
+  },
+  {
+    id: 'wooden-planks',
+    tag: 'ACOUSTIC HARDWOOD',
+    category: 'Flooring Systems',
+    title: 'Engineered Hardwood & Wooden Planks',
+    type: 'video',
+    src: woodenPlanksVid,
+    highlights: ['Teak Wood Veneer', 'Sound Dampening Underlay', 'Water Resistant Coating'],
+    action: 'Explore Wooden Specs'
+  },
+  {
+    id: 'epoxy-coating',
+    tag: 'INDUSTRIAL EPOXY',
+    category: 'Flooring Systems',
+    title: 'Polished Concrete & Epoxy Coatings',
+    type: 'video',
+    src: epoxyVid,
+    highlights: ['Seamless Metallic Epoxy', 'Heavy Commercial Grade', 'Chemical & Oil Resistant'],
+    action: 'Inquire Epoxy Specs'
+  },
+  {
+    id: 'pop-ceiling',
+    tag: 'GYPSUM & POP',
+    category: 'Ceilings & Lighting',
+    title: 'Gypsum & POP Suspended Ceilings',
+    type: 'image',
+    src: popCeilingImg,
+    highlights: ['Saint-Gobain Boards', 'Thermal & Acoustic Insulation', 'Seamless Cove Mouldings'],
+    action: 'Request Ceiling Quote'
+  },
+  {
+    id: 'cove-lighting',
+    tag: 'LAYERED LIGHTING',
+    category: 'Ceilings & Lighting',
+    title: 'Ambient & Architectural Cove Lighting',
+    type: 'image',
+    src: ambientCoveImg,
+    highlights: ['Indirect LED Diffusers', 'Warm/Cool Color Temperature', 'Smart Dimmable Drivers'],
+    action: 'Get Lighting Scheme'
+  },
+  {
+    id: 'track-lights',
+    tag: 'ACCENT SPOTLIGHTS',
+    category: 'Ceilings & Lighting',
+    title: 'Accent Spotlights & Magnetic Track Lights',
+    type: 'image',
+    src: trackLightsImg,
+    highlights: ['Magnetic Low-Voltage Tracks', 'Adjustable Focus Optics', 'Luxury Gallery Accentuation'],
+    action: 'Inquire Track Systems'
+  },
+  {
+    id: 'weather-shield',
+    tag: 'WEATHER-SHIELD',
+    category: 'Painting & Finishes',
+    title: 'Weather-Shield Exterior Protective Paints',
+    type: 'image',
+    src: weatherShieldImg,
+    highlights: ['7-Year Anti-Fungal Shield', 'UV Heat Reflective', 'Crack-Bridging Elastomeric'],
+    action: 'Request Paint Audit'
+  },
+  {
+    id: 'interior-emulsion',
+    tag: 'SILK WASHABLE',
+    category: 'Painting & Finishes',
+    title: 'Luxury Silk Washable Interior Emulsions',
+    type: 'image',
+    src: interiorEmulsionImg,
+    highlights: ['Stain Clean Washable', 'Ultra Low-VOC Eco Formula', 'Velvet Smooth Sheen'],
+    action: 'Get Interior Palette'
+  },
+  {
+    id: 'textured-cement',
+    tag: 'TEXTURED FINISH',
+    category: 'Painting & Finishes',
+    title: 'Textured Micro-Cement & Accent Walls',
+    type: 'image',
+    src: texturedCementImg,
+    highlights: ['Seamless Micro-Cement', 'Rustic Stucco Wall Finishes', 'Handcrafted Artisan Textures'],
+    action: 'Explore Texture Options'
+  },
+  {
+    id: 'modular-kitchen',
+    tag: 'GERMAN HARDWARE',
+    category: 'Carpentry & Modular',
+    title: 'Modular Kitchen Design & Production',
+    type: 'image',
+    src: modularKitchenImg,
+    highlights: ['Factory-Milled BWP Ply', 'Blum Soft-Close Drawers', 'Quartz Stone Countertops'],
+    action: 'Request Kitchen Design'
+  },
+  {
+    id: 'wardrobe-storage',
+    tag: 'WALK-IN WARDROBES',
+    category: 'Carpentry & Modular',
+    title: 'Modular Wardrobes & Storage Lofts',
+    type: 'image',
+    src: wardrobeImg,
+    highlights: ['Floor-to-Ceiling Sliders', 'Tinted Glass & Sensor LED', 'Custom Jewelry Drawers'],
+    action: 'Get Wardrobe Estimate'
+  },
+  {
+    id: 'workshop-carpentry',
+    tag: 'CUSTOM JOINERY',
+    category: 'Carpentry & Modular',
+    title: 'Bespoke Workshop Carpentry & Joinery',
+    type: 'image',
+    src: workshopCarpentryImg,
+    highlights: ['Solid Teak Wood Joinery', 'Hand-Carved Wall Panels', 'Custom Fixed Furniture'],
+    action: 'Inquire Custom Joinery'
+  },
+  {
+    id: 'shuttering-work',
+    tag: 'CONCRETE FORMWORK',
+    category: 'Structural Fabrication',
+    title: 'Structural Shuttering & Formwork',
+    type: 'image',
+    src: shutteringWorkImg,
+    highlights: ['Heavy Steel Prop Formwork', 'Waterproof MDO Shuttering', 'Level Slab Vibrated Casting'],
+    action: 'Inquire Shuttering Rates'
+  },
+  {
+    id: 'architectural-gate',
+    tag: 'STAINLESS & STEEL',
+    category: 'Structural Fabrication',
+    title: 'Architectural Gates & Balustrade Fabrication',
+    type: 'image',
+    src: architecturalGateImg,
+    highlights: ['Laser-Cut CNC Metal Panels', 'Toughened Glass Balustrades', 'Powder-Coated Anti-Rust Steel'],
+    action: 'Request Fabrication Quote'
+  }
+]
+
 const faqs = [
   { q: 'What types of projects does Preetam Infra handle?', a: 'We specialize in premium residential villas, luxury apartments, commercial complexes, and bespoke interior designs. Every project receives our signature attention to detail and quality craftsmanship.' },
   { q: 'How long does a typical project take?', a: 'Project timelines vary based on scope. A premium villa typically takes 12-18 months, while interior fit-outs can be completed in 3-6 months. We provide detailed timelines during consultation.' },
@@ -497,7 +691,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [navScrolled, setNavScrolled] = useState(false)
   const [activePage, setActivePage] = useState('home')
-  const [serviceCategoryFilter, setServiceCategoryFilter] = useState('All')
+  const [serviceSearch, setServiceSearch] = useState('')
+  const [serviceCategory, setServiceCategory] = useState('All')
   const [projectFilter, setProjectFilter] = useState('All')
   const [activeFaq, setActiveFaq] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
@@ -735,11 +930,22 @@ function App() {
       if (obs) obs.disconnect()
       if (sceneObs) sceneObs.disconnect()
     }
-  }, [loading, activePage, serviceCategoryFilter])
+  }, [loading, activePage, serviceCategory, serviceSearch])
 
   const visibleProjects = projectFilter === 'All' 
     ? projectsData 
     : projectsData.filter((p) => p.type === projectFilter || p.category.includes(projectFilter))
+
+  const filteredServices = allServicesData.filter((svc) => {
+    const matchesCategory = serviceCategory === 'All' || svc.category === serviceCategory
+    const q = serviceSearch.toLowerCase().trim()
+    const matchesSearch = !q ||
+      svc.title.toLowerCase().includes(q) ||
+      svc.tag.toLowerCase().includes(q) ||
+      svc.category.toLowerCase().includes(q) ||
+      svc.highlights.some(h => h.toLowerCase().includes(q))
+    return matchesCategory && matchesSearch
+  })
 
   return (
     <>
@@ -1243,305 +1449,124 @@ function App() {
           <div className="page-container services-page-container">
             <header className="page-header-banner">
               <div className="section-wrap">
-                <span className="card-badge">PREETHAM INFRA CAPABILITIES</span>
+                <span className="card-badge gold-badge">PREETHAM INFRA CAPABILITIES</span>
                 <h1>End-to-End <em>Services & Engineering</em></h1>
                 <p className="page-header-desc">
-                  From big-picture CAD floor planning to structural execution, false ceilings, bespoke carpentry, modular kitchens, and structural steel fabrication.
+                  From 3D CAD floor planning and structural engineering to Italian marble flooring, false ceilings, German modular kitchens, and steel shuttering formwork.
                 </p>
 
+                {/* Services Stats Counter Bar */}
+                <div className="services-stats-bar">
+                  <div className="services-stat-item">
+                    <strong>19+</strong>
+                    <span>Engineering Divisions</span>
+                  </div>
+                  <div className="services-stat-item">
+                    <strong>100%</strong>
+                    <span>IS-Code Compliant</span>
+                  </div>
+                  <div className="services-stat-item">
+                    <strong>24 Hrs</strong>
+                    <span>Quotation Turnaround</span>
+                  </div>
+                  <div className="services-stat-item">
+                    <strong>Turnkey</strong>
+                    <span>Design to Handover</span>
+                  </div>
+                </div>
+
+                {/* Interactive Search & Category Filter Pills */}
+                <div className="services-filter-box">
+                  <div className="services-search-row">
+                    <span className="search-icon">🔍</span>
+                    <input 
+                      type="text" 
+                      className="services-search-input"
+                      placeholder="Search engineering capabilities (e.g. Marble, Kitchen, Laser, Shuttering, Paint...)"
+                      value={serviceSearch}
+                      onChange={(e) => setServiceSearch(e.target.value)}
+                    />
+                    {serviceSearch && (
+                      <button className="clear-search-btn" onClick={() => setServiceSearch('')}>×</button>
+                    )}
+                  </div>
+
+                  <div className="services-category-pills">
+                    {[
+                      'All',
+                      'Planning & Structural',
+                      'Flooring Systems',
+                      'Ceilings & Lighting',
+                      'Painting & Finishes',
+                      'Carpentry & Modular',
+                      'Structural Fabrication'
+                    ].map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        className={`category-pill-btn${serviceCategory === cat ? ' active' : ''}`}
+                        onClick={() => setServiceCategory(cat)}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </header>
 
             <main className="services-content-wrap">
               <section className="service-section-block section-wrap reveal visible">
-                <div className="service-detail-grid">
+                {filteredServices.length === 0 ? (
+                  <div className="no-services-found">
+                    <h3>No matching services found for &quot;{serviceSearch}&quot;</h3>
+                    <p>Try searching for Marble, Kitchen, Steel, Ceiling, or CAD.</p>
+                    <button className="btn-primary" onClick={() => { setServiceSearch(''); setServiceCategory('All') }}>
+                      View All 19 Services
+                    </button>
+                  </div>
+                ) : (
+                  <div className="service-detail-grid">
+                    {filteredServices.map((svc) => (
+                      <div className="service-detail-card" key={svc.id}>
+                        <div className="service-card-img-wrap">
+                          <span className="service-card-tag">{svc.tag}</span>
+                          {svc.type === 'video' ? (
+                            <video src={svc.src} loop muted autoPlay playsInline />
+                          ) : (
+                            <img src={svc.src} alt={svc.title} />
+                          )}
+                        </div>
+                        <div className="service-card-body">
+                          <span className="service-card-cat-label">{svc.category}</span>
+                          <h3>{svc.title}</h3>
 
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CAD / BIM PLANNING</span>
-                        <video src={cadVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Concept Discussion & 3D CAD</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Plan Consultation <span className="cta-arrow">↗</span>
-                          </button>
+                          <ul className="service-card-highlights">
+                            {svc.highlights.map((item, idx) => (
+                              <li key={idx}><span className="bullet-dot">✓</span> {item}</li>
+                            ))}
+                          </ul>
+
+                          <div className="service-card-action">
+                            <button 
+                              className="service-card-btn" 
+                              onClick={() => {
+                                setPageContactForm(prev => ({
+                                  ...prev,
+                                  projectType: svc.title,
+                                  message: `Inquiry regarding ${svc.title}. Please provide engineering specifications and quotation.`
+                                }))
+                                setModalOpen(true)
+                              }}
+                            >
+                              {svc.action} <span className="cta-arrow">↗</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">IS-CODE COMPLIANT</span>
-                        <video src={structuralPlanVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Structural Engineering Plan</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Structural Audits <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SMART AUTOMATION</span>
-                        <img src={electricalConduitImg} alt="Electrical & Conduit Planning" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Electrical & Conduit Planning</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Electrical Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SPATIAL FLOW</span>
-                        <video src={spacePlanningVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Space Planning & Ergonomics</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Interior Layout <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">VITRIFIED TILES</span>
-                        <video src={vitrifiedTilesVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Vitrified & Porcelain Tile Systems</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Tile Solutions <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ITALIAN MARBLE</span>
-                        <video src={italianMarbleVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Italian Marble & Granite Stone</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Marble Estimate <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ACOUSTIC HARDWOOD</span>
-                        <video src={woodenPlanksVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Engineered Hardwood & Wooden Planks</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Explore Wooden Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">INDUSTRIAL EPOXY</span>
-                        <video src={epoxyVid} loop muted autoPlay playsInline />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Polished Concrete & Epoxy Coatings</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Epoxy Specs <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">GYPSUM & POP</span>
-                        <img src={popCeilingImg} alt="Gypsum & POP Suspended Ceilings" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Gypsum & POP Suspended Ceilings</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Ceiling Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">LAYERED LIGHTING</span>
-                        <img src={ambientCoveImg} alt="Ambient & Architectural Cove Lighting" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Ambient & Architectural Cove Lighting</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Lighting Scheme <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">ACCENT SPOTLIGHTS</span>
-                        <img src={trackLightsImg} alt="Accent Spotlights & Magnetic Track Lights" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Accent Spotlights & Magnetic Track Lights</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Track Systems <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">WEATHER-SHIELD</span>
-                        <img src={weatherShieldImg} alt="Weather-Shield Exterior Protective Paints" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Weather-Shield Exterior Protective Paints</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Paint Audit <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">SILK WASHABLE</span>
-                        <img src={interiorEmulsionImg} alt="Luxury Silk Washable Interior Emulsions" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Luxury Silk Washable Interior Emulsions</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Interior Palette <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">TEXTURED FINISH</span>
-                        <img src={texturedCementImg} alt="Textured Micro-Cement & Accent Walls" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Textured Micro-Cement & Accent Walls</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Explore Texture Options <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">GERMAN HARDWARE</span>
-                        <img src={modularKitchenImg} alt="Modular Kitchen Design & Production" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Modular Kitchen Design & Production</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Kitchen Design <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">WALK-IN WARDROBES</span>
-                        <img src={wardrobeImg} alt="Modular Wardrobes & Storage Lofts" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Modular Wardrobes & Storage Lofts</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Get Wardrobe Estimate <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CUSTOM JOINERY</span>
-                        <img src={workshopCarpentryImg} alt="Bespoke Workshop Carpentry & Joinery" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Bespoke Workshop Carpentry & Joinery</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Custom Joinery <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">CONCRETE FORMWORK</span>
-                        <img src={shutteringWorkImg} alt="Structural Shuttering & Formwork" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Structural Shuttering & Formwork</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Inquire Shuttering Rates <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="service-detail-card">
-                      <div className="service-card-img-wrap">
-                        <span className="service-card-tag">STAINLESS & MILD STEEL</span>
-                        <img src={architecturalGateImg} alt="Architectural Gates & Balustrade Fabrication" />
-                      </div>
-                      <div className="service-card-body">
-                        <h3>Architectural Gates & Balustrade Fabrication</h3>
-                        <div className="service-card-action">
-                          <button className="service-card-btn" onClick={() => setModalOpen(true)}>
-                            Request Fabrication Quote <span className="cta-arrow">↗</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
+                    ))}
+                  </div>
+                )}
               </section>
             </main>
           </div>
