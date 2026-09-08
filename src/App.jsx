@@ -560,7 +560,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     }
   }, [frameUrls])
 
-  // Canvas render & scroll handler
+  // Canvas render & scroll handler (Native Sticky Scroll for butter-smooth GPU rendering)
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -569,8 +569,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     const ctx = canvas.getContext('2d', { alpha: false })
     let animationFrameId = null
     let lastDrawnImg = null
-    const isMobile = isMobileView()
-    const SCROLL_RANGE = isMobile ? 1200 : 2000
 
     const handleResize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -578,7 +576,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       if (rect.width > 0 && rect.height > 0) {
         canvas.width = rect.width * dpr
         canvas.height = rect.height * dpr
-        renderFrame(frameIdxRef.current)
+        updateScrollAndRender()
       }
     }
 
@@ -632,150 +630,45 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       })
     }
 
-    const handleWheelOrTouch = (deltaY, preventDefault) => {
+    const updateScrollAndRender = () => {
       const rect = container.getBoundingClientRect()
-      const distFromTop = Math.abs(rect.top)
+      const totalScrollable = rect.height - window.innerHeight
+      if (totalScrollable <= 0) return
 
-      // On mobile, update frames based on viewport scroll ratio without preventing touch scroll
-      if (isMobile) {
-        const totalFrames = frameUrls.length
-        if (totalFrames <= 1) return
-        const sceneHeight = rect.height || window.innerHeight
-        const scrollRatio = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (sceneHeight + window.innerHeight * 0.5)))
-        const frameIdx = Math.floor(scrollRatio * (totalFrames - 1))
-        if (!animationFrameId) {
-          animationFrameId = requestAnimationFrame(() => {
-            renderFrame(frameIdx)
-            animationFrameId = null
-          })
-        }
-        return
-      }
+      // Current scroll progress inside sticky container: -rect.top ranges from 0 to totalScrollable
+      const currentScroll = -rect.top
+      const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable))
+      const totalFrames = frameUrls.length
+      const frameIdx = Math.floor(progress * (totalFrames - 1))
 
-      // Desktop Virtual Scroll Locking
-      if (distFromTop > window.innerHeight * 0.7) {
-        if (activeSceneLock.current === container) {
-          activeSceneLock.current = null
-          isActiveRef.current = false
-        }
-        return
-      }
-
-      if (activeSceneLock.current && activeSceneLock.current !== container) return
-      const isNearTop = distFromTop <= 150
-
-      if (deltaY > 0) {
-        if (unlockedDownRef.current) return
-        if (virtualScrollRef.current >= SCROLL_RANGE) {
-          unlockedDownRef.current = true
-          renderFrame(frameUrls.length - 1)
-          return
-        }
-
-        if (!isActiveRef.current && isNearTop) {
-          isActiveRef.current = true
-          activeSceneLock.current = container
-          if (virtualScrollRef.current <= 0) virtualScrollRef.current = 0
-          unlockedUpRef.current = false
-        }
-
-        if (isActiveRef.current) {
-          window.scrollTo({ top: container.offsetTop, behavior: 'instant' })
-          if (virtualScrollRef.current < SCROLL_RANGE) {
-            preventDefault()
-            virtualScrollRef.current = Math.min(SCROLL_RANGE, virtualScrollRef.current + Math.abs(deltaY))
-            const progress = virtualScrollRef.current / SCROLL_RANGE
-            const frameIdx = Math.floor(progress * (frameUrls.length - 1))
-            if (!animationFrameId) {
-              animationFrameId = requestAnimationFrame(() => {
-                renderFrame(frameIdx)
-                animationFrameId = null
-              })
-            }
-          } else {
-            renderFrame(frameUrls.length - 1)
-            isActiveRef.current = false
-            activeSceneLock.current = null
-            unlockedDownRef.current = true
-          }
-        }
-      } else if (deltaY < 0) {
-        if (unlockedUpRef.current) return
-        if (virtualScrollRef.current <= 0 && !isActiveRef.current) {
-          unlockedUpRef.current = true
-          renderFrame(0)
-          return
-        }
-
-        if (!isActiveRef.current && isNearTop) {
-          isActiveRef.current = true
-          activeSceneLock.current = container
-          if (virtualScrollRef.current >= SCROLL_RANGE) virtualScrollRef.current = SCROLL_RANGE
-          unlockedDownRef.current = false
-        }
-
-        if (isActiveRef.current) {
-          window.scrollTo({ top: container.offsetTop, behavior: 'instant' })
-          if (virtualScrollRef.current > 0) {
-            preventDefault()
-            virtualScrollRef.current = Math.max(0, virtualScrollRef.current - Math.abs(deltaY))
-            const progress = virtualScrollRef.current / SCROLL_RANGE
-            const frameIdx = Math.floor(progress * (frameUrls.length - 1))
-            if (!animationFrameId) {
-              animationFrameId = requestAnimationFrame(() => {
-                renderFrame(frameIdx)
-                animationFrameId = null
-              })
-            }
-          } else {
-            renderFrame(0)
-            isActiveRef.current = false
-            activeSceneLock.current = null
-            unlockedUpRef.current = true
-          }
-        }
-      }
+      renderFrame(frameIdx)
     }
 
-    const onWheel = (e) => handleWheelOrTouch(e.deltaY, () => e.preventDefault())
-
-    let touchStartY = 0
-    const onTouchStart = (e) => { touchStartY = e.touches[0].clientY }
-    const onTouchMove = (e) => {
-      const touchY = e.touches[0].clientY
-      const deltaY = (touchStartY - touchY) * 2.5
-      touchStartY = touchY
-      handleWheelOrTouch(deltaY, () => {})
-    }
-
-    const onWindowScroll = () => {
-      if (isMobileView()) {
-        handleWheelOrTouch(0, () => {})
+    const onScroll = () => {
+      if (!animationFrameId) {
+        animationFrameId = requestAnimationFrame(() => {
+          updateScrollAndRender()
+          animationFrameId = null
+        })
       }
     }
 
     handleResize()
+    updateScrollAndRender()
+    renderFrame(0)
+
     const renderInitTimer = setTimeout(() => {
       handleResize()
-      renderFrame(0)
+      updateScrollAndRender()
     }, 40)
 
     window.addEventListener('resize', handleResize)
-    window.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('scroll', onWindowScroll, { passive: true })
-    container.addEventListener('touchstart', onTouchStart, { passive: true })
-    container.addEventListener('touchmove', onTouchMove, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
 
     return () => {
       clearTimeout(renderInitTimer)
-      if (activeSceneLock.current === container) {
-        activeSceneLock.current = null
-      }
       window.removeEventListener('resize', handleResize)
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('scroll', onWindowScroll)
-      container.removeEventListener('touchstart', onTouchStart)
-      container.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('scroll', onScroll)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
   }, [frameUrls, overlays])
