@@ -468,20 +468,20 @@ function drawImageCover(ctx, img, width, height) {
   // Draw frame image full screen edge-to-edge (no crop zooming)
   ctx.drawImage(img, 0, 0, width, height)
 
-  // Completely erase & cover Gemini watermark spark in bottom-right corner using adjacent canvas texture patch
-  const patchW = Math.min(240, width * 0.24)
-  const patchH = Math.min(150, height * 0.24)
-  if (patchW > 20 && patchH > 20 && width > patchW * 2) {
+  // Seamlessly patch Gemini watermark in lower-right corner by sampling source img
+  const nw = img.naturalWidth
+  const nh = img.naturalHeight
+  if (nw > 100 && nh > 100) {
+    const patchW = Math.min(220, width * 0.22)
+    const patchH = Math.min(140, height * 0.22)
+    const sW = nw * 0.15
+    const sH = nh * 0.15
+    const sX = nw * 0.65
+    const sY = nh * 0.85
     ctx.drawImage(
-      ctx.canvas,
-      width - patchW * 2.1,
-      height - patchH,
-      patchW,
-      patchH,
-      width - patchW,
-      height - patchH,
-      patchW,
-      patchH
+      img,
+      sX, sY, sW, sH,
+      width - patchW, height - patchH, patchW, patchH
     )
   }
 }
