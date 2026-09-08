@@ -500,37 +500,36 @@ p {
 /* ══════════════════════════════
    CANVAS LOGO & WATERMARK BADGE
    ══════════════════════════════ */
-.canvas-watermark-logo-badge {
+.canvas-watermark-header-logo {
   position: absolute;
-  bottom: 32px;
-  right: max(3vw, 32px);
+  bottom: 24px;
+  right: max(2.5vw, 24px);
   z-index: 10;
+  pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(10, 22, 40, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 14px 28px;
-  border-radius: 40px;
-  border: 1.5px solid rgba(201, 169, 110, 0.55);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.7);
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85));
 }
-.canvas-watermark-logo-badge img {
-  height: 38px;
+.canvas-watermark-header-logo .brand-logo {
+  cursor: default;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+.canvas-watermark-header-logo .brand-logo-img {
+  height: 44px;
   width: auto;
   object-fit: contain;
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen;
 }
-.badge-info {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.badge-brand {
-  font-size: 14px;
+.canvas-watermark-header-logo .brand-name {
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 2px;
-  color: #ffffff;
+  color: var(--accent);
   text-transform: uppercase;
 }
 .badge-counter {
@@ -2774,19 +2773,16 @@ p {
   .scene-section .scene-canvas {
     border-radius: 0;
   }
-  .canvas-watermark-logo-badge {
-    bottom: 14px;
-    right: 14px;
-    padding: 8px 14px;
-    gap: 8px;
-    border-radius: 24px;
+  .canvas-watermark-header-logo {
+    bottom: 16px;
+    right: 16px;
   }
-  .canvas-watermark-logo-badge img {
-    height: 22px;
+  .canvas-watermark-header-logo .brand-logo-img {
+    height: 32px;
   }
-  .badge-brand {
-    font-size: 9px;
-    letter-spacing: 1px;
+  .canvas-watermark-header-logo .brand-name {
+    font-size: 12px;
+    letter-spacing: 1.5px;
   }
   .badge-counter {
     font-size: 10px;

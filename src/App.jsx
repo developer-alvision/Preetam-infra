@@ -465,32 +465,25 @@ function drawImageCover(ctx, img, width, height) {
     return
   }
 
-  const imgRatio = img.naturalWidth / img.naturalHeight
-  const canvasRatio = width / height
-  let renderWidth, renderHeight, offsetX, offsetY
+  // Draw frame image full screen edge-to-edge (no crop zooming)
+  ctx.drawImage(img, 0, 0, width, height)
 
-  if (canvasRatio > imgRatio) {
-    renderWidth = width
-    renderHeight = width / imgRatio
-    offsetX = 0
-    offsetY = (height - renderHeight) / 2
-  } else {
-    renderWidth = height * imgRatio
-    renderHeight = height
-    offsetX = (width - renderWidth) / 2
-    offsetY = 0
+  // Completely erase & cover Gemini watermark spark in bottom-right corner using adjacent canvas texture patch
+  const patchW = Math.min(240, width * 0.24)
+  const patchH = Math.min(150, height * 0.24)
+  if (patchW > 20 && patchH > 20 && width > patchW * 2) {
+    ctx.drawImage(
+      ctx.canvas,
+      width - patchW * 2.1,
+      height - patchH,
+      patchW,
+      patchH,
+      width - patchW,
+      height - patchH,
+      patchW,
+      patchH
+    )
   }
-
-  ctx.drawImage(img, offsetX, offsetY, renderWidth, renderHeight)
-
-  // Seamlessly mask watermark icon in lower-right corner
-  const patchRadius = Math.max(width, height) * 0.28
-  const patchGrad = ctx.createRadialGradient(width, height, 0, width, height, patchRadius)
-  patchGrad.addColorStop(0, 'rgba(10, 22, 40, 0.98)')
-  patchGrad.addColorStop(0.55, 'rgba(10, 22, 40, 0.82)')
-  patchGrad.addColorStop(1, 'rgba(10, 22, 40, 0)')
-  ctx.fillStyle = patchGrad
-  ctx.fillRect(width - patchRadius, height - patchRadius, patchRadius, patchRadius)
 }
 
 function calcOverlayOpacity(progress, startPct, endPct) {
@@ -804,6 +797,11 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
             <p className="scene-desc">{ov.desc}</p>
           </div>
         ))}
+
+        {/* Preetham Infra Watermark Header Logo (No box container, clean header logo mark) */}
+        <div className="canvas-watermark-header-logo">
+          <Logo />
+        </div>
 
         <div className="scene-progress-track">
           <div ref={progressFillRef} className="scene-progress-fill" style={{ width: '0%' }} />
