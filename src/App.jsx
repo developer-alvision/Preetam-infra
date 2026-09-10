@@ -527,6 +527,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
   const overlaysRef = useRef([])
 
   const frameIdxRef = useRef(0)
+  const touchStartRef = useRef({ y: 0, idx: 0 })
   const [loadedCount, setLoadedCount] = useState(0)
   const [framesLoaded, setFramesLoaded] = useState(false)
 
@@ -570,7 +571,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     }
   }, [frameUrls])
 
-  // Canvas render & scroll handler (Native Sticky Scroll)
+  // Canvas render & scroll handler (Native Sticky Scroll + Direct Touch Scrub)
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -663,6 +664,33 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       }
     }
 
+    // Direct Touch Scrubbing for Mobile to prevent automatic momentum scrolling
+    const onTouchStart = (e) => {
+      if (e.touches && e.touches.length === 1) {
+        touchStartRef.current = {
+          y: e.touches[0].clientY,
+          idx: frameIdxRef.current
+        }
+      }
+    }
+
+    const onTouchMove = (e) => {
+      if (e.touches && e.touches.length === 1) {
+        const deltaY = touchStartRef.current.y - e.touches[0].clientY
+        const totalFrames = frameUrls.length
+        if (totalFrames <= 1) return
+        
+        // 14px of finger movement per frame
+        const frameDelta = Math.round(deltaY / 14)
+        const targetIdx = Math.max(0, Math.min(totalFrames - 1, touchStartRef.current.idx + frameDelta))
+        
+        // If scrubbing between first and last frame, control frame directly
+        if ((targetIdx > 0 && deltaY < 0) || (targetIdx < totalFrames - 1 && deltaY > 0)) {
+          renderFrame(targetIdx)
+        }
+      }
+    }
+
     handleResize()
     updateScrollAndRender()
     renderFrame(0)
@@ -674,11 +702,15 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('scroll', onScroll, { passive: true })
+    container.addEventListener('touchstart', onTouchStart, { passive: true })
+    container.addEventListener('touchmove', onTouchMove, { passive: true })
 
     return () => {
       clearTimeout(renderInitTimer)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('scroll', onScroll)
+      container.removeEventListener('touchstart', onTouchStart)
+      container.removeEventListener('touchmove', onTouchMove)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
   }, [frameUrls, overlays])
@@ -689,7 +721,9 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
   return (
     <section className="scene-section" id={id} ref={containerRef} data-transition={transition}>
       <div className="scene-sticky">
-        <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
+        <div className="scene-canvas-container">
+          <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
+        </div>
 
         {!framesLoaded && (
           <div className="scene-loading-overlay">

@@ -427,6 +427,15 @@ p {
   align-items: center;
   justify-content: center;
 }
+.scene-canvas-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .scene-canvas {
   position: absolute;
   inset: 0;
@@ -2811,9 +2820,26 @@ p {
   }
   .scene-section .scene-sticky {
     border-radius: 0;
+    align-items: center;
+    justify-content: center;
+  }
+  .scene-canvas-container {
+    position: relative;
+    width: min(calc(100% - 24px), 640px);
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 52vh;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(201, 169, 110, 0.25);
   }
   .scene-section .scene-canvas {
-    border-radius: 0;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
   }
   .canvas-watermark-header-logo {
     bottom: 16px;
