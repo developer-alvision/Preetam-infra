@@ -1714,15 +1714,15 @@ p {
 
   .about {
     grid-template-columns: 1fr;
-    gap: 36px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
   }
   .about-stat {
     max-width: 160px;
   }
 
   .scene-content-card {
-    padding: 60px 0;
+    padding: 32px 0;
   }
   .content-card-grid {
     grid-template-columns: 1fr;
@@ -1731,12 +1731,13 @@ p {
 
 
   .services, .projects {
-    padding: 70px 0;
+    padding: 40px 0;
   }
   .section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
   }
   .services-grid {
     grid-template-columns: 1fr;
@@ -1747,7 +1748,7 @@ p {
   }
 
   .difference {
-    padding: 70px 0;
+    padding: 40px 0;
   }
   .diff-grid {
     grid-template-columns: 1fr;
@@ -1772,8 +1773,8 @@ p {
   }
 
   .testimonial-inner {
-    min-height: 320px;
-    padding: 60px 0;
+    min-height: 240px;
+    padding: 36px 0;
   }
   .testimonial-quote {
     font-size: 24px;
@@ -1781,22 +1782,22 @@ p {
 
   .team-section {
     flex-direction: column;
-    gap: 40px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
     align-items: flex-start;
   }
 
   .faq-section {
     grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
   }
 
   .contact-inner {
     flex-direction: column;
     align-items: flex-start;
-    gap: 28px;
-    padding: 60px 0;
+    gap: 20px;
+    padding: 36px 0;
   }
 
   .footer-main {
@@ -1872,33 +1873,33 @@ p {
   }
 
   .about {
-    padding: 45px 0;
-    gap: 24px;
+    padding: 24px 0;
+    gap: 16px;
   }
   .about-stat strong {
     font-size: 34px;
   }
 
   .intro-card {
-    padding: 50px 0;
+    padding: 28px 0;
   }
   .intro-card-number {
     font-size: 50px;
   }
 
   .services, .projects {
-    padding: 45px 0;
+    padding: 24px 0;
   }
 
   .difference {
-    padding: 45px 0;
+    padding: 24px 0;
   }
   .diff-item {
     padding: 16px;
   }
 
   .team-section {
-    padding: 45px 0;
+    padding: 24px 0;
   }
   .team-photos img {
     width: 120px;
@@ -1906,8 +1907,8 @@ p {
   }
 
   .faq-section {
-    padding: 45px 0;
-    gap: 24px;
+    padding: 24px 0;
+    gap: 16px;
   }
   .faq-trigger {
     font-size: 13px;
@@ -1916,7 +1917,7 @@ p {
 
   .contact-inner {
     min-height: auto;
-    padding: 45px 0;
+    padding: 24px 0;
   }
 
   .footer-main {
@@ -2765,7 +2766,7 @@ p {
    ══════════════════════════════ */
 @media (max-width: 768px) {
   .scene-section {
-    height: 200vh;
+    height: 135vh;
     padding-top: 0;
     border-radius: 0;
     margin-bottom: 0;
@@ -2800,7 +2801,7 @@ p {
 
 @media (max-width: 480px) {
   .scene-section {
-    height: 180vh;
+    height: 115vh;
     padding-top: 0;
   }
   .navbar-inner {
