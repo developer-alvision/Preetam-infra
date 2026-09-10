@@ -411,7 +411,7 @@ p {
 .scene-section {
   position: relative;
   background: #0a1628;
-  height: 250vh;
+  height: 170vh;
   width: 100%;
   padding-top: 0;
   box-sizing: border-box;
@@ -650,14 +650,14 @@ p {
    ══════════════════════════════ */
 
 .services {
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
 }
 .section-header-desc {
   font-size: 13px;
@@ -724,7 +724,7 @@ p {
    ══════════════════════════════ */
 .difference {
   background: var(--surface-alt);
-  padding: 100px 0;
+  padding: 60px 0;
   text-align: center;
   background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 100% 40px;
@@ -732,7 +732,7 @@ p {
 .center-text {
   color: var(--text-muted);
   font-size: 13px;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
 }
 .diff-grid {
   display: grid;
@@ -791,7 +791,7 @@ p {
    PROJECTS
    ══════════════════════════════ */
 .projects {
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .filter-bar {
   display: flex;
@@ -876,8 +876,8 @@ p {
   color: #fff;
 }
 .testimonial-inner {
-  min-height: 400px;
-  padding: 90px 0;
+  min-height: 300px;
+  padding: 56px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -933,7 +933,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: 70px;
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .team-photos {
   display: flex;
@@ -973,8 +973,8 @@ p {
 .faq-section {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
-  gap: 100px;
-  padding: 100px 0;
+  gap: 60px;
+  padding: 60px 0;
   border-top: 1px solid var(--line);
 }
 .faq-left h2 {
@@ -2165,7 +2165,7 @@ p {
 .page-header-banner {
   background: linear-gradient(135deg, rgba(10, 22, 40, 0.96), rgba(18, 32, 54, 0.98));
   border-bottom: 1px solid rgba(201, 169, 110, 0.3);
-  padding: 80px 0 60px;
+  padding: 56px 0 40px;
   color: #fff;
 }
 .page-header-banner h1 {
@@ -3012,7 +3012,7 @@ p {
    INTERACTIVE COST CALCULATOR
    ══════════════════════════════ */
 .calculator-section {
-  padding: 80px 0;
+  padding: 56px 0;
 }
 
 .calculator-card {
