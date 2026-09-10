@@ -411,7 +411,7 @@ p {
 .scene-section {
   position: relative;
   background: #0a1628;
-  height: 250vh;
+  height: 350vh;
   width: 100%;
   padding-top: 0;
   box-sizing: border-box;
@@ -434,6 +434,44 @@ p {
   height: 100%;
   display: block;
   pointer-events: none;
+}
+
+/* ── Scene Loading Overlay ── */
+.scene-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgba(6, 12, 24, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: opacity 0.4s ease;
+}
+
+.scene-loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(201, 169, 110, 0.2);
+  border-top-color: var(--accent, #c9a96e);
+  border-radius: 50%;
+  animation: spinSceneLoader 0.8s linear infinite;
+}
+
+@keyframes spinSceneLoader {
+  to { transform: rotate(360deg); }
+}
+
+.scene-loader-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--accent, #c9a96e);
+  text-transform: uppercase;
 }
 
 /* Overlay Text Styling & Readability Backdrops */
@@ -2762,7 +2800,7 @@ p {
    ══════════════════════════════ */
 @media (max-width: 768px) {
   .scene-section {
-    height: 200vh;
+    height: 300vh;
     padding-top: 0;
     border-radius: 0;
     margin-bottom: 0;
@@ -2797,7 +2835,7 @@ p {
 
 @media (max-width: 480px) {
   .scene-section {
-    height: 180vh;
+    height: 300vh;
     padding-top: 0;
   }
   .navbar-inner {

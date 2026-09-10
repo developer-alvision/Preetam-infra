@@ -449,31 +449,50 @@ function isMobileView() {
   return window.innerWidth <= 768
 }
 
-/* ───────── CANVAS DRAWING HELPER ───────── */
-function drawImageCover(ctx, img, width, height) {
+/* ───────── CANVAS DRAWING HELPER (ASPECT-RATIO PRESERVING) ───────── */
+function drawImageAspect(ctx, img, width, height) {
   if (!width || !height) return
   ctx.clearRect(0, 0, width, height)
 
+  // Rich dark background matching site theme
+  const bgGrad = ctx.createLinearGradient(0, 0, width, height)
+  bgGrad.addColorStop(0, '#060c18')
+  bgGrad.addColorStop(0.5, '#0e1a2e')
+  bgGrad.addColorStop(1, '#080e1a')
+  ctx.fillStyle = bgGrad
+  ctx.fillRect(0, 0, width, height)
+
   if (!img || !img.complete || img.naturalWidth === 0) {
-    // Elegant fallback background while loading or if image is unrendered
-    const bgGrad = ctx.createLinearGradient(0, 0, width, height)
-    bgGrad.addColorStop(0, '#060c18')
-    bgGrad.addColorStop(0.5, '#0e1a2e')
-    bgGrad.addColorStop(1, '#080e1a')
-    ctx.fillStyle = bgGrad
-    ctx.fillRect(0, 0, width, height)
     return
   }
 
-  // Draw frame image full screen edge-to-edge (no crop zooming)
-  ctx.drawImage(img, 0, 0, width, height)
-
-  // Seamlessly patch Gemini watermark in lower-right corner by sampling source img
   const nw = img.naturalWidth
   const nh = img.naturalHeight
+  const imgAspect = nw / nh
+  const canvasAspect = width / height
+
+  let renderW, renderH, renderX, renderY
+
+  if (imgAspect > canvasAspect) {
+    // Image is wider than canvas -> fit to width
+    renderW = width
+    renderH = width / imgAspect
+    renderX = 0
+    renderY = (height - renderH) / 2
+  } else {
+    // Image is taller than canvas -> fit to height
+    renderH = height
+    renderW = height * imgAspect
+    renderX = (width - renderW) / 2
+    renderY = 0
+  }
+
+  ctx.drawImage(img, 0, 0, nw, nh, Math.round(renderX), Math.round(renderY), Math.round(renderW), Math.round(renderH))
+
+  // Patch watermark if present relative to rendered image box
   if (nw > 100 && nh > 100) {
-    const patchW = Math.min(220, width * 0.22)
-    const patchH = Math.min(140, height * 0.22)
+    const patchW = Math.min(220, renderW * 0.22)
+    const patchH = Math.min(140, renderH * 0.22)
     const sW = nw * 0.15
     const sH = nh * 0.15
     const sX = nw * 0.65
@@ -481,7 +500,7 @@ function drawImageCover(ctx, img, width, height) {
     ctx.drawImage(
       img,
       sX, sY, sW, sH,
-      width - patchW, height - patchH, patchW, patchH
+      Math.round(renderX + renderW - patchW), Math.round(renderY + renderH - patchH), Math.round(patchW), Math.round(patchH)
     )
   }
 }
@@ -495,7 +514,7 @@ function calcOverlayOpacity(progress, startPct, endPct) {
   return 1
 }
 
-/* ───────── GLOBAL SCENE LOCK — only one scene active at a time ───────── */
+/* ───────── GLOBAL SCENE LOCK ───────── */
 const activeSceneLock = { current: null }
 
 /* ───────── HIGH PERFORMANCE SCENE CANVAS WITH MOBILE-FRIENDLY SCROLL ───────── */
@@ -508,59 +527,50 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
   const overlaysRef = useRef([])
 
   const frameIdxRef = useRef(0)
-  const virtualScrollRef = useRef(0)
-  const isActiveRef = useRef(false)
-  const unlockedDownRef = useRef(false)
-  const unlockedUpRef = useRef(false)
+  const [loadedCount, setLoadedCount] = useState(0)
+  const [framesLoaded, setFramesLoaded] = useState(false)
 
-  // Preload images into global memory cache smoothly for this specific scene
+  // Preload images for this scene and track loading progress
   useEffect(() => {
     let cancelled = false
-    const loadedImages = frameUrls.map((url) => getCachedImage(url))
-    imagesRef.current = loadedImages
-
-    // Force instant initial render on mount or load
-    const checkAndRenderFirstFrame = () => {
-      if (cancelled) return
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const ctx = canvas.getContext('2d', { alpha: false })
-      const firstImg = loadedImages[0]
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const rect = canvas.getBoundingClientRect()
-      if (rect.width > 0 && rect.height > 0) {
-        canvas.width = rect.width * dpr
-        canvas.height = rect.height * dpr
-        drawImageCover(ctx, firstImg, canvas.width, canvas.height)
-      }
-
-      if (firstImg && !firstImg.complete) {
-        firstImg.onload = () => {
-          if (!cancelled && canvasRef.current) {
-            const currentCanvas = canvasRef.current
-            const currentCtx = currentCanvas.getContext('2d', { alpha: false })
-            const currentRect = currentCanvas.getBoundingClientRect()
-            if (currentRect.width > 0 && currentRect.height > 0) {
-              currentCanvas.width = currentRect.width * dpr
-              currentCanvas.height = currentRect.height * dpr
-              drawImageCover(currentCtx, firstImg, currentCanvas.width, currentCanvas.height)
-            }
-          }
-        }
-      }
+    const total = frameUrls.length
+    if (total === 0) {
+      setFramesLoaded(true)
+      return
     }
 
-    checkAndRenderFirstFrame()
-    const timer = setTimeout(checkAndRenderFirstFrame, 60)
+    let loaded = 0
+    const loadedImages = frameUrls.map((url) => {
+      const img = getCachedImage(url)
+      if (img.complete && img.naturalWidth > 0) {
+        loaded++
+      } else {
+        const onSingleLoad = () => {
+          if (cancelled) return
+          loaded++
+          setLoadedCount(loaded)
+          if (loaded >= total) {
+            setFramesLoaded(true)
+          }
+        }
+        img.onload = onSingleLoad
+        img.onerror = onSingleLoad
+      }
+      return img
+    })
+
+    imagesRef.current = loadedImages
+    setLoadedCount(loaded)
+    if (loaded >= total) {
+      setFramesLoaded(true)
+    }
 
     return () => {
       cancelled = true
-      clearTimeout(timer)
     }
   }, [frameUrls])
 
-  // Canvas render & scroll handler (Native Sticky Scroll for butter-smooth GPU rendering)
+  // Canvas render & scroll handler (Native Sticky Scroll)
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -583,7 +593,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     const renderFrame = (idx) => {
       const totalFrames = frameUrls.length
       if (totalFrames === 0) {
-        drawImageCover(ctx, null, canvas.width, canvas.height)
+        drawImageAspect(ctx, null, canvas.width, canvas.height)
         return
       }
       const validIdx = Math.max(0, Math.min(totalFrames - 1, idx))
@@ -593,9 +603,9 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       const img = imagesRef.current[validIdx] || getCachedImage(frameUrls[validIdx])
       if (img && img.complete && img.naturalWidth > 0) {
         lastDrawnImg = img
-        drawImageCover(ctx, img, canvas.width, canvas.height)
+        drawImageAspect(ctx, img, canvas.width, canvas.height)
       } else if (lastDrawnImg) {
-        drawImageCover(ctx, lastDrawnImg, canvas.width, canvas.height)
+        drawImageAspect(ctx, lastDrawnImg, canvas.width, canvas.height)
       } else {
         let nearest = null
         for (let offset = 1; offset < frameUrls.length; offset++) {
@@ -605,7 +615,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
           const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(frameUrls[validIdx + offset])
           if (nextImg && nextImg.complete && nextImg.naturalWidth > 0) { nearest = nextImg; break }
         }
-        drawImageCover(ctx, nearest, canvas.width, canvas.height)
+        drawImageAspect(ctx, nearest, canvas.width, canvas.height)
       }
 
       // Calculate progress percentage
@@ -632,14 +642,14 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
 
     const updateScrollAndRender = () => {
       const rect = container.getBoundingClientRect()
-      const totalScrollable = rect.height - window.innerHeight
+      const vpHeight = window.innerHeight
+      const totalScrollable = rect.height - vpHeight
       if (totalScrollable <= 0) return
 
-      // Current scroll progress inside sticky container: -rect.top ranges from 0 to totalScrollable
       const currentScroll = -rect.top
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable))
       const totalFrames = frameUrls.length
-      const frameIdx = Math.floor(progress * (totalFrames - 1))
+      const frameIdx = Math.min(totalFrames - 1, Math.floor(progress * totalFrames))
 
       renderFrame(frameIdx)
     }
@@ -660,7 +670,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     const renderInitTimer = setTimeout(() => {
       handleResize()
       updateScrollAndRender()
-    }, 40)
+    }, 50)
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -673,10 +683,20 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     }
   }, [frameUrls, overlays])
 
+  const totalFrames = frameUrls.length || 1
+  const pctLoaded = Math.min(100, Math.round((loadedCount / totalFrames) * 100))
+
   return (
     <section className="scene-section" id={id} ref={containerRef} data-transition={transition}>
       <div className="scene-sticky">
         <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
+
+        {!framesLoaded && (
+          <div className="scene-loading-overlay">
+            <div className="scene-loader-spinner" />
+            <span className="scene-loader-text">Loading Experience… {pctLoaded}%</span>
+          </div>
+        )}
 
         {overlays.map((ov, i) => (
           <div
@@ -691,7 +711,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
           </div>
         ))}
 
-        {/* Preetham Infra Watermark Header Logo (No box container, clean header logo mark) */}
+        {/* Preetham Infra Watermark Header Logo */}
         <div className="canvas-watermark-header-logo">
           <Logo />
         </div>
