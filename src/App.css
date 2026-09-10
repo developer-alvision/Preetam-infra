@@ -3470,3 +3470,413 @@ p {
     gap: 16px;
   }
 }
+/* ══════════════════════════════════════════════════════════════
+   MOBILE FIX PATCH — Comprehensive Mobile UX Overhaul
+   Targets: burger, forms, calculator, project gallery, footer,
+            modal, contact, page headers, and scene overlays
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Burger → X animation when menu is open ── */
+.burger.open span:first-child {
+  transform: rotate(45deg) translateY(7px);
+}
+.burger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.burger.open span:last-child {
+  transform: rotate(-45deg) translateY(-7px);
+}
+.burger span {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ── 2. Mobile nav z-index (dropdown above page content) ── */
+@media (max-width: 768px) {
+  .nav-links {
+    z-index: 98;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ── 3. Contact form 2-column → stack on mobile ── */
+@media (max-width: 600px) {
+  .form-row-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 4. Calculator header: stack on mobile ── */
+@media (max-width: 600px) {
+  .calculator-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .calculator-badge-pill {
+    align-self: flex-start;
+  }
+}
+
+/* ── 5. Calculator grade grid: 1-column on small mobile ── */
+@media (max-width: 480px) {
+  .calc-grade-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .grade-select-btn {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .grade-select-btn small {
+    display: none; /* hide sub-description on smallest screens */
+  }
+}
+
+/* ── 6. Project gallery & info side on mobile ── */
+@media (max-width: 900px) {
+  .project-gallery-side {
+    min-height: 300px;
+  }
+  .project-info-side {
+    padding: 28px 24px;
+  }
+}
+@media (max-width: 600px) {
+  .project-gallery-side {
+    min-height: 240px;
+  }
+  .project-info-side {
+    padding: 20px 16px;
+  }
+  .project-specs-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  .project-meta-tags {
+    gap: 6px;
+  }
+  .meta-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .project-thumbnails-row {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  .project-thumb {
+    width: 52px;
+    height: 40px;
+  }
+}
+
+/* ── 7. Director card: less padding on mobile ── */
+@media (max-width: 768px) {
+  .director-card {
+    padding: 32px 24px;
+  }
+}
+@media (max-width: 480px) {
+  .director-card {
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .director-quote {
+    font-size: 15px;
+    padding-left: 16px;
+  }
+}
+
+/* ── 8. Contact actions: stack vertically on small mobile ── */
+@media (max-width: 480px) {
+  .contact-actions-row {
+    flex-direction: column;
+  }
+  .btn-action {
+    min-width: unset;
+    width: 100%;
+  }
+  .btn-call span,
+  .btn-whatsapp span {
+    font-size: 12px;
+  }
+}
+
+/* ── 9. Footer bottom: stack items on small mobile ── */
+@media (max-width: 480px) {
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 16px 0;
+  }
+}
+
+/* ── 10. Modal: max-height & scroll on mobile ── */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    max-height: 92vh;
+    overflow-y: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+    animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUpModal {
+    from { transform: translateY(100%); opacity: 0.5; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+@media (max-width: 480px) {
+  .modal {
+    padding: 24px 18px 32px;
+  }
+}
+
+/* ── 11. Page header banner: reduce padding on mobile ── */
+@media (max-width: 768px) {
+  .page-header-banner {
+    padding: 52px 0 36px;
+  }
+  .page-header-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .page-header-banner {
+    padding: 36px 0 28px;
+  }
+  .page-header-desc {
+    font-size: 13px;
+  }
+}
+
+/* ── 12. Page container: reduce top padding on small mobile ── */
+@media (max-width: 480px) {
+  .page-container {
+    padding-top: 68px;
+  }
+}
+
+/* ── 13. Speed dial: adjust position on small mobile ── */
+@media (max-width: 480px) {
+  .floating-speed-dial {
+    bottom: 18px;
+    right: 16px;
+    gap: 10px;
+  }
+  .speed-dial-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+}
+
+/* ── 14. FAQ answer: increase max-height for long answers ── */
+.faq-item.open .faq-answer {
+  max-height: 400px;
+}
+
+/* ── 15. Services hub: better pill wrapping on mobile ── */
+@media (max-width: 480px) {
+  .services-category-pills {
+    gap: 6px;
+  }
+  .category-pill-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  .services-search-input {
+    font-size: 13px;
+    padding: 12px 40px 12px 42px;
+  }
+}
+
+/* ── 16. Calculator section: reduce top/bottom padding on mobile ── */
+@media (max-width: 768px) {
+  .calculator-section {
+    padding: 50px 0;
+  }
+  .calculator-card {
+    padding: 32px 20px;
+  }
+  .calculator-result-card {
+    padding: 24px 16px;
+  }
+  .price-lakhs {
+    font-size: 40px;
+  }
+  .currency-symbol {
+    font-size: 24px;
+  }
+}
+
+/* ── 17. Calc row 2col: already handled but ensure on 380px too ── */
+@media (max-width: 380px) {
+  .calc-row-2col {
+    grid-template-columns: 1fr;
+  }
+  .interior-tier-btns {
+    flex-wrap: wrap;
+  }
+  .tier-btn {
+    min-width: 45%;
+  }
+}
+
+/* ── 18. Scene summary: tighter on very small mobile ── */
+@media (max-width: 380px) {
+  .scene-summary-highlight {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+  .scene-summary-highlights {
+    gap: 8px;
+  }
+}
+
+/* ── 19. Core values: better wrapping on mobile ── */
+@media (max-width: 480px) {
+  .core-values-items {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .core-values-banner {
+    padding: 24px 20px;
+    margin-top: 32px;
+  }
+}
+
+/* ── 20. FAQ section: tighter gap on mobile ── */
+@media (max-width: 480px) {
+  .faq-section {
+    gap: 24px;
+  }
+}
+
+/* ── 21. Chronology timeline grid: ensure single column on small screens ── */
+@media (max-width: 480px) {
+  .timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .timeline-card {
+    padding: 20px;
+  }
+}
+
+/* ── 22. Contact map: reduce height on mobile ── */
+@media (max-width: 480px) {
+  .contact-map-wrapper iframe {
+    height: 160px;
+  }
+  .map-caption {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+}
+
+/* ── 23. Services stats bar: 2-col even on very small screens ── */
+@media (max-width: 380px) {
+  .services-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 14px 12px;
+    gap: 12px;
+  }
+  .services-stat-item strong {
+    font-size: 18px;
+  }
+}
+
+/* ── 24. Story content grid: ensure full-width cards on mobile ── */
+@media (max-width: 480px) {
+  .story-card {
+    padding: 22px 18px;
+  }
+}
+
+/* ── 25. Service detail card: fix button sizing on mobile ── */
+@media (max-width: 480px) {
+  .service-card-body h3 {
+    font-size: 16px;
+  }
+  .service-card-body {
+    padding: 16px;
+  }
+  .service-card-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+}
+
+/* ── 26. Scene divider: ensure text wraps on mobile ── */
+@media (max-width: 380px) {
+  .scene-divider-title {
+    font-size: 18px;
+    padding: 0 16px;
+  }
+}
+
+/* ── 27. Loader bar: ensure centered on mobile ── */
+@media (max-width: 480px) {
+  .loader-bar {
+    width: 180px;
+  }
+  .loader-text {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+}
+
+/* ── 28. Nav links: ensure proper scroll lock when open ── */
+@media (max-width: 768px) {
+  .nav-links.open {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+}
+@media (max-width: 480px) {
+  .nav-links.open {
+    max-height: calc(100vh - 58px);
+  }
+}
+
+/* ── 29. Testimonial: fix quote font size on mobile ── */
+@media (max-width: 480px) {
+  .testimonial-quote {
+    font-size: 18px;
+    margin: 16px 0 24px;
+  }
+  .quote-mark {
+    font-size: 70px;
+  }
+}
+
+/* ── 30. General: improve tap target size for all buttons ── */
+@media (max-width: 768px) {
+  .filter-btn,
+  .service-tab-btn,
+  .category-pill-btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .faq-trigger {
+    min-height: 48px;
+  }
+  .btn-primary {
+    min-height: 48px;
+  }
+}
