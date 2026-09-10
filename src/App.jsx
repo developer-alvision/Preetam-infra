@@ -912,6 +912,16 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
+  // Close mobile menu when clicking outside the navbar
+  useEffect(() => {
+    if (!menuOpen) return
+    const handleOutsideClick = (e) => {
+      if (!e.target.closest('.navbar')) setMenuOpen(false)
+    }
+    document.addEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener('click', handleOutsideClick)
+  }, [menuOpen])
+
   /* Intersection Observer & instant reveal for multi-page routing */
   useEffect(() => {
     if (loading) return
@@ -1032,7 +1042,7 @@ function App() {
               Get a Quote <span className="cta-arrow" aria-hidden="true">↗</span>
             </button>
             <button
-              className="burger"
+              className={`burger${menuOpen ? ' open' : ''}`}
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle Navigation Menu"
               aria-expanded={menuOpen}
@@ -1983,6 +1993,7 @@ function App() {
                             id="inquiry-name"
                             type="text" 
                             required 
+                            placeholder="Your full name"
                             value={pageContactForm.name}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, name: e.target.value })}
                           />
@@ -1993,6 +2004,7 @@ function App() {
                             id="inquiry-phone"
                             type="tel" 
                             required 
+                            placeholder="+91 98765 43210"
                             value={pageContactForm.phone}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, phone: e.target.value })}
                           />
@@ -2005,6 +2017,7 @@ function App() {
                           <input 
                             id="inquiry-email"
                             type="email" 
+                            placeholder="you@example.com"
                             value={pageContactForm.email}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, email: e.target.value })}
                           />
@@ -2032,6 +2045,7 @@ function App() {
                           <input 
                             id="inquiry-location"
                             type="text" 
+                            placeholder="e.g. Madanapalle, AP"
                             value={pageContactForm.location}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, location: e.target.value })}
                           />
@@ -2041,6 +2055,7 @@ function App() {
                           <input 
                             id="inquiry-area"
                             type="text" 
+                            placeholder="e.g. 2400 sq.ft"
                             value={pageContactForm.area}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, area: e.target.value })}
                           />
@@ -2052,6 +2067,7 @@ function App() {
                         <textarea 
                           id="inquiry-msg"
                           rows="4" 
+                          placeholder="Describe your project requirements, plot size, preferred materials, or any questions..."
                           value={pageContactForm.message}
                           onChange={(e) => setPageContactForm({ ...pageContactForm, message: e.target.value })}
                         ></textarea>
@@ -2131,6 +2147,7 @@ function App() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={subscribed}
+                  placeholder="Your email address"
                   aria-label="Email address for newsletter"
                 />
                 <button type="submit" disabled={subscribed}>{subscribed ? 'Subscribed ✓' : 'Join ↗'}</button>

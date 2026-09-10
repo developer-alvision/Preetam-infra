@@ -411,7 +411,7 @@ p {
 .scene-section {
   position: relative;
   background: #0a1628;
-  height: 350vh;
+  height: 280vh;
   width: 100%;
   padding-top: 0;
   box-sizing: border-box;
@@ -688,14 +688,14 @@ p {
    ══════════════════════════════ */
 
 .services {
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
 }
 .section-header-desc {
   font-size: 13px;
@@ -762,7 +762,7 @@ p {
    ══════════════════════════════ */
 .difference {
   background: var(--surface-alt);
-  padding: 100px 0;
+  padding: 60px 0;
   text-align: center;
   background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 100% 40px;
@@ -770,7 +770,7 @@ p {
 .center-text {
   color: var(--text-muted);
   font-size: 13px;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
 }
 .diff-grid {
   display: grid;
@@ -829,7 +829,7 @@ p {
    PROJECTS
    ══════════════════════════════ */
 .projects {
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .filter-bar {
   display: flex;
@@ -914,8 +914,8 @@ p {
   color: #fff;
 }
 .testimonial-inner {
-  min-height: 400px;
-  padding: 90px 0;
+  min-height: 300px;
+  padding: 56px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -971,7 +971,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: 70px;
-  padding: 100px 0;
+  padding: 60px 0;
 }
 .team-photos {
   display: flex;
@@ -1011,8 +1011,8 @@ p {
 .faq-section {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
-  gap: 100px;
-  padding: 100px 0;
+  gap: 60px;
+  padding: 60px 0;
   border-top: 1px solid var(--line);
 }
 .faq-left h2 {
@@ -1327,6 +1327,7 @@ p {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
   box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.02);
+  box-sizing: border-box;
 }
 
 .form-field input:focus,
@@ -1596,6 +1597,7 @@ p {
   outline: none;
   background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .modal-field input::placeholder,
@@ -1750,15 +1752,15 @@ p {
 
   .about {
     grid-template-columns: 1fr;
-    gap: 36px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
   }
   .about-stat {
     max-width: 160px;
   }
 
   .scene-content-card {
-    padding: 60px 0;
+    padding: 32px 0;
   }
   .content-card-grid {
     grid-template-columns: 1fr;
@@ -1767,12 +1769,13 @@ p {
 
 
   .services, .projects {
-    padding: 70px 0;
+    padding: 40px 0;
   }
   .section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
   }
   .services-grid {
     grid-template-columns: 1fr;
@@ -1783,7 +1786,7 @@ p {
   }
 
   .difference {
-    padding: 70px 0;
+    padding: 40px 0;
   }
   .diff-grid {
     grid-template-columns: 1fr;
@@ -1808,8 +1811,8 @@ p {
   }
 
   .testimonial-inner {
-    min-height: 320px;
-    padding: 60px 0;
+    min-height: 240px;
+    padding: 36px 0;
   }
   .testimonial-quote {
     font-size: 24px;
@@ -1817,22 +1820,22 @@ p {
 
   .team-section {
     flex-direction: column;
-    gap: 40px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
     align-items: flex-start;
   }
 
   .faq-section {
     grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 70px 0;
+    gap: 24px;
+    padding: 40px 0;
   }
 
   .contact-inner {
     flex-direction: column;
     align-items: flex-start;
-    gap: 28px;
-    padding: 60px 0;
+    gap: 20px;
+    padding: 36px 0;
   }
 
   .footer-main {
@@ -1908,33 +1911,33 @@ p {
   }
 
   .about {
-    padding: 45px 0;
-    gap: 24px;
+    padding: 24px 0;
+    gap: 16px;
   }
   .about-stat strong {
     font-size: 34px;
   }
 
   .intro-card {
-    padding: 50px 0;
+    padding: 28px 0;
   }
   .intro-card-number {
     font-size: 50px;
   }
 
   .services, .projects {
-    padding: 45px 0;
+    padding: 24px 0;
   }
 
   .difference {
-    padding: 45px 0;
+    padding: 24px 0;
   }
   .diff-item {
     padding: 16px;
   }
 
   .team-section {
-    padding: 45px 0;
+    padding: 24px 0;
   }
   .team-photos img {
     width: 120px;
@@ -1942,8 +1945,8 @@ p {
   }
 
   .faq-section {
-    padding: 45px 0;
-    gap: 24px;
+    padding: 24px 0;
+    gap: 16px;
   }
   .faq-trigger {
     font-size: 13px;
@@ -1952,7 +1955,7 @@ p {
 
   .contact-inner {
     min-height: auto;
-    padding: 45px 0;
+    padding: 24px 0;
   }
 
   .footer-main {
@@ -2200,7 +2203,7 @@ p {
 .page-header-banner {
   background: linear-gradient(135deg, rgba(10, 22, 40, 0.96), rgba(18, 32, 54, 0.98));
   border-bottom: 1px solid rgba(201, 169, 110, 0.3);
-  padding: 80px 0 60px;
+  padding: 56px 0 40px;
   color: #fff;
 }
 .page-header-banner h1 {
@@ -2263,7 +2266,7 @@ p {
 
 .service-detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 28px;
 }
 .service-detail-card {
@@ -2394,6 +2397,7 @@ p {
   font-size: 14px;
   outline: none;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .services-search-input::placeholder {
@@ -2464,7 +2468,7 @@ p {
 
 .service-card-highlights li {
   font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #475569;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2800,7 +2804,7 @@ p {
    ══════════════════════════════ */
 @media (max-width: 768px) {
   .scene-section {
-    height: 300vh;
+    height: 240vh;
     padding-top: 0;
     border-radius: 0;
     margin-bottom: 0;
@@ -2835,7 +2839,7 @@ p {
 
 @media (max-width: 480px) {
   .scene-section {
-    height: 300vh;
+    height: 240vh;
     padding-top: 0;
   }
   .navbar-inner {
@@ -3046,7 +3050,7 @@ p {
    INTERACTIVE COST CALCULATOR
    ══════════════════════════════ */
 .calculator-section {
-  padding: 80px 0;
+  padding: 56px 0;
 }
 
 .calculator-card {
@@ -3248,6 +3252,7 @@ p {
   color: #fff;
   font-size: 13px;
   outline: none;
+  box-sizing: border-box;
 }
 .calc-select option {
   background: #0b1320;
@@ -3506,5 +3511,484 @@ p {
   .contact-office-card {
     padding: 20px 16px;
     gap: 16px;
+  }
+}
+/* ══════════════════════════════════════════════════════════════
+   MOBILE FIX PATCH — Comprehensive Mobile UX Overhaul
+   Targets: burger, forms, calculator, project gallery, footer,
+            modal, contact, page headers, and scene overlays
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Burger → X animation when menu is open ── */
+.burger.open span:first-child {
+  transform: rotate(45deg) translateY(7px);
+}
+.burger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.burger.open span:last-child {
+  transform: rotate(-45deg) translateY(-7px);
+}
+.burger span {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ── 2. Mobile nav z-index (dropdown above page content) ── */
+@media (max-width: 768px) {
+  .nav-links {
+    z-index: 98;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ── 3. Contact form 2-column → stack on mobile ── */
+@media (max-width: 600px) {
+  .form-row-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 4. Calculator header: stack on mobile ── */
+@media (max-width: 600px) {
+  .calculator-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .calculator-badge-pill {
+    align-self: flex-start;
+  }
+}
+
+/* ── 5. Calculator grade grid: 1-column on small mobile ── */
+@media (max-width: 480px) {
+  .calc-grade-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .grade-select-btn {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .grade-select-btn small {
+    display: none; /* hide sub-description on smallest screens */
+  }
+}
+
+/* ── 6. Project gallery & info side on mobile ── */
+@media (max-width: 900px) {
+  .project-gallery-side {
+    min-height: 300px;
+  }
+  .project-info-side {
+    padding: 28px 24px;
+  }
+}
+@media (max-width: 600px) {
+  .project-gallery-side {
+    min-height: 240px;
+  }
+  .project-info-side {
+    padding: 20px 16px;
+  }
+  .project-specs-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  .project-meta-tags {
+    gap: 6px;
+  }
+  .meta-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .project-thumbnails-row {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  .project-thumb {
+    width: 52px;
+    height: 40px;
+  }
+}
+
+/* ── 7. Director card: less padding on mobile ── */
+@media (max-width: 768px) {
+  .director-card {
+    padding: 32px 24px;
+  }
+}
+@media (max-width: 480px) {
+  .director-card {
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .director-quote {
+    font-size: 15px;
+    padding-left: 16px;
+  }
+}
+
+/* ── 8. Contact actions: stack vertically on small mobile ── */
+@media (max-width: 480px) {
+  .contact-actions-row {
+    flex-direction: column;
+  }
+  .btn-action {
+    min-width: unset;
+    width: 100%;
+  }
+  .btn-call span,
+  .btn-whatsapp span {
+    font-size: 12px;
+  }
+}
+
+/* ── 9. Footer bottom: stack items on small mobile ── */
+@media (max-width: 480px) {
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 16px 0;
+  }
+}
+
+/* ── 10. Modal: max-height & scroll on mobile ── */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    max-height: 92vh;
+    overflow-y: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+    animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUpModal {
+    from { transform: translateY(100%); opacity: 0.5; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+@media (max-width: 480px) {
+  .modal {
+    padding: 24px 18px 32px;
+  }
+}
+
+/* ── 11. Page header banner: reduce padding on mobile ── */
+@media (max-width: 768px) {
+  .page-header-banner {
+    padding: 52px 0 36px;
+  }
+  .page-header-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .page-header-banner {
+    padding: 36px 0 28px;
+  }
+  .page-header-desc {
+    font-size: 13px;
+  }
+}
+
+/* ── 12. Page container: reduce top padding on small mobile ── */
+@media (max-width: 480px) {
+  .page-container {
+    padding-top: 68px;
+  }
+}
+
+/* ── 13. Speed dial: adjust position on small mobile ── */
+@media (max-width: 480px) {
+  .floating-speed-dial {
+    bottom: 18px;
+    right: 16px;
+    gap: 10px;
+  }
+  .speed-dial-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+}
+
+/* ── 14. FAQ answer: increase max-height for long answers ── */
+.faq-item.open .faq-answer {
+  max-height: 400px;
+}
+
+/* ── 15. Services hub: better pill wrapping on mobile ── */
+@media (max-width: 480px) {
+  .services-category-pills {
+    gap: 6px;
+  }
+  .category-pill-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  .services-search-input {
+    font-size: 13px;
+    padding: 12px 40px 12px 42px;
+  }
+}
+
+/* ── 16. Calculator section: reduce top/bottom padding on mobile ── */
+@media (max-width: 768px) {
+  .calculator-section {
+    padding: 50px 0;
+  }
+  .calculator-card {
+    padding: 32px 20px;
+  }
+  .calculator-result-card {
+    padding: 24px 16px;
+  }
+  .price-lakhs {
+    font-size: 40px;
+  }
+  .currency-symbol {
+    font-size: 24px;
+  }
+}
+
+/* ── 17. Calc row 2col: already handled but ensure on 380px too ── */
+@media (max-width: 380px) {
+  .calc-row-2col {
+    grid-template-columns: 1fr;
+  }
+  .interior-tier-btns {
+    flex-wrap: wrap;
+  }
+  .tier-btn {
+    min-width: 45%;
+  }
+}
+
+/* ── 18. Scene summary: tighter on very small mobile ── */
+@media (max-width: 380px) {
+  .scene-summary-highlight {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+  .scene-summary-highlights {
+    gap: 8px;
+  }
+}
+
+/* ── 19. Core values: better wrapping on mobile ── */
+@media (max-width: 480px) {
+  .core-values-items {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .core-values-banner {
+    padding: 24px 20px;
+    margin-top: 32px;
+  }
+}
+
+/* ── 20. FAQ section: tighter gap on mobile ── */
+@media (max-width: 480px) {
+  .faq-section {
+    gap: 24px;
+  }
+}
+
+/* ── 21. Chronology timeline grid: ensure single column on small screens ── */
+@media (max-width: 480px) {
+  .timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .timeline-card {
+    padding: 20px;
+  }
+}
+
+/* ── 22. Contact map: reduce height on mobile ── */
+@media (max-width: 480px) {
+  .contact-map-wrapper iframe {
+    height: 160px;
+  }
+  .map-caption {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+}
+
+/* ── 23. Services stats bar: 2-col even on very small screens ── */
+@media (max-width: 380px) {
+  .services-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 14px 12px;
+    gap: 12px;
+  }
+  .services-stat-item strong {
+    font-size: 18px;
+  }
+}
+
+/* ── 24. Story content grid: ensure full-width cards on mobile ── */
+@media (max-width: 480px) {
+  .story-card {
+    padding: 22px 18px;
+  }
+}
+
+/* ── 25. Service detail card: fix button sizing on mobile ── */
+@media (max-width: 480px) {
+  .service-card-body h3 {
+    font-size: 16px;
+  }
+  .service-card-body {
+    padding: 16px;
+  }
+  .service-card-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+}
+
+/* ── 26. Scene divider: ensure text wraps on mobile ── */
+@media (max-width: 380px) {
+  .scene-divider-title {
+    font-size: 18px;
+    padding: 0 16px;
+  }
+}
+
+/* ── 27. Loader bar: ensure centered on mobile ── */
+@media (max-width: 480px) {
+  .loader-bar {
+    width: 180px;
+  }
+  .loader-text {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+}
+
+/* ── 28. Nav links: ensure proper scroll lock when open ── */
+@media (max-width: 768px) {
+  .nav-links.open {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+}
+@media (max-width: 480px) {
+  .nav-links.open {
+    max-height: calc(100vh - 58px);
+  }
+}
+
+/* ── 29. Testimonial: fix quote font size on mobile ── */
+@media (max-width: 480px) {
+  .testimonial-quote {
+    font-size: 18px;
+    margin: 16px 0 24px;
+  }
+  .quote-mark {
+    font-size: 70px;
+  }
+}
+
+/* ── 30. General: improve tap target size for all buttons ── */
+@media (max-width: 768px) {
+  .filter-btn,
+  .service-tab-btn,
+  .category-pill-btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .faq-trigger {
+    min-height: 48px;
+  }
+  .btn-primary {
+    min-height: 48px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ADDITIONAL MOBILE FIXES (not covered above)
+   ═══════════════════════════════════════════════════════ */
+
+/* Scene transitions: reduce intensity on mobile for smoother feel */
+@media (max-width: 768px) {
+  .scene-section[data-transition="slide-left"] {
+    transform: translateX(-30px);
+  }
+  .scene-section[data-transition="zoom-blur"] {
+    transform: scale(1.04);
+    filter: blur(4px);
+  }
+  .scene-section[data-transition="slide-up"] {
+    transform: translateY(30px);
+  }
+}
+
+/* 360px: Ultra-small phones (Galaxy A03, iPhone SE 1st gen) */
+@media (max-width: 360px) {
+  .section-wrap {
+    width: calc(100% - 24px);
+  }
+  .navbar-inner {
+    width: calc(100% - 20px);
+  }
+  .brand-name {
+    font-size: 13px;
+    letter-spacing: 0.8px;
+  }
+  .brand-logo-img {
+    height: 30px;
+  }
+  .brand-logo {
+    gap: 6px;
+  }
+  .calculator-card {
+    padding: 16px 14px;
+  }
+  .project-gallery-side {
+    min-height: 200px;
+  }
+  .service-card-img-wrap {
+    height: 160px;
+  }
+  .grade-select-btn {
+    padding: 12px 14px;
+  }
+}
+
+/* Landscape phone: fix scene height and modal */
+@media (max-height: 500px) and (orientation: landscape) {
+  .scene-section {
+    height: 300vh;
+  }
+  .modal-backdrop {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  .modal {
+    max-height: calc(100dvh - 20px);
+    border-radius: 12px;
+  }
+  .page-header-banner {
+    padding: 36px 0 20px;
   }
 }
