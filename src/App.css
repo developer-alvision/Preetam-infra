@@ -458,6 +458,11 @@ p {
 }
 
 @media (max-width: 768px) {
+  /* Mobile navbar offset so header never obscures top of Scene 1 video */
+  .page-view {
+    padding-top: 64px;
+  }
+
   .scene-canvas {
     display: none !important;
   }
@@ -498,9 +503,9 @@ p {
     background: #000;
   }
 
-  /* First Video (#home-scene): Landscape with a little bit of zoom-in */
+  /* First Video (#home-scene): Landscape with prominent 1.25x zoom-in */
   #home-scene .scene-mobile-video {
-    transform: scale(1.12) !important;
+    transform: scale(1.25) !important;
     transform-origin: center center !important;
   }
 }
