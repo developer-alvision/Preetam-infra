@@ -25,8 +25,8 @@ import architecturalGateImg from './Images/PI SERVICES PICS/architectural gate.j
 
 // Landing page scene videos for mobile responsiveness
 import scene1Vid from './videos/Scene 1.mp4'
-import scene2Vid from './videos/Scene 2.mp4'
 import scene3Vid from './videos/Scene 3.mp4'
+import scene4Vid from './videos/Scene 4.mp4'
 
 /* ───────── FRAME ASSET GLOBS ───────── */
 const sampleFrames = (frames, maxCount = 66) => {
@@ -1240,7 +1240,7 @@ function App() {
             <SceneCanvas
               id="hall-scene"
               frameUrls={hallFrames}
-              videoUrl={scene2Vid}
+              videoUrl={scene3Vid}
               transition="slide-left"
               overlays={[]}
             />
@@ -1302,7 +1302,7 @@ function App() {
             <SceneCanvas
               id="bedroom-scene"
               frameUrls={bedroomFrames}
-              videoUrl={scene3Vid}
+              videoUrl={scene4Vid}
               transition="slide-up"
               overlays={[]}
             />
