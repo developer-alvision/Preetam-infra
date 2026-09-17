@@ -1239,8 +1239,8 @@ function App() {
             {/* SUMMARY: BUILDING CONSTRUCTION */}
             <div className="scene-summary reveal">
               <div className="scene-summary-inner">
-                <span className="scene-summary-badge">SCENE 01 / BUILDING CONSTRUCTION</span>
-                <h3>Building Construction <em>From Start to End</em></h3>
+                <span className="scene-summary-badge">BUILDING CONSTRUCTION</span>
+                <h3>Building Construction <br /><em>From Start to End</em></h3>
                 <p>
                   Watch the complete journey of building construction — from deep pile foundation excavation and steel reinforcement, through precision RCC frame casting and brickwork, to the fully finished structural shell ready for interior fit-out.
                 </p>
@@ -1254,7 +1254,7 @@ function App() {
 
             {/* DIVIDER: HALL */}
             <div className="scene-divider">
-              <span className="scene-divider-label">SCENE 02 / LIVING SPACES</span>
+              <span className="scene-divider-label">LIVING SPACES</span>
               <h2 className="scene-divider-title">The Grand <em>Hall Design</em></h2>
             </div>
 
@@ -1270,7 +1270,7 @@ function App() {
             {/* SUMMARY: HALL */}
             <div className="scene-summary reveal">
               <div className="scene-summary-inner">
-                <span className="scene-summary-badge">SCENE 02 / HALL DESIGN</span>
+                <span className="scene-summary-badge">HALL DESIGN</span>
                 <h3>The Grand <em>Hall Experience</em></h3>
                 <p>
                   Step into a magnificent living hall meticulously crafted for refined luxury — featuring expansive spatial layout, bespoke wall accents, designer lighting fixtures, and premium flooring that blend elegance with comfort.
@@ -1285,7 +1285,7 @@ function App() {
 
             {/* DIVIDER: KITCHEN */}
             <div className="scene-divider">
-              <span className="scene-divider-label">SCENE 03 / CULINARY SPACES</span>
+              <span className="scene-divider-label">CULINARY SPACES</span>
               <h2 className="scene-divider-title">The Modern <em>Kitchen Sanctuary</em></h2>
             </div>
 
@@ -1301,7 +1301,7 @@ function App() {
             {/* SUMMARY: KITCHEN */}
             <div className="scene-summary reveal">
               <div className="scene-summary-inner">
-                <span className="scene-summary-badge">SCENE 03 / KITCHEN DESIGN</span>
+                <span className="scene-summary-badge">KITCHEN DESIGN</span>
                 <h3>The Modern <em>Kitchen Sanctuary</em></h3>
                 <p>
                   Witness the creation of a culinary sanctuary designed with high-end ergonomics, Italian quartz stone surfaces, German soft-close modular cabinetry, and seamless appliance integration for everyday luxury cooking.
@@ -1316,7 +1316,7 @@ function App() {
 
             {/* DIVIDER: BEDROOM */}
             <div className="scene-divider">
-              <span className="scene-divider-label">SCENE 04 / PRIVATE RETREATS</span>
+              <span className="scene-divider-label">PRIVATE RETREATS</span>
               <h2 className="scene-divider-title">The Luxury <em>Bedroom Suite</em></h2>
             </div>
 
@@ -1332,7 +1332,7 @@ function App() {
             {/* SUMMARY: BEDROOM */}
             <div className="scene-summary reveal">
               <div className="scene-summary-inner">
-                <span className="scene-summary-badge">SCENE 04 / BEDROOM DESIGN</span>
+                <span className="scene-summary-badge">BEDROOM DESIGN</span>
                 <h3>The Luxury <em>Bedroom Suite</em></h3>
                 <p>
                   Explore how we craft tranquil private suites that pair ambient mood lighting with serene acoustic textures, premium fabric headboards, walk-in wardrobes, and climate-controlled comfort for ultimate rest and sanctuary.
