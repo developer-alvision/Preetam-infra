@@ -872,12 +872,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
           </div>
         ))}
 
-        {/* Preetham Infra Watermark Header Logo (Only on First Video) */}
-        {id === 'home-scene' && (
-          <div className="canvas-watermark-header-logo">
-            <Logo />
-          </div>
-        )}
 
         {!isMobile && (
           <div className="scene-progress-track">
