@@ -471,7 +471,7 @@ p {
     display: block !important;
   }
 
-  /* All Scene Videos on Mobile: Fully visible 16:9 landscape video layout */
+  /* All Mobile Scene Sections: 16:9 Landscape Video Containers */
   .scene-section {
     height: auto !important;
     min-height: auto !important;
@@ -494,9 +494,14 @@ p {
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     background: #000;
-    transform: none !important;
+  }
+
+  /* First Video (#home-scene): Landscape with a little bit of zoom-in */
+  #home-scene .scene-mobile-video {
+    transform: scale(1.12) !important;
+    transform-origin: center center !important;
   }
 }
 
