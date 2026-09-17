@@ -445,6 +445,43 @@ p {
   pointer-events: none;
 }
 
+/* ── Scene Mobile Video Player (Auto-plays on mobile without controls) ── */
+.scene-mobile-video {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .scene-section {
+    height: auto !important;
+    min-height: 60vh !important;
+  }
+  .scene-sticky {
+    position: relative !important;
+    top: auto !important;
+    height: 60vh !important;
+    width: 100% !important;
+  }
+  .scene-canvas {
+    display: none !important;
+  }
+  .scene-loading-overlay {
+    display: none !important;
+  }
+  .scene-mobile-video {
+    display: block !important;
+  }
+  .scene-progress-track {
+    display: none !important;
+  }
+}
+
 /* ── Scene Loading Overlay ── */
 .scene-loading-overlay {
   position: absolute;

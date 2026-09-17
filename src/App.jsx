@@ -23,18 +23,33 @@ import workshopCarpentryImg from './Images/PI SERVICES PICS/workshop carpentary.
 import shutteringWorkImg from './Images/PI SERVICES PICS/Shuttering Work.jpeg'
 import architecturalGateImg from './Images/PI SERVICES PICS/architectural gate.jpeg'
 
+// Landing page scene videos for mobile responsiveness
+import scene1Vid from './videos/Scene 1.mp4'
+import scene2Vid from './videos/Scene 2.mp4'
+import scene3Vid from './videos/Scene 3.mp4'
+
 /* ───────── FRAME ASSET GLOBS ───────── */
+const sampleFrames = (frames, maxCount = 66) => {
+  if (frames.length <= maxCount) return frames
+  const step = frames.length / maxCount
+  const result = []
+  for (let i = 0; i < maxCount; i++) {
+    result.push(frames[Math.floor(i * step)])
+  }
+  return result
+}
+
 const scene1Frames = Object.entries(
   import.meta.glob('./Images/Landing Page/Scene 1 Building Construction start to end/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
 ).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
 
-const hallFrames = Object.entries(
+const hallFrames = sampleFrames(Object.entries(
   import.meta.glob('./Images/Landing Page/Hall setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
+).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u), 66)
 
-const kitchenFrames = Object.entries(
+const kitchenFrames = sampleFrames(Object.entries(
   import.meta.glob('./Images/Landing Page/Kitchen setup frames/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
+).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u), 66)
 
 const bedroomFrames = Object.entries(
   import.meta.glob('./Images/Landing Page/Bedroom Setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
@@ -449,60 +464,55 @@ function isMobileView() {
   return window.innerWidth <= 768
 }
 
-/* ───────── CANVAS DRAWING HELPER (ASPECT-RATIO PRESERVING) ───────── */
-function drawImageAspect(ctx, img, width, height) {
+/* ───────── CANVAS DRAWING HELPER ───────── */
+function drawImageCover(ctx, img, width, height) {
   if (!width || !height) return
   ctx.clearRect(0, 0, width, height)
 
-  // Rich dark background matching site theme
-  const bgGrad = ctx.createLinearGradient(0, 0, width, height)
-  bgGrad.addColorStop(0, '#060c18')
-  bgGrad.addColorStop(0.5, '#0e1a2e')
-  bgGrad.addColorStop(1, '#080e1a')
-  ctx.fillStyle = bgGrad
-  ctx.fillRect(0, 0, width, height)
-
   if (!img || !img.complete || img.naturalWidth === 0) {
+    // Elegant fallback background while loading or if image is unrendered
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height)
+    bgGrad.addColorStop(0, '#060c18')
+    bgGrad.addColorStop(0.5, '#0e1a2e')
+    bgGrad.addColorStop(1, '#080e1a')
+    ctx.fillStyle = bgGrad
+    ctx.fillRect(0, 0, width, height)
     return
   }
 
-  const nw = img.naturalWidth
-  const nh = img.naturalHeight
-  const imgAspect = nw / nh
-  const canvasAspect = width / height
+  // Draw frame image preserving aspect ratio (object-fit: contain)
+  const imgRatio = img.naturalWidth / img.naturalHeight
+  const canvasRatio = width / height
+  let drawWidth = width
+  let drawHeight = height
+  let drawX = 0
+  let drawY = 0
 
-  let renderW, renderH, renderX, renderY
-
-  if (imgAspect > canvasAspect) {
-    // Image is wider than canvas -> fit to width
-    renderW = width
-    renderH = width / imgAspect
-    renderX = 0
-    renderY = (height - renderH) / 2
+  if (isMobileView()) {
+    // On mobile: "contain" logic so frames are their original size / aspect ratio
+    if (imgRatio > canvasRatio) {
+      drawWidth = width
+      drawHeight = width / imgRatio
+      drawY = (height - drawHeight) / 2
+    } else {
+      drawHeight = height
+      drawWidth = height * imgRatio
+      drawX = (width - drawWidth) / 2
+    }
   } else {
-    // Image is taller than canvas -> fit to height
-    renderH = height
-    renderW = height * imgAspect
-    renderX = (width - renderW) / 2
-    renderY = 0
+    // On desktop: "cover" logic
+    if (imgRatio > canvasRatio) {
+      drawWidth = height * imgRatio
+      drawHeight = height
+      drawX = (width - drawWidth) / 2
+    } else {
+      drawWidth = width
+      drawHeight = width / imgRatio
+      drawY = (height - drawHeight) / 2
+    }
   }
 
-  ctx.drawImage(img, 0, 0, nw, nh, Math.round(renderX), Math.round(renderY), Math.round(renderW), Math.round(renderH))
-
-  // Patch watermark if present relative to rendered image box
-  if (nw > 100 && nh > 100) {
-    const patchW = Math.min(220, renderW * 0.22)
-    const patchH = Math.min(140, renderH * 0.22)
-    const sW = nw * 0.15
-    const sH = nh * 0.15
-    const sX = nw * 0.65
-    const sY = nh * 0.85
-    ctx.drawImage(
-      img,
-      sX, sY, sW, sH,
-      Math.round(renderX + renderW - patchW), Math.round(renderY + renderH - patchH), Math.round(patchW), Math.round(patchH)
-    )
-  }
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 }
 
 function calcOverlayOpacity(progress, startPct, endPct) {
@@ -514,65 +524,172 @@ function calcOverlayOpacity(progress, startPct, endPct) {
   return 1
 }
 
-/* ───────── GLOBAL SCENE LOCK ───────── */
-const activeSceneLock = { current: null }
 
-/* ───────── HIGH PERFORMANCE SCENE CANVAS WITH MOBILE-FRIENDLY SCROLL ───────── */
-const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transition }) {
+
+/* ───────── HIGH PERFORMANCE SCENE CANVAS WITH MOBILE-FRIENDLY SCROLL & STRICT FRAME LOCK ───────── */
+const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transition, videoUrl }) {
   const containerRef = useRef(null)
   const canvasRef = useRef(null)
+  const videoRef = useRef(null)
   const imagesRef = useRef([])
   const progressFillRef = useRef(null)
   const counterRef = useRef(null)
   const overlaysRef = useRef([])
 
   const frameIdxRef = useRef(0)
-  const touchStartRef = useRef({ y: 0, idx: 0 })
-  const [loadedCount, setLoadedCount] = useState(0)
-  const [framesLoaded, setFramesLoaded] = useState(false)
+  const loadPercentRef = useRef(0)
 
-  // Preload images for this scene and track loading progress
+  const [loadedCount, setLoadedCount] = useState(0)
+  const [isAllLoaded, setIsAllLoaded] = useState(false)
+  const isAllLoadedRef = useRef(false)
+  const hasCompletedRef = useRef(false)
+
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Auto-play mobile background video seamlessly without controls
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {})
+    }
+  }, [videoUrl, isMobile])
+
+  // Preload images into global memory cache smoothly for this specific scene
   useEffect(() => {
     let cancelled = false
+    const loadedImages = frameUrls.map((url) => getCachedImage(url))
+    imagesRef.current = loadedImages
+    
+    let loaded = 0
     const total = frameUrls.length
-    if (total === 0) {
-      setFramesLoaded(true)
-      return
+
+    const updateStatus = () => {
+      if (cancelled) return
+      setLoadedCount(loaded)
+      const pct = total > 0 ? loaded / total : 1
+      loadPercentRef.current = pct
+      if (loaded >= total && total > 0) {
+        setIsAllLoaded(true)
+        isAllLoadedRef.current = true
+      }
     }
 
-    let loaded = 0
-    const loadedImages = frameUrls.map((url) => {
-      const img = getCachedImage(url)
+    const checkAndRenderFirstFrame = () => {
+      if (cancelled) return
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const ctx = canvas.getContext('2d', { alpha: false })
+      const firstImg = loadedImages[0]
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const rect = canvas.getBoundingClientRect()
+      if (rect.width > 0 && rect.height > 0) {
+        canvas.width = rect.width * dpr
+        canvas.height = rect.height * dpr
+        drawImageCover(ctx, firstImg, canvas.width, canvas.height)
+      }
+    }
+
+    loadedImages.forEach(img => {
       if (img.complete && img.naturalWidth > 0) {
         loaded++
       } else {
-        const onSingleLoad = () => {
-          if (cancelled) return
+        const onDone = () => {
           loaded++
-          setLoadedCount(loaded)
-          if (loaded >= total) {
-            setFramesLoaded(true)
-          }
+          updateStatus()
+          if (loaded === 1) checkAndRenderFirstFrame()
         }
-        img.onload = onSingleLoad
-        img.onerror = onSingleLoad
+        img.addEventListener('load', onDone, { once: true })
+        img.addEventListener('error', onDone, { once: true })
       }
-      return img
     })
+    updateStatus()
 
-    imagesRef.current = loadedImages
-    setLoadedCount(loaded)
-    if (loaded >= total) {
-      setFramesLoaded(true)
-    }
+    checkAndRenderFirstFrame()
+    const timer = setTimeout(checkAndRenderFirstFrame, 60)
+
+    // Fallback safety timer: if after 3s some frames fail, unlock so user isn't stuck waiting
+    const safetyTimer = setTimeout(() => {
+      if (!cancelled && !isAllLoadedRef.current) {
+        setIsAllLoaded(true)
+        isAllLoadedRef.current = true
+      }
+    }, 3000)
 
     return () => {
       cancelled = true
+      clearTimeout(timer)
+      clearTimeout(safetyTimer)
     }
   }, [frameUrls])
 
-  // Canvas render & scroll handler (Native Sticky Scroll + Direct Touch Scrub)
+  // Desktop Scroll Lock mechanism (Disabled on Mobile)
   useEffect(() => {
+    if (isMobile) return
+    const container = containerRef.current
+    if (!container) return
+
+    let lastY = 0
+    const onTouchStart = (e) => {
+      if (e.touches && e.touches[0]) {
+        lastY = e.touches[0].clientY
+      }
+    }
+
+    const preventIfLocked = (e) => {
+      const rect = container.getBoundingClientRect()
+      const vh = document.documentElement.clientHeight
+
+      if (rect.top <= 20 && rect.bottom >= vh - 20) {
+        const totalScrollable = rect.height - vh
+        const currentScroll = -rect.top
+        const progress = totalScrollable > 0 ? currentScroll / totalScrollable : 1
+
+        if (progress >= 0.94) {
+          hasCompletedRef.current = true
+        }
+
+        let isScrollingDown = false
+        if (e.type === 'wheel') {
+          isScrollingDown = e.deltaY > 0
+        } else if (e.type === 'touchmove' && e.touches && e.touches[0]) {
+          isScrollingDown = lastY > e.touches[0].clientY
+          lastY = e.touches[0].clientY
+        }
+
+        if (!isAllLoadedRef.current && isScrollingDown && rect.top <= 0) {
+          e.preventDefault()
+          return
+        }
+
+        if (isScrollingDown && !hasCompletedRef.current && progress > 0.98) {
+          hasCompletedRef.current = true
+        }
+      }
+    }
+
+    window.addEventListener('wheel', preventIfLocked, { passive: false })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', preventIfLocked, { passive: false })
+
+    return () => {
+      window.removeEventListener('wheel', preventIfLocked)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', preventIfLocked)
+    }
+  }, [isMobile])
+
+  // Canvas render & scroll handler (Desktop Sticky Scroll)
+  useEffect(() => {
+    if (isMobile) return
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
@@ -594,19 +711,18 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     const renderFrame = (idx) => {
       const totalFrames = frameUrls.length
       if (totalFrames === 0) {
-        drawImageAspect(ctx, null, canvas.width, canvas.height)
+        drawImageCover(ctx, null, canvas.width, canvas.height)
         return
       }
       const validIdx = Math.max(0, Math.min(totalFrames - 1, idx))
       frameIdxRef.current = validIdx
 
-      // Draw canvas frame
       const img = imagesRef.current[validIdx] || getCachedImage(frameUrls[validIdx])
       if (img && img.complete && img.naturalWidth > 0) {
         lastDrawnImg = img
-        drawImageAspect(ctx, img, canvas.width, canvas.height)
+        drawImageCover(ctx, img, canvas.width, canvas.height)
       } else if (lastDrawnImg) {
-        drawImageAspect(ctx, lastDrawnImg, canvas.width, canvas.height)
+        drawImageCover(ctx, lastDrawnImg, canvas.width, canvas.height)
       } else {
         let nearest = null
         for (let offset = 1; offset < frameUrls.length; offset++) {
@@ -616,13 +732,15 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
           const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(frameUrls[validIdx + offset])
           if (nextImg && nextImg.complete && nextImg.naturalWidth > 0) { nearest = nextImg; break }
         }
-        drawImageAspect(ctx, nearest, canvas.width, canvas.height)
+        drawImageCover(ctx, nearest, canvas.width, canvas.height)
       }
 
-      // Calculate progress percentage
       const rawProgress = totalFrames > 1 ? validIdx / (totalFrames - 1) : 0
 
-      // Direct DOM updates
+      if (rawProgress >= 0.95) {
+        hasCompletedRef.current = true
+      }
+
       if (progressFillRef.current) {
         progressFillRef.current.style.width = `${(rawProgress * 100).toFixed(1)}%`
       }
@@ -630,7 +748,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
         counterRef.current.innerText = `${Math.round(rawProgress * 100)}%`
       }
 
-      // Update overlays
       overlays.forEach((ov, i) => {
         const el = overlaysRef.current[i]
         if (el) {
@@ -643,14 +760,14 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
 
     const updateScrollAndRender = () => {
       const rect = container.getBoundingClientRect()
-      const vpHeight = window.innerHeight
-      const totalScrollable = rect.height - vpHeight
+      const vh = document.documentElement.clientHeight
+      const totalScrollable = rect.height - vh
       if (totalScrollable <= 0) return
 
       const currentScroll = -rect.top
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable))
       const totalFrames = frameUrls.length
-      const frameIdx = Math.min(totalFrames - 1, Math.floor(progress * totalFrames))
+      const frameIdx = Math.floor(progress * (totalFrames - 1))
 
       renderFrame(frameIdx)
     }
@@ -664,33 +781,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       }
     }
 
-    // Direct Touch Scrubbing for Mobile to prevent automatic momentum scrolling
-    const onTouchStart = (e) => {
-      if (e.touches && e.touches.length === 1) {
-        touchStartRef.current = {
-          y: e.touches[0].clientY,
-          idx: frameIdxRef.current
-        }
-      }
-    }
-
-    const onTouchMove = (e) => {
-      if (e.touches && e.touches.length === 1) {
-        const deltaY = touchStartRef.current.y - e.touches[0].clientY
-        const totalFrames = frameUrls.length
-        if (totalFrames <= 1) return
-        
-        // 14px of finger movement per frame
-        const frameDelta = Math.round(deltaY / 14)
-        const targetIdx = Math.max(0, Math.min(totalFrames - 1, touchStartRef.current.idx + frameDelta))
-        
-        // If scrubbing between first and last frame, control frame directly
-        if ((targetIdx > 0 && deltaY < 0) || (targetIdx < totalFrames - 1 && deltaY > 0)) {
-          renderFrame(targetIdx)
-        }
-      }
-    }
-
     handleResize()
     updateScrollAndRender()
     renderFrame(0)
@@ -698,37 +788,48 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     const renderInitTimer = setTimeout(() => {
       handleResize()
       updateScrollAndRender()
-    }, 50)
+    }, 40)
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('scroll', onScroll, { passive: true })
-    container.addEventListener('touchstart', onTouchStart, { passive: true })
-    container.addEventListener('touchmove', onTouchMove, { passive: true })
 
     return () => {
       clearTimeout(renderInitTimer)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('scroll', onScroll)
-      container.removeEventListener('touchstart', onTouchStart)
-      container.removeEventListener('touchmove', onTouchMove)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
-  }, [frameUrls, overlays])
-
-  const totalFrames = frameUrls.length || 1
-  const pctLoaded = Math.min(100, Math.round((loadedCount / totalFrames) * 100))
+  }, [frameUrls, overlays, isMobile])
 
   return (
-    <section className="scene-section" id={id} ref={containerRef} data-transition={transition}>
+    <section className={`scene-section ${isMobile ? 'scene-section-mobile' : ''}`} id={id} ref={containerRef} data-transition={transition}>
       <div className="scene-sticky">
-        <div className="scene-canvas-container">
-          <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
-        </div>
+        {/* Canvas for Desktop interactive frame sequence animation */}
+        <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
 
-        {!framesLoaded && (
+        {/* Video for Mobile version — plays automatically with no pause or stop button */}
+        {videoUrl && (
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="scene-mobile-video"
+            aria-hidden="true"
+          />
+        )}
+
+        {!isMobile && !isAllLoaded && (
           <div className="scene-loading-overlay">
             <div className="scene-loader-spinner" />
-            <span className="scene-loader-text">Loading Experience… {pctLoaded}%</span>
+            <span className="scene-loader-text">
+              Loading Frames ({loadedCount}/{frameUrls.length}) • {Math.round((loadedCount / (frameUrls.length || 1)) * 100)}%
+            </span>
+            <span style={{ fontSize: '11px', color: 'rgba(201, 169, 110, 0.7)', letterSpacing: '0.5px' }}>
+              Scroll locked until all frames load
+            </span>
           </div>
         )}
 
@@ -750,9 +851,11 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
           <Logo />
         </div>
 
-        <div className="scene-progress-track">
-          <div ref={progressFillRef} className="scene-progress-fill" style={{ width: '0%' }} />
-        </div>
+        {!isMobile && (
+          <div className="scene-progress-track">
+            <div ref={progressFillRef} className="scene-progress-fill" style={{ width: '0%' }} />
+          </div>
+        )}
       </div>
     </section>
   )
@@ -891,22 +994,22 @@ function App() {
     setMenuOpen(false)
   }
 
-  /* Preload Scene 1 frames with fallback safety */
+  /* Preload Scene 1 frames with fallback safety and trigger background cache for remaining scenes */
   useEffect(() => {
     let cancelled = false
     let loaded = 0
-    const criticalFrames = scene1Frames.slice(0, 30)
+    const criticalFrames = scene1Frames
     const total = criticalFrames.length
 
     const fallbackTimer = setTimeout(() => {
       if (!cancelled) setLoading(false)
-    }, 1800)
+    }, 2500)
 
     if (total === 0) { setLoading(false); return }
 
     criticalFrames.forEach((src) => {
-      const img = new Image()
-      img.onload = img.onerror = () => {
+      const img = getCachedImage(src)
+      if (img.complete && img.naturalWidth > 0) {
         loaded++
         if (!cancelled) {
           setLoadProgress(Math.round((loaded / total) * 100))
@@ -915,9 +1018,26 @@ function App() {
             setLoading(false)
           }
         }
+      } else {
+        const onSingleDone = () => {
+          loaded++
+          if (!cancelled) {
+            setLoadProgress(Math.round((loaded / total) * 100))
+            if (loaded === total) {
+              clearTimeout(fallbackTimer)
+              setLoading(false)
+            }
+          }
+        }
+        img.addEventListener('load', onSingleDone, { once: true })
+        img.addEventListener('error', onSingleDone, { once: true })
       }
-      img.src = src
     })
+
+    // Pre-trigger background caching for remaining scenes so they are ready by the time user scrolls
+    const otherScenes = [...hallFrames, ...kitchenFrames, ...bedroomFrames]
+    otherScenes.forEach(src => getCachedImage(src))
+
     return () => {
       cancelled = true
       clearTimeout(fallbackTimer)
@@ -945,16 +1065,6 @@ function App() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
-
-  // Close mobile menu when clicking outside the navbar
-  useEffect(() => {
-    if (!menuOpen) return
-    const handleOutsideClick = (e) => {
-      if (!e.target.closest('.navbar')) setMenuOpen(false)
-    }
-    document.addEventListener('click', handleOutsideClick)
-    return () => document.removeEventListener('click', handleOutsideClick)
-  }, [menuOpen])
 
   /* Intersection Observer & instant reveal for multi-page routing */
   useEffect(() => {
@@ -1076,7 +1186,7 @@ function App() {
               Get a Quote <span className="cta-arrow" aria-hidden="true">↗</span>
             </button>
             <button
-              className={`burger${menuOpen ? ' open' : ''}`}
+              className="burger"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle Navigation Menu"
               aria-expanded={menuOpen}
@@ -1099,6 +1209,7 @@ function App() {
             <SceneCanvas
               id="home-scene"
               frameUrls={scene1Frames}
+              videoUrl={scene1Vid}
               transition="fade-scale"
               overlays={[]}
             />
@@ -1129,6 +1240,7 @@ function App() {
             <SceneCanvas
               id="hall-scene"
               frameUrls={hallFrames}
+              videoUrl={scene2Vid}
               transition="slide-left"
               overlays={[]}
             />
@@ -1159,6 +1271,7 @@ function App() {
             <SceneCanvas
               id="kitchen-scene"
               frameUrls={kitchenFrames}
+              videoUrl={scene3Vid}
               transition="zoom-blur"
               overlays={[]}
             />
@@ -1189,6 +1302,7 @@ function App() {
             <SceneCanvas
               id="bedroom-scene"
               frameUrls={bedroomFrames}
+              videoUrl={scene3Vid}
               transition="slide-up"
               overlays={[]}
             />
@@ -2027,7 +2141,6 @@ function App() {
                             id="inquiry-name"
                             type="text" 
                             required 
-                            placeholder="Your full name"
                             value={pageContactForm.name}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, name: e.target.value })}
                           />
@@ -2038,7 +2151,6 @@ function App() {
                             id="inquiry-phone"
                             type="tel" 
                             required 
-                            placeholder="+91 98765 43210"
                             value={pageContactForm.phone}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, phone: e.target.value })}
                           />
@@ -2051,7 +2163,6 @@ function App() {
                           <input 
                             id="inquiry-email"
                             type="email" 
-                            placeholder="you@example.com"
                             value={pageContactForm.email}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, email: e.target.value })}
                           />
@@ -2079,7 +2190,6 @@ function App() {
                           <input 
                             id="inquiry-location"
                             type="text" 
-                            placeholder="e.g. Madanapalle, AP"
                             value={pageContactForm.location}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, location: e.target.value })}
                           />
@@ -2089,7 +2199,6 @@ function App() {
                           <input 
                             id="inquiry-area"
                             type="text" 
-                            placeholder="e.g. 2400 sq.ft"
                             value={pageContactForm.area}
                             onChange={(e) => setPageContactForm({ ...pageContactForm, area: e.target.value })}
                           />
@@ -2101,7 +2210,6 @@ function App() {
                         <textarea 
                           id="inquiry-msg"
                           rows="4" 
-                          placeholder="Describe your project requirements, plot size, preferred materials, or any questions..."
                           value={pageContactForm.message}
                           onChange={(e) => setPageContactForm({ ...pageContactForm, message: e.target.value })}
                         ></textarea>
@@ -2181,7 +2289,6 @@ function App() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={subscribed}
-                  placeholder="Your email address"
                   aria-label="Email address for newsletter"
                 />
                 <button type="submit" disabled={subscribed}>{subscribed ? 'Subscribed ✓' : 'Join ↗'}</button>
