@@ -1242,12 +1242,16 @@ function App() {
                 <span className="scene-summary-badge">BUILDING CONSTRUCTION</span>
                 <h3>Building Construction <br /><em>From Start to End</em></h3>
                 <p>
-                  Watch the complete journey of building construction — from deep pile foundation excavation and steel reinforcement, through precision RCC frame casting and brickwork, to the fully finished structural shell ready for interior fit-out.
+                  Experience the complete end-to-end civil engineering & structural construction journey — from comprehensive soil testing, deep pile foundation excavation, and seismic steel reinforcement, to precision RCC frame casting, high-grade masonry brickwork, integrated MEP conduits, and final turnkey structural handover ready for luxury fit-out.
                 </p>
                 <div className="scene-summary-highlights">
-                  <span className="scene-summary-highlight"><span className="highlight-dot" />Deep Pile Foundations</span>
-                  <span className="scene-summary-highlight"><span className="highlight-dot" />RCC Frame Casting</span>
-                  <span className="scene-summary-highlight"><span className="highlight-dot" />Turnkey Execution</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Soil Testing & Site Excavation</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Deep Seismic Pile Foundations</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Steel Reinforcement & Shuttering Work</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Precision RCC Frame & Slab Casting</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />AAC Block Masonry & Quality Brickwork</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Integrated Electrical & Plumbing Conduits</span>
+                  <span className="scene-summary-highlight"><span className="highlight-dot" />Turnkey Civil & Structural Handover</span>
                 </div>
               </div>
             </div>
