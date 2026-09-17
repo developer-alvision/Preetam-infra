@@ -471,12 +471,13 @@ p {
     display: block !important;
   }
 
-  /* Scene 1 (First Video): Full screen height on mobile */
+  /* Scene 1 (First Video): Full screen height & slightly zoomed in on mobile */
   #home-scene.scene-section {
     height: 100vh !important;
     height: 100dvh !important;
     min-height: 100vh !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   #home-scene .scene-sticky {
     position: relative !important;
@@ -484,11 +485,14 @@ p {
     height: 100vh !important;
     height: 100dvh !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   #home-scene .scene-mobile-video {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    transform: scale(1.15) !important;
+    transform-origin: center center !important;
   }
 
   /* Scenes 2, 3, 4 (Remaining Videos): Fully visible 16:9 landscape videos */
