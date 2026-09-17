@@ -459,13 +459,20 @@ p {
 
 @media (max-width: 768px) {
   .scene-section {
-    height: auto !important;
-    min-height: 60vh !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
   }
   .scene-sticky {
     position: relative !important;
-    top: auto !important;
-    height: 60vh !important;
+    top: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
     width: 100% !important;
   }
   .scene-canvas {
@@ -476,8 +483,18 @@ p {
   }
   .scene-mobile-video {
     display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    pointer-events: none !important;
   }
   .scene-progress-track {
+    display: none !important;
+  }
+  .canvas-watermark-header-logo {
     display: none !important;
   }
 }
@@ -586,14 +603,7 @@ p {
    CANVAS LOGO & WATERMARK BADGE
    ══════════════════════════════ */
 .canvas-watermark-header-logo {
-  position: absolute;
-  bottom: 24px;
-  right: max(2.5vw, 24px);
-  z-index: 10;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85));
+  display: none !important;
 }
 .canvas-watermark-header-logo .brand-logo {
   cursor: default;
