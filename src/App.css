@@ -471,53 +471,32 @@ p {
     display: block !important;
   }
 
-  /* Scene 1 (First Video): Full screen height & slightly zoomed in on mobile */
-  #home-scene.scene-section {
-    height: 100vh !important;
-    height: 100dvh !important;
-    min-height: 100vh !important;
-    width: 100% !important;
-    overflow: hidden !important;
-  }
-  #home-scene .scene-sticky {
-    position: relative !important;
-    top: auto !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    width: 100% !important;
-    overflow: hidden !important;
-  }
-  #home-scene .scene-mobile-video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    transform: scale(1.15) !important;
-    transform-origin: center center !important;
-  }
-
-  /* Scenes 2, 3, 4 (Remaining Videos): Fully visible 16:9 landscape videos */
-  .scene-section:not(#home-scene) {
+  /* All Scene Videos on Mobile: Fully visible 16:9 landscape video layout */
+  .scene-section {
     height: auto !important;
     min-height: auto !important;
     width: 100% !important;
     padding: 0 !important;
     background: #0a1628;
+    overflow: hidden !important;
   }
-  .scene-section:not(#home-scene) .scene-sticky {
+  .scene-sticky {
     position: relative !important;
     top: auto !important;
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 9;
     background: #000;
+    overflow: hidden !important;
   }
-  .scene-section:not(#home-scene) .scene-mobile-video {
+  .scene-mobile-video {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
     background: #000;
+    transform: none !important;
   }
 }
 
