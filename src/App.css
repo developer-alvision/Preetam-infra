@@ -459,21 +459,25 @@ p {
 
 @media (max-width: 768px) {
   .scene-section {
-    height: 100vh !important;
-    height: 100dvh !important;
-    min-height: 100vh !important;
+    height: auto !important;
+    min-height: auto !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     position: relative !important;
     overflow: hidden !important;
+    background: #060c18 !important;
   }
   .scene-sticky {
     position: relative !important;
     top: 0 !important;
-    height: 100vh !important;
-    height: 100dvh !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
     width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #060c18 !important;
   }
   .scene-canvas {
     display: none !important;
@@ -483,13 +487,13 @@ p {
   }
   .scene-mobile-video {
     display: block !important;
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center !important;
     pointer-events: none !important;
+    background: #060c18 !important;
   }
   .scene-progress-track {
     display: none !important;
