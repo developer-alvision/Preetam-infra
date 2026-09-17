@@ -556,12 +556,37 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Auto-play mobile background video seamlessly without controls
+  // Trigger video playback when user scrolls to the scene
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {})
+    const videoEl = videoRef.current
+    if (!videoEl || !videoUrl) return
+
+    // Scene 1 (top scene) plays immediately
+    if (id === 'home-scene') {
+      videoEl.play().catch(() => {})
+      return
     }
-  }, [videoUrl, isMobile])
+
+    // Scenes 2, 3, 4 start playing when scrolled into view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            videoEl.play().catch(() => {})
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [id, videoUrl, isMobile])
 
   // Preload images into global memory cache smoothly for this specific scene
   useEffect(() => {
