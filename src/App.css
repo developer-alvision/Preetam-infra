@@ -2993,10 +2993,14 @@ p {
 
 @media (max-width: 768px) {
   .scene-divider {
-    padding: 20px 0;
+    padding: 24px 16px;
+  }
+  .scene-divider-label {
+    font-size: 10px;
+    letter-spacing: 3px;
   }
   .scene-divider-title {
-    font-size: clamp(18px, 5vw, 26px);
+    font-size: clamp(20px, 5.5vw, 28px);
   }
 }
 
@@ -3094,32 +3098,47 @@ p {
 
 @media (max-width: 768px) {
   .scene-summary {
-    padding: 36px 0;
+    padding: 36px 0 48px;
+    min-height: calc(100dvh - 56.25vw - 64px);
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
   }
   .scene-summary-inner {
-    width: calc(100% - 40px);
+    width: calc(100% - 36px);
+  }
+  .scene-summary-badge {
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
   }
   .scene-summary h3 {
-    font-size: clamp(18px, 5vw, 24px);
+    font-size: clamp(24px, 6.5vw, 32px);
+    line-height: 1.18;
+    margin-bottom: 14px;
   }
   .scene-summary p {
-    font-size: 13px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
   }
   .scene-summary-highlights {
     gap: 12px;
+    margin-top: 20px;
   }
   .scene-summary-highlight {
-    font-size: 11px;
-    padding: 8px 14px;
+    font-size: 12px;
+    padding: 9px 16px;
   }
 }
 
 @media (max-width: 480px) {
   .scene-summary {
-    padding: 28px 0;
+    padding: 32px 0 44px;
+    min-height: calc(100dvh - 56.25vw - 64px);
   }
   .scene-summary-inner {
-    width: calc(100% - 28px);
+    width: calc(100% - 32px);
   }
 }
 
