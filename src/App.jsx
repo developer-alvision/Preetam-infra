@@ -543,6 +543,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
   const counterRef = useRef(null)
   const overlaysRef = useRef([])
   const updateScrollRef = useRef(null)
+  const setScrollLockRef = useRef(null)
 
   const frameIdxRef = useRef(0)
   const loadPercentRef = useRef(0)
@@ -652,6 +653,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
         if (loaded >= total && total > 0) {
           setIsAllLoaded(true)
           isAllLoadedRef.current = true
+          setScrollLockRef.current?.(false)
           updateScrollRef.current?.()
         }
       }
@@ -713,6 +715,80 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     const ctx = canvas.getContext('2d', { alpha: false })
     let animationFrameId = null
     let lastDrawnImg = null
+    let savedOverflow = null
+    let allowScrollBack = false
+    let touchStartY = null
+
+    const root = document.documentElement
+    const body = document.body
+    const setPageScrollLocked = (locked) => {
+      if (locked && !savedOverflow) {
+        savedOverflow = { root: root.style.overflowY, body: body.style.overflowY }
+        root.style.overflowY = 'hidden'
+        body.style.overflowY = 'hidden'
+      } else if (!locked && savedOverflow) {
+        root.style.overflowY = savedOverflow.root
+        body.style.overflowY = savedOverflow.body
+        savedOverflow = null
+      }
+    }
+    setScrollLockRef.current = setPageScrollLocked
+
+    const syncPageScrollLock = () => {
+      if (isAllLoadedRef.current) {
+        allowScrollBack = false
+        setPageScrollLocked(false)
+        return
+      }
+
+      const rect = container.getBoundingClientRect()
+      if (allowScrollBack && rect.top >= 0) allowScrollBack = false
+      if (!allowScrollBack) {
+        setPageScrollLocked(rect.top <= 0 && rect.bottom > window.innerHeight)
+      }
+    }
+
+    const handleScrollIntent = (event, distance) => {
+      if (distance < 0) {
+        allowScrollBack = true
+        setPageScrollLocked(false)
+        return
+      }
+      if (distance === 0 || isAllLoadedRef.current) return
+
+      allowScrollBack = false
+      const rect = container.getBoundingClientRect()
+      const isPinned = rect.top <= 0 && rect.bottom > window.innerHeight
+      if (isPinned) {
+        event.preventDefault()
+      } else if (rect.top > 0 && rect.top < window.innerHeight && rect.top <= distance) {
+        event.preventDefault()
+        window.scrollTo({ top: window.scrollY + rect.top, behavior: 'instant' })
+      } else {
+        return
+      }
+      setPageScrollLocked(true)
+    }
+
+    const onWheel = (event) => handleScrollIntent(event, event.deltaY)
+    const onKeyDown = (event) => {
+      if (event.target !== body && event.target !== root) return
+      if (['ArrowDown', 'PageDown', 'End'].includes(event.key) || (event.key === ' ' && !event.shiftKey)) {
+        handleScrollIntent(event, window.innerHeight)
+      } else if (['ArrowUp', 'PageUp', 'Home'].includes(event.key) || (event.key === ' ' && event.shiftKey)) {
+        handleScrollIntent(event, -1)
+      }
+    }
+    const onTouchStart = (event) => {
+      touchStartY = event.touches[0]?.clientY ?? null
+    }
+    const onTouchMove = (event) => {
+      const touchY = event.touches[0]?.clientY
+      if (touchStartY !== null && touchY !== undefined) {
+        handleScrollIntent(event, touchStartY - touchY)
+        touchStartY = touchY
+      }
+    }
 
     const handleResize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -791,6 +867,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     updateScrollRef.current = updateScrollAndRender
 
     const onScroll = () => {
+      syncPageScrollLock()
       if (!animationFrameId) {
         animationFrameId = requestAnimationFrame(() => {
           updateScrollAndRender()
@@ -810,12 +887,22 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
 
     window.addEventListener('resize', handleResize)
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
 
     return () => {
       clearTimeout(renderInitTimer)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      setPageScrollLocked(false)
       if (updateScrollRef.current === updateScrollAndRender) updateScrollRef.current = null
+      if (setScrollLockRef.current === setPageScrollLocked) setScrollLockRef.current = null
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
   }, [activeFrameUrls, overlays, isMobile])
