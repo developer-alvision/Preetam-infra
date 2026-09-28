@@ -411,9 +411,10 @@ p {
 .scene-section {
   position: relative;
   background: #0a1628;
-  height: 280vh;
+  height: 220vh;
   width: 100%;
-  padding-top: 0;
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 .scene-sticky {
@@ -2831,46 +2832,26 @@ p {
    UNIQUE SCENE TRANSITIONS
    ══════════════════════════════ */
 .scene-section {
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  margin: 0;
+  padding: 0;
 }
 .scene-section.scene-visible {
   opacity: 1;
 }
 
-/* Scene 1: Fade + Scale Up */
-.scene-section[data-transition="fade-scale"] {
-  transform: scale(0.93);
+/* Scene transitions applied safely to inner sticky element so sticky positioning is never broken */
+.scene-section[data-transition="fade-scale"] .scene-sticky {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.scene-section[data-transition="fade-scale"].scene-visible {
-  transform: scale(1);
+.scene-section[data-transition="slide-left"] .scene-sticky {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-/* Scene 2: Slide from Left */
-.scene-section[data-transition="slide-left"] {
-  transform: translateX(-60px);
+.scene-section[data-transition="zoom-blur"] .scene-sticky {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.scene-section[data-transition="slide-left"].scene-visible {
-  transform: translateX(0);
-}
-
-/* Scene 3: Zoom + Blur */
-.scene-section[data-transition="zoom-blur"] {
-  transform: scale(1.08);
-  filter: blur(8px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.scene-section[data-transition="zoom-blur"].scene-visible {
-  transform: scale(1);
-  filter: blur(0px);
-}
-
-/* Scene 4: Slide Up + Parallax Fade */
-.scene-section[data-transition="slide-up"] {
-  transform: translateY(50px);
-}
-.scene-section[data-transition="slide-up"].scene-visible {
-  transform: translateY(0);
+.scene-section[data-transition="slide-up"] .scene-sticky {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ══════════════════════════════
@@ -2878,10 +2859,11 @@ p {
    ══════════════════════════════ */
 @media (max-width: 768px) {
   .scene-section {
-    height: 240vh;
-    padding-top: 0;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
     border-radius: 0;
-    margin-bottom: 0;
   }
   .scene-section .scene-sticky {
     border-radius: 0;
@@ -2930,8 +2912,9 @@ p {
 
 @media (max-width: 480px) {
   .scene-section {
-    height: 240vh;
-    padding-top: 0;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
   }
   .navbar-inner {
     width: calc(100% - 24px);
@@ -2957,7 +2940,8 @@ p {
    SECTION DIVIDERS FOR HOME
    ══════════════════════════════ */
 .scene-divider {
-  padding: 28px 0;
+  padding: 24px 0;
+  margin: 0;
   text-align: center;
   background: linear-gradient(135deg, #0a1628, #142240);
   border-top: 1px solid rgba(201, 169, 110, 0.15);
@@ -3025,7 +3009,8 @@ p {
    SCENE SUMMARY CARDS
    ══════════════════════════════ */
 .scene-summary {
-  padding: 48px 0;
+  padding: 40px 0;
+  margin: 0;
   background: linear-gradient(180deg, #0d1b30, #0a1628);
   position: relative;
   overflow: hidden;

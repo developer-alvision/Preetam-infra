@@ -30,7 +30,8 @@ import scene3Vid from './videos/Scene 3.mp4'
 import scene4Vid from './videos/Scene 4.mp4'
 
 /* ───────── FRAME ASSET GLOBS ───────── */
-const sampleFrames = (frames, maxCount = 66) => {
+const sampleFrames = (frames, maxCount = 42) => {
+  if (!Array.isArray(frames) || frames.length === 0) return []
   if (frames.length <= maxCount) return frames
   const step = frames.length / maxCount
   const result = []
@@ -40,21 +41,26 @@ const sampleFrames = (frames, maxCount = 66) => {
   return result
 }
 
-const scene1Frames = Object.entries(
-  import.meta.glob('./Images/Landing Page/Scene 1 Building Construction start to end/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
+const sceneFrameImports = {
+  'home-scene': import.meta.glob('./Images/Landing Page/Scene 1/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { query: '?url', import: 'default' }),
+  'hall-scene': import.meta.glob('./Images/Landing Page/Hall/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { query: '?url', import: 'default' }),
+  'kitchen-scene': import.meta.glob('./Images/Landing Page/Kitchen/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { query: '?url', import: 'default' }),
+  'bedroom-scene': import.meta.glob('./Images/Landing Page/Bedroom/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { query: '?url', import: 'default' }),
+}
 
-const hallFrames = sampleFrames(Object.entries(
-  import.meta.glob('./Images/Landing Page/Hall setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u), 66)
+const loadSceneFrameUrls = async (sceneKey, maxCount = 42) => {
+  const entries = Object.entries(sceneFrameImports[sceneKey] || {})
+    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
 
-const kitchenFrames = sampleFrames(Object.entries(
-  import.meta.glob('./Images/Landing Page/Kitchen setup frames/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u), 66)
+  const urls = await Promise.all(
+    entries.map(async ([, importer]) => {
+      const value = await importer()
+      return typeof value === 'string' ? value : value?.default || String(value)
+    })
+  )
 
-const bedroomFrames = Object.entries(
-  import.meta.glob('./Images/Landing Page/Bedroom Setup/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG}', { eager: true, query: '?url', import: 'default' })
-).sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([, u]) => u)
+  return sampleFrames(urls, maxCount)
+}
 
 /* ───────── LUXURY PREETHAM INFRA LOGO MARK ───────── */
 function Logo({ light = false, onClick }) {
@@ -528,7 +534,7 @@ function calcOverlayOpacity(progress, startPct, endPct) {
 
 
 /* ───────── HIGH PERFORMANCE SCENE CANVAS WITH MOBILE-FRIENDLY SCROLL & STRICT FRAME LOCK ───────── */
-const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transition, videoUrl }) {
+const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, transition, videoUrl, frameLoader }) {
   const containerRef = useRef(null)
   const canvasRef = useRef(null)
   const videoRef = useRef(null)
@@ -540,12 +546,14 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
   const frameIdxRef = useRef(0)
   const loadPercentRef = useRef(0)
 
+  const [resolvedFrameUrls, setResolvedFrameUrls] = useState(frameUrls)
   const [loadedCount, setLoadedCount] = useState(0)
   const [isAllLoaded, setIsAllLoaded] = useState(false)
   const isAllLoadedRef = useRef(false)
   const hasCompletedRef = useRef(false)
 
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+  const activeFrameUrls = resolvedFrameUrls.length ? resolvedFrameUrls : frameUrls
 
   useEffect(() => {
     const handleResize = () => {
@@ -559,7 +567,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
   // Trigger video playback when user scrolls to the scene
   useEffect(() => {
     const videoEl = videoRef.current
-    if (!videoEl || !videoUrl) return
+    if (!isMobile || !videoEl || !videoUrl) return
 
     // Scene 1 (top scene) plays immediately
     if (id === 'home-scene') {
@@ -588,134 +596,117 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     }
   }, [id, videoUrl, isMobile])
 
-  // Preload images into global memory cache smoothly for this specific scene
   useEffect(() => {
+    if (!frameLoader) {
+      setResolvedFrameUrls(frameUrls)
+      return
+    }
+
     let cancelled = false
-    const loadedImages = frameUrls.map((url) => getCachedImage(url))
-    imagesRef.current = loadedImages
-    
-    let loaded = 0
-    const total = frameUrls.length
-
-    const updateStatus = () => {
-      if (cancelled) return
-      setLoadedCount(loaded)
-      const pct = total > 0 ? loaded / total : 1
-      loadPercentRef.current = pct
-      if (loaded >= total && total > 0) {
-        setIsAllLoaded(true)
-        isAllLoadedRef.current = true
+    ;(async () => {
+      try {
+        const urls = await frameLoader()
+        if (!cancelled) setResolvedFrameUrls(urls)
+      } catch {
+        if (!cancelled) setResolvedFrameUrls(frameUrls)
       }
-    }
-
-    const checkAndRenderFirstFrame = () => {
-      if (cancelled) return
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const ctx = canvas.getContext('2d', { alpha: false })
-      const firstImg = loadedImages[0]
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const rect = canvas.getBoundingClientRect()
-      if (rect.width > 0 && rect.height > 0) {
-        canvas.width = rect.width * dpr
-        canvas.height = rect.height * dpr
-        drawImageCover(ctx, firstImg, canvas.width, canvas.height)
-      }
-    }
-
-    loadedImages.forEach(img => {
-      if (img.complete && img.naturalWidth > 0) {
-        loaded++
-      } else {
-        const onDone = () => {
-          loaded++
-          updateStatus()
-          if (loaded === 1) checkAndRenderFirstFrame()
-        }
-        img.addEventListener('load', onDone, { once: true })
-        img.addEventListener('error', onDone, { once: true })
-      }
-    })
-    updateStatus()
-
-    checkAndRenderFirstFrame()
-    const timer = setTimeout(checkAndRenderFirstFrame, 60)
-
-    // Fallback safety timer: if after 3s some frames fail, unlock so user isn't stuck waiting
-    const safetyTimer = setTimeout(() => {
-      if (!cancelled && !isAllLoadedRef.current) {
-        setIsAllLoaded(true)
-        isAllLoadedRef.current = true
-      }
-    }, 3000)
+    })()
 
     return () => {
       cancelled = true
-      clearTimeout(timer)
-      clearTimeout(safetyTimer)
     }
-  }, [frameUrls])
+  }, [frameLoader, frameUrls])
 
-  // Desktop Scroll Lock mechanism (Disabled on Mobile)
+  // Load desktop frames only as their scene approaches the viewport.
   useEffect(() => {
-    if (isMobile) return
-    const container = containerRef.current
-    if (!container) return
-
-    let lastY = 0
-    const onTouchStart = (e) => {
-      if (e.touches && e.touches[0]) {
-        lastY = e.touches[0].clientY
-      }
+    let cancelled = false
+    if (isMobile) {
+      imagesRef.current = []
+      setLoadedCount(0)
+      setIsAllLoaded(true)
+      isAllLoadedRef.current = true
+      return
     }
 
-    const preventIfLocked = (e) => {
-      const rect = container.getBoundingClientRect()
-      const vh = document.documentElement.clientHeight
+    const scene = containerRef.current
+    if (!scene || !activeFrameUrls.length) return
 
-      if (rect.top <= 20 && rect.bottom >= vh - 20) {
-        const totalScrollable = rect.height - vh
-        const currentScroll = -rect.top
-        const progress = totalScrollable > 0 ? currentScroll / totalScrollable : 1
+    const loadFrames = () => {
+      if (cancelled) return
+      const loadedImages = activeFrameUrls.map((url) => getCachedImage(url))
+      imagesRef.current = loadedImages
 
-        if (progress >= 0.94) {
-          hasCompletedRef.current = true
-        }
+      let loaded = 0
+      const total = activeFrameUrls.length
 
-        let isScrollingDown = false
-        if (e.type === 'wheel') {
-          isScrollingDown = e.deltaY > 0
-        } else if (e.type === 'touchmove' && e.touches && e.touches[0]) {
-          isScrollingDown = lastY > e.touches[0].clientY
-          lastY = e.touches[0].clientY
-        }
-
-        if (!isAllLoadedRef.current && isScrollingDown && rect.top <= 0) {
-          e.preventDefault()
-          return
-        }
-
-        if (isScrollingDown && !hasCompletedRef.current && progress > 0.98) {
-          hasCompletedRef.current = true
+      const updateStatus = () => {
+        if (cancelled) return
+        setLoadedCount(loaded)
+        loadPercentRef.current = total > 0 ? loaded / total : 1
+        if (loaded >= total && total > 0) {
+          setIsAllLoaded(true)
+          isAllLoadedRef.current = true
         }
       }
+
+      const renderFirstFrame = () => {
+        if (cancelled) return
+        const canvas = canvasRef.current
+        const firstImg = loadedImages[0]
+        if (!canvas || !firstImg?.complete || !firstImg.naturalWidth) return
+
+        const ctx = canvas.getContext('2d', { alpha: false })
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        const rect = canvas.getBoundingClientRect()
+        if (rect.width > 0 && rect.height > 0) {
+          canvas.width = rect.width * dpr
+          canvas.height = rect.height * dpr
+          drawImageCover(ctx, firstImg, canvas.width, canvas.height)
+        }
+      }
+
+      loadedImages.forEach((img) => {
+        if (img.complete) {
+          loaded++
+        } else {
+          const onDone = () => {
+            loaded++
+            updateStatus()
+            if (loaded === 1) renderFirstFrame()
+          }
+          img.addEventListener('load', onDone, { once: true })
+          img.addEventListener('error', onDone, { once: true })
+        }
+      })
+      updateStatus()
+      renderFirstFrame()
+
+      const safetyTimer = setTimeout(() => {
+        if (!cancelled && !isAllLoadedRef.current) {
+          setIsAllLoaded(true)
+          isAllLoadedRef.current = true
+        }
+      }, 12000)
+      return () => clearTimeout(safetyTimer)
     }
 
-    window.addEventListener('wheel', preventIfLocked, { passive: false })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchmove', preventIfLocked, { passive: false })
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        observer.disconnect()
+        loadFrames()
+      }
+    }, { rootMargin: '120% 0px' })
+    observer.observe(scene)
 
     return () => {
-      window.removeEventListener('wheel', preventIfLocked)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchmove', preventIfLocked)
+      cancelled = true
+      observer.disconnect()
     }
-  }, [isMobile])
+  }, [activeFrameUrls, isMobile])
 
   // Canvas render & scroll handler (Desktop Sticky Scroll)
   useEffect(() => {
-    if (isMobile) return
+    if (isMobile || !activeFrameUrls.length) return
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
@@ -735,7 +726,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
     }
 
     const renderFrame = (idx) => {
-      const totalFrames = frameUrls.length
+      const totalFrames = activeFrameUrls.length
       if (totalFrames === 0) {
         drawImageCover(ctx, null, canvas.width, canvas.height)
         return
@@ -743,7 +734,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       const validIdx = Math.max(0, Math.min(totalFrames - 1, idx))
       frameIdxRef.current = validIdx
 
-      const img = imagesRef.current[validIdx] || getCachedImage(frameUrls[validIdx])
+      const img = imagesRef.current[validIdx] || getCachedImage(activeFrameUrls[validIdx])
       if (img && img.complete && img.naturalWidth > 0) {
         lastDrawnImg = img
         drawImageCover(ctx, img, canvas.width, canvas.height)
@@ -751,21 +742,17 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
         drawImageCover(ctx, lastDrawnImg, canvas.width, canvas.height)
       } else {
         let nearest = null
-        for (let offset = 1; offset < frameUrls.length; offset++) {
-          const prevImg = imagesRef.current[validIdx - offset] || getCachedImage(frameUrls[validIdx - offset])
+        for (let offset = 1; offset < activeFrameUrls.length; offset++) {
+          const prevImg = imagesRef.current[validIdx - offset] || getCachedImage(activeFrameUrls[validIdx - offset])
           if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) { nearest = prevImg; break }
 
-          const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(frameUrls[validIdx + offset])
+          const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(activeFrameUrls[validIdx + offset])
           if (nextImg && nextImg.complete && nextImg.naturalWidth > 0) { nearest = nextImg; break }
         }
         drawImageCover(ctx, nearest, canvas.width, canvas.height)
       }
 
       const rawProgress = totalFrames > 1 ? validIdx / (totalFrames - 1) : 0
-
-      if (rawProgress >= 0.95) {
-        hasCompletedRef.current = true
-      }
 
       if (progressFillRef.current) {
         progressFillRef.current.style.width = `${(rawProgress * 100).toFixed(1)}%`
@@ -792,7 +779,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
 
       const currentScroll = -rect.top
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable))
-      const totalFrames = frameUrls.length
+      const totalFrames = activeFrameUrls.length
       const frameIdx = Math.floor(progress * (totalFrames - 1))
 
       renderFrame(frameIdx)
@@ -825,7 +812,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
       window.removeEventListener('scroll', onScroll)
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
-  }, [frameUrls, overlays, isMobile])
+  }, [activeFrameUrls, overlays, isMobile])
 
   return (
     <section className={`scene-section ${isMobile ? 'scene-section-mobile' : ''}`} id={id} ref={containerRef} data-transition={transition}>
@@ -834,27 +821,24 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
         <canvas ref={canvasRef} className="scene-canvas" role="img" aria-label="Animated construction scene showing building progress" />
 
         {/* Video for Mobile version — plays automatically with no pause or stop button */}
-        {videoUrl && (
+        {isMobile && videoUrl && (
           <video
             ref={videoRef}
             src={videoUrl}
-            autoPlay
             muted
             loop
             playsInline
+            preload="metadata"
             className="scene-mobile-video"
             aria-hidden="true"
           />
         )}
 
-        {!isMobile && !isAllLoaded && (
+        {!isMobile && !isAllLoaded && activeFrameUrls.length > 0 && (
           <div className="scene-loading-overlay">
             <div className="scene-loader-spinner" />
             <span className="scene-loader-text">
-              Loading Frames ({loadedCount}/{frameUrls.length}) • {Math.round((loadedCount / (frameUrls.length || 1)) * 100)}%
-            </span>
-            <span style={{ fontSize: '11px', color: 'rgba(201, 169, 110, 0.7)', letterSpacing: '0.5px' }}>
-              Scroll locked until all frames load
+              Loading Frames ({loadedCount}/{activeFrameUrls.length}) • {Math.round((loadedCount / (activeFrameUrls.length || 1)) * 100)}%
             </span>
           </div>
         )}
@@ -885,7 +869,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls, overlays, transit
 
 /* ───────── MAIN APP ───────── */
 function App() {
-  const [loading, setLoading] = useState(true)
+  const [loading] = useState(false)
   const [loadProgress, setLoadProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const [navScrolled, setNavScrolled] = useState(false)
@@ -1015,56 +999,6 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' })
     setMenuOpen(false)
   }
-
-  /* Preload Scene 1 frames with fallback safety and trigger background cache for remaining scenes */
-  useEffect(() => {
-    let cancelled = false
-    let loaded = 0
-    const criticalFrames = scene1Frames
-    const total = criticalFrames.length
-
-    const fallbackTimer = setTimeout(() => {
-      if (!cancelled) setLoading(false)
-    }, 2500)
-
-    if (total === 0) { setLoading(false); return }
-
-    criticalFrames.forEach((src) => {
-      const img = getCachedImage(src)
-      if (img.complete && img.naturalWidth > 0) {
-        loaded++
-        if (!cancelled) {
-          setLoadProgress(Math.round((loaded / total) * 100))
-          if (loaded === total) {
-            clearTimeout(fallbackTimer)
-            setLoading(false)
-          }
-        }
-      } else {
-        const onSingleDone = () => {
-          loaded++
-          if (!cancelled) {
-            setLoadProgress(Math.round((loaded / total) * 100))
-            if (loaded === total) {
-              clearTimeout(fallbackTimer)
-              setLoading(false)
-            }
-          }
-        }
-        img.addEventListener('load', onSingleDone, { once: true })
-        img.addEventListener('error', onSingleDone, { once: true })
-      }
-    })
-
-    // Pre-trigger background caching for remaining scenes so they are ready by the time user scrolls
-    const otherScenes = [...hallFrames, ...kitchenFrames, ...bedroomFrames]
-    otherScenes.forEach(src => getCachedImage(src))
-
-    return () => {
-      cancelled = true
-      clearTimeout(fallbackTimer)
-    }
-  }, [])
 
   useEffect(() => {
     document.body.style.overflow = loading ? 'hidden' : ''
@@ -1230,7 +1164,8 @@ function App() {
             {/* SCENE 01: BUILDING CONSTRUCTION */}
             <SceneCanvas
               id="home-scene"
-              frameUrls={scene1Frames}
+              frameUrls={[]}
+              frameLoader={() => loadSceneFrameUrls('home-scene', 42)}
               videoUrl={scene1Vid}
               transition="fade-scale"
               overlays={[]}
@@ -1265,7 +1200,8 @@ function App() {
             {/* SCENE 02: HALL */}
             <SceneCanvas
               id="hall-scene"
-              frameUrls={hallFrames}
+              frameUrls={[]}
+              frameLoader={() => loadSceneFrameUrls('hall-scene', 42)}
               videoUrl={scene2Vid}
               transition="slide-left"
               overlays={[]}
@@ -1296,7 +1232,8 @@ function App() {
             {/* SCENE 03: KITCHEN */}
             <SceneCanvas
               id="kitchen-scene"
-              frameUrls={kitchenFrames}
+              frameUrls={[]}
+              frameLoader={() => loadSceneFrameUrls('kitchen-scene', 42)}
               videoUrl={scene3Vid}
               transition="zoom-blur"
               overlays={[]}
@@ -1327,7 +1264,8 @@ function App() {
             {/* SCENE 04: BEDROOM */}
             <SceneCanvas
               id="bedroom-scene"
-              frameUrls={bedroomFrames}
+              frameUrls={[]}
+              frameLoader={() => loadSceneFrameUrls('bedroom-scene', 42)}
               videoUrl={scene4Vid}
               transition="slide-up"
               overlays={[]}
@@ -1756,9 +1694,9 @@ function App() {
                         <div className="service-card-img-wrap">
                           <span className="service-card-tag">{svc.tag}</span>
                           {svc.type === 'video' ? (
-                            <video src={svc.src} loop muted autoPlay playsInline />
+                            <video src={svc.src} loop muted playsInline preload="none" />
                           ) : (
-                            <img src={svc.src} alt={svc.title} />
+                            <img src={svc.src} alt={svc.title} loading="lazy" decoding="async" />
                           )}
                         </div>
                         <div className="service-card-body">
@@ -1836,6 +1774,8 @@ function App() {
                             src={proj.images[currentPhotoIdx] || proj.images[0]}
                             alt={proj.title}
                             className="project-main-photo"
+                            loading="lazy"
+                            decoding="async"
                           />
 
                           {/* Photo Counter Badge */}
@@ -1881,6 +1821,8 @@ function App() {
                                 src={imgUrl}
                                 alt={`Thumbnail ${i + 1}`}
                                 className={`project-thumb${currentPhotoIdx === i ? ' active' : ''}`}
+                                loading="lazy"
+                                decoding="async"
                                 onClick={() => setActiveGalleryIdx((prev) => ({ ...prev, [proj.id]: i }))}
                               />
                             ))}
