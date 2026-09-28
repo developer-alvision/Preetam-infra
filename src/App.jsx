@@ -542,6 +542,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
   const progressFillRef = useRef(null)
   const counterRef = useRef(null)
   const overlaysRef = useRef([])
+  const updateScrollRef = useRef(null)
 
   const frameIdxRef = useRef(0)
   const loadPercentRef = useRef(0)
@@ -628,6 +629,11 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       return
     }
 
+    setLoadedCount(0)
+    setIsAllLoaded(false)
+    isAllLoadedRef.current = false
+    loadPercentRef.current = 0
+
     const scene = containerRef.current
     if (!scene || !activeFrameUrls.length) return
 
@@ -646,6 +652,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
         if (loaded >= total && total > 0) {
           setIsAllLoaded(true)
           isAllLoadedRef.current = true
+          updateScrollRef.current?.()
         }
       }
 
@@ -680,14 +687,6 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       })
       updateStatus()
       renderFirstFrame()
-
-      const safetyTimer = setTimeout(() => {
-        if (!cancelled && !isAllLoadedRef.current) {
-          setIsAllLoaded(true)
-          isAllLoadedRef.current = true
-        }
-      }, 12000)
-      return () => clearTimeout(safetyTimer)
     }
 
     const observer = new IntersectionObserver((entries) => {
@@ -772,6 +771,11 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     }
 
     const updateScrollAndRender = () => {
+      if (!isAllLoadedRef.current) {
+        renderFrame(0)
+        return
+      }
+
       const rect = container.getBoundingClientRect()
       const vh = document.documentElement.clientHeight
       const totalScrollable = rect.height - vh
@@ -784,6 +788,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
 
       renderFrame(frameIdx)
     }
+    updateScrollRef.current = updateScrollAndRender
 
     const onScroll = () => {
       if (!animationFrameId) {
@@ -810,6 +815,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       clearTimeout(renderInitTimer)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('scroll', onScroll)
+      if (updateScrollRef.current === updateScrollAndRender) updateScrollRef.current = null
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
   }, [activeFrameUrls, overlays, isMobile])
