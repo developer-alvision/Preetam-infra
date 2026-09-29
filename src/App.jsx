@@ -716,13 +716,19 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
         if (img.complete) {
           loaded++
         } else {
+          let counted = false
           const onDone = () => {
+            if (counted) return
+            counted = true
+            img.removeEventListener('load', onDone)
+            img.removeEventListener('error', onDone)
             loaded++
             updateStatus()
             if (loaded === 1) renderFirstFrame()
           }
-          img.addEventListener('load', onDone, { once: true })
-          img.addEventListener('error', onDone, { once: true })
+          img.addEventListener('load', onDone)
+          img.addEventListener('error', onDone)
+          if (img.complete) onDone()
         }
       })
       updateStatus()
@@ -878,7 +884,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       const validIdx = Math.max(0, Math.min(totalFrames - 1, idx))
       frameIdxRef.current = validIdx
 
-      const img = imagesRef.current[validIdx] || getCachedImage(activeFrameUrls[validIdx])
+      const img = imagesRef.current[validIdx]
       if (img && img.complete && img.naturalWidth > 0) {
         lastDrawnImg = img
         drawImageCover(ctx, img, canvas.width, canvas.height)
@@ -887,10 +893,10 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       } else {
         let nearest = null
         for (let offset = 1; offset < activeFrameUrls.length; offset++) {
-          const prevImg = imagesRef.current[validIdx - offset] || getCachedImage(activeFrameUrls[validIdx - offset])
+          const prevImg = imagesRef.current[validIdx - offset]
           if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) { nearest = prevImg; break }
 
-          const nextImg = imagesRef.current[validIdx + offset] || getCachedImage(activeFrameUrls[validIdx + offset])
+          const nextImg = imagesRef.current[validIdx + offset]
           if (nextImg && nextImg.complete && nextImg.naturalWidth > 0) { nearest = nextImg; break }
         }
         drawImageCover(ctx, nearest, canvas.width, canvas.height)
