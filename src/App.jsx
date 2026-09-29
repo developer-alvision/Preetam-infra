@@ -51,15 +51,25 @@ const sceneFrameImports = {
 const loadSceneFrameUrls = async (sceneKey, maxCount = 42) => {
   const entries = Object.entries(sceneFrameImports[sceneKey] || {})
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+  const sampledEntries = sampleFrames(entries, maxCount)
 
   const urls = await Promise.all(
-    entries.map(async ([, importer]) => {
+    sampledEntries.map(async ([, importer]) => {
       const value = await importer()
       return typeof value === 'string' ? value : value?.default || String(value)
     })
   )
 
-  return sampleFrames(urls, maxCount)
+  return urls
+}
+
+const EMPTY_FRAME_URLS = []
+const EMPTY_SCENE_OVERLAYS = []
+const SCENE_FRAME_LOADERS = {
+  'home-scene': () => loadSceneFrameUrls('home-scene', 42),
+  'hall-scene': () => loadSceneFrameUrls('hall-scene', 42),
+  'kitchen-scene': () => loadSceneFrameUrls('kitchen-scene', 42),
+  'bedroom-scene': () => loadSceneFrameUrls('bedroom-scene', 42),
 }
 
 /* ───────── LUXURY PREETHAM INFRA LOGO MARK ───────── */
@@ -543,7 +553,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
   const counterRef = useRef(null)
   const overlaysRef = useRef([])
   const updateScrollRef = useRef(null)
-  const setScrollLockRef = useRef(null)
+  const completeScrollLockRef = useRef(null)
 
   const frameIdxRef = useRef(0)
   const loadPercentRef = useRef(0)
@@ -599,25 +609,53 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
   }, [id, videoUrl, isMobile])
 
   useEffect(() => {
+    if (isMobile) {
+      setResolvedFrameUrls(frameUrls)
+      setIsAllLoaded(true)
+      isAllLoadedRef.current = true
+      return
+    }
+
     if (!frameLoader) {
       setResolvedFrameUrls(frameUrls)
+      const hasFrames = frameUrls.length > 0
+      setIsAllLoaded(!hasFrames)
+      isAllLoadedRef.current = !hasFrames
       return
     }
 
     let cancelled = false
+    setIsAllLoaded(false)
+    isAllLoadedRef.current = false
     ;(async () => {
       try {
         const urls = await frameLoader()
-        if (!cancelled) setResolvedFrameUrls(urls)
+        if (!cancelled) {
+          setResolvedFrameUrls(urls)
+          if (urls.length === 0) {
+            setIsAllLoaded(true)
+            isAllLoadedRef.current = true
+            completeScrollLockRef.current?.()
+            updateScrollRef.current?.()
+          }
+        }
       } catch {
-        if (!cancelled) setResolvedFrameUrls(frameUrls)
+        if (!cancelled) {
+          setResolvedFrameUrls(frameUrls)
+          if (frameUrls.length === 0) {
+            setIsAllLoaded(true)
+            isAllLoadedRef.current = true
+            completeScrollLockRef.current?.()
+            updateScrollRef.current?.()
+          }
+        }
       }
     })()
 
     return () => {
       cancelled = true
     }
-  }, [frameLoader, frameUrls])
+  }, [frameLoader, frameUrls, isMobile])
 
   // Load desktop frames only as their scene approaches the viewport.
   useEffect(() => {
@@ -653,7 +691,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
         if (loaded >= total && total > 0) {
           setIsAllLoaded(true)
           isAllLoadedRef.current = true
-          setScrollLockRef.current?.(false)
+          completeScrollLockRef.current?.()
           updateScrollRef.current?.()
         }
       }
@@ -707,7 +745,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
 
   // Canvas render & scroll handler (Desktop Sticky Scroll)
   useEffect(() => {
-    if (isMobile || !activeFrameUrls.length) return
+    if (isMobile) return
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
@@ -718,6 +756,8 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     let savedOverflow = null
     let allowScrollBack = false
     let touchStartY = null
+    let unlockTimer = null
+    let releasePending = false
 
     const root = document.documentElement
     const body = document.body
@@ -732,12 +772,32 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
         savedOverflow = null
       }
     }
-    setScrollLockRef.current = setPageScrollLocked
+
+    const scheduleUnlock = () => {
+      releasePending = true
+      clearTimeout(unlockTimer)
+      unlockTimer = setTimeout(() => {
+        releasePending = false
+        setPageScrollLocked(false)
+      }, 350)
+    }
+
+    const completeScrollLock = () => {
+      if (allowScrollBack) {
+        setPageScrollLocked(false)
+        return
+      }
+      const rect = container.getBoundingClientRect()
+      if (rect.top < 0 && rect.bottom > 0) {
+        window.scrollTo({ top: window.scrollY + rect.top, behavior: 'instant' })
+      }
+      scheduleUnlock()
+    }
+    completeScrollLockRef.current = completeScrollLock
 
     const syncPageScrollLock = () => {
       if (isAllLoadedRef.current) {
-        allowScrollBack = false
-        setPageScrollLocked(false)
+        if (!releasePending) setPageScrollLocked(false)
         return
       }
 
@@ -751,10 +811,19 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     const handleScrollIntent = (event, distance) => {
       if (distance < 0) {
         allowScrollBack = true
+        releasePending = false
+        clearTimeout(unlockTimer)
         setPageScrollLocked(false)
         return
       }
-      if (distance === 0 || isAllLoadedRef.current) return
+      if (distance === 0) return
+      if (isAllLoadedRef.current) {
+        if (releasePending) {
+          event.preventDefault()
+          scheduleUnlock()
+        }
+        return
+      }
 
       allowScrollBack = false
       const rect = container.getBoundingClientRect()
@@ -891,6 +960,7 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: false })
+    syncPageScrollLock()
 
     return () => {
       clearTimeout(renderInitTimer)
@@ -900,9 +970,10 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
+      clearTimeout(unlockTimer)
       setPageScrollLocked(false)
       if (updateScrollRef.current === updateScrollAndRender) updateScrollRef.current = null
-      if (setScrollLockRef.current === setPageScrollLocked) setScrollLockRef.current = null
+      if (completeScrollLockRef.current === completeScrollLock) completeScrollLockRef.current = null
       if (animationFrameId) cancelAnimationFrame(animationFrameId)
     }
   }, [activeFrameUrls, overlays, isMobile])
@@ -927,11 +998,13 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
           />
         )}
 
-        {!isMobile && !isAllLoaded && activeFrameUrls.length > 0 && (
+        {!isMobile && !isAllLoaded && (
           <div className="scene-loading-overlay">
             <div className="scene-loader-spinner" />
             <span className="scene-loader-text">
-              Loading Frames ({loadedCount}/{activeFrameUrls.length}) • {Math.round((loadedCount / (activeFrameUrls.length || 1)) * 100)}%
+              {activeFrameUrls.length > 0
+                ? `Loading Frames (${loadedCount}/${activeFrameUrls.length}) • ${Math.round((loadedCount / activeFrameUrls.length) * 100)}%`
+                : 'Preparing Frame Sequence…'}
             </span>
           </div>
         )}
@@ -1257,11 +1330,11 @@ function App() {
             {/* SCENE 01: BUILDING CONSTRUCTION */}
             <SceneCanvas
               id="home-scene"
-              frameUrls={[]}
-              frameLoader={() => loadSceneFrameUrls('home-scene', 42)}
+              frameUrls={EMPTY_FRAME_URLS}
+              frameLoader={SCENE_FRAME_LOADERS['home-scene']}
               videoUrl={scene1Vid}
               transition="fade-scale"
-              overlays={[]}
+              overlays={EMPTY_SCENE_OVERLAYS}
             />
 
             {/* SUMMARY: BUILDING CONSTRUCTION */}
@@ -1293,11 +1366,11 @@ function App() {
             {/* SCENE 02: HALL */}
             <SceneCanvas
               id="hall-scene"
-              frameUrls={[]}
-              frameLoader={() => loadSceneFrameUrls('hall-scene', 42)}
+              frameUrls={EMPTY_FRAME_URLS}
+              frameLoader={SCENE_FRAME_LOADERS['hall-scene']}
               videoUrl={scene2Vid}
               transition="slide-left"
-              overlays={[]}
+              overlays={EMPTY_SCENE_OVERLAYS}
             />
 
             {/* SUMMARY: HALL */}
@@ -1325,11 +1398,11 @@ function App() {
             {/* SCENE 03: KITCHEN */}
             <SceneCanvas
               id="kitchen-scene"
-              frameUrls={[]}
-              frameLoader={() => loadSceneFrameUrls('kitchen-scene', 42)}
+              frameUrls={EMPTY_FRAME_URLS}
+              frameLoader={SCENE_FRAME_LOADERS['kitchen-scene']}
               videoUrl={scene3Vid}
               transition="zoom-blur"
-              overlays={[]}
+              overlays={EMPTY_SCENE_OVERLAYS}
             />
 
             {/* SUMMARY: KITCHEN */}
@@ -1357,11 +1430,11 @@ function App() {
             {/* SCENE 04: BEDROOM */}
             <SceneCanvas
               id="bedroom-scene"
-              frameUrls={[]}
-              frameLoader={() => loadSceneFrameUrls('bedroom-scene', 42)}
+              frameUrls={EMPTY_FRAME_URLS}
+              frameLoader={SCENE_FRAME_LOADERS['bedroom-scene']}
               videoUrl={scene4Vid}
               transition="slide-up"
-              overlays={[]}
+              overlays={EMPTY_SCENE_OVERLAYS}
             />
 
             {/* SUMMARY: BEDROOM */}
