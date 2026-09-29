@@ -675,9 +675,11 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
 
     const scene = containerRef.current
     if (!scene || !activeFrameUrls.length) return
+    let loadingStarted = false
 
     const loadFrames = () => {
-      if (cancelled) return
+      if (cancelled || loadingStarted) return
+      loadingStarted = true
       const loadedImages = activeFrameUrls.map((url) => getCachedImage(url))
       imagesRef.current = loadedImages
 
@@ -735,17 +737,23 @@ const SceneCanvas = memo(function SceneCanvas({ id, frameUrls = [], overlays, tr
       renderFirstFrame()
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        observer.disconnect()
+    const startWhenNearViewport = () => {
+      if (loadingStarted) return
+      const rect = scene.getBoundingClientRect()
+      const preloadDistance = window.innerHeight * 1.2
+      if (rect.top < window.innerHeight + preloadDistance && rect.bottom > -preloadDistance) {
         loadFrames()
       }
-    }, { rootMargin: '120% 0px' })
-    observer.observe(scene)
+    }
+
+    window.addEventListener('scroll', startWhenNearViewport, { passive: true })
+    window.addEventListener('resize', startWhenNearViewport, { passive: true })
+    startWhenNearViewport()
 
     return () => {
       cancelled = true
-      observer.disconnect()
+      window.removeEventListener('scroll', startWhenNearViewport)
+      window.removeEventListener('resize', startWhenNearViewport)
     }
   }, [activeFrameUrls, isMobile])
 
